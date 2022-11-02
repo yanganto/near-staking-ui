@@ -1,0 +1,27 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Developer note: near.gitignore will be renamed to .gitignore upon project creation
+# dependencies
+node_modules
+/.pnp
+.pnp.js
+
+# build
+dist
+
+# keys
+/templates/react/neardev
+
+# production
+/build
+
+# misc
+.cache
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.idea
+package-lock.json
+/frontend/.parcel-cache
+/frontend/dist

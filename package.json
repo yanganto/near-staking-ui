@@ -1,0 +1,19 @@
+{
+  "name": "kuutamo",
+  "version": "1.0.0",
+  "license": "(MIT AND Apache-2.0)",
+  "scripts": {
+    "start": "cd frontend && npm run start",
+    "build": "npm run build:web",
+    "build:web": "cd frontend && npm run build",
+    "test": "npm run test:unit && npm run test:integration"
+  },
+  "devDependencies": {
+    "near-cli": "^3.3.0"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/material": "^5.10.11"
+  }
+}
