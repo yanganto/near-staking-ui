@@ -13,7 +13,8 @@ import MyNearIconUrl from '@near-wallet-selector/my-near-wallet/assets/my-near-w
 import {setupWalletSelector} from '@near-wallet-selector/core';
 import {setupLedger} from '@near-wallet-selector/ledger';
 import {setupMyNearWallet} from '@near-wallet-selector/my-near-wallet';
-
+import {setupWalletConnect} from "@near-wallet-selector/wallet-connect";
+import {setupNearWallet} from "@near-wallet-selector/near-wallet";
 
 const THIRTY_TGAS = '30000000000000';
 const NO_DEPOSIT = '0';
@@ -40,6 +41,16 @@ export class Wallet {
 			network: this.network,
 			modules: [setupMyNearWallet({ iconUrl: MyNearIconUrl }),
 				setupLedger({ iconUrl: LedgerIconUrl }),
+				setupNearWallet(),
+				setupWalletConnect({
+						projectId: process.env.walletConnectProjectId,
+					metadata: {
+						name: "NEAR Wallet Selector",
+						description: "Connect with WalletConnect",
+						url: "https://github.com/near/wallet-selector",
+						icons: ["https://avatars.githubusercontent.com/u/37784886"],
+					},
+				}),
 			],
 		});
 
