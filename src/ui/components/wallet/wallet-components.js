@@ -15,7 +15,7 @@ export function SignInPrompt({ onClick }) {
 				alignItems: 'center',
 			} }>
 				<Typography component="h1" variant="h5">
-					Welcome to NEAR!
+					Welcome to kuutamo!
 				</Typography>
 				<Typography variant="h4" component="h1">
 					<Button onClick={ onClick } variant="contained">Sign in with NEAR Wallet</Button>
