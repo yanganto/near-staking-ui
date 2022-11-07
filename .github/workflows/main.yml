@@ -10,12 +10,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install and Build 🔧 
-        run: |
-          npm run build
+        run: npm run build
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
+          folder: build
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
           cname: test.kuutamo.app
