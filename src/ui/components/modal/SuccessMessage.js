@@ -2,6 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import {Button} from "@mui/material";
 
 
 const style = {
@@ -30,12 +31,12 @@ export default function SuccessMessage({config}) {
 				aria-describedby="modal-modal-description"
 			>
 				<Box sx={ style }>
-					<Typography id="modal-modal-title" variant="h6" component="h2">
+					<Typography id="modal-modal-title" variant="h6" component="h2" align={"center"}>
 						The pool is Live!
 					</Typography>
 					<Typography id="modal-modal-description" sx={ { mt: 2, textAlign: "center" } }>
 						<a href={ config.explorerUrl + '/transactions/' + params.get("transactionHashes") } target="_blank" rel="noreferrer">
-							<button>View on Explorer</button>
+							<Button variant="contained">View on Explorer</Button>
 						</a>
 					</Typography>
 				</Box>

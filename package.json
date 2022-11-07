@@ -1,19 +1,48 @@
 {
-  "name": "kuutamo",
-  "version": "1.0.0",
-  "license": "(MIT AND Apache-2.0)",
-  "scripts": {
-    "start": "cd frontend && npm run start",
-    "build": "npm run build:web",
-    "build:web": "cd frontend && npm run build",
-    "test": "npm run test:unit && npm run test:integration"
-  },
-  "devDependencies": {
-    "near-cli": "^3.3.0"
-  },
+  "name": "kuutamo-ui",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@mui/material": "^5.10.11"
+    "@mui/material": "^5.10.12",
+    "@near-wallet-selector/core": "^7.1.0",
+    "@near-wallet-selector/ledger": "^7.1.0",
+    "@near-wallet-selector/modal-ui": "^7.1.0",
+    "@near-wallet-selector/my-near-wallet": "^7.1.0",
+    "@near-wallet-selector/near-wallet": "^7.1.0",
+    "@near-wallet-selector/wallet-connect": "^7.1.0",
+    "near-api-js": "^0.44.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build && cp build/index.html build/built-index.html",
+    "deploy:pages": "gh-pages -d build/",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "gh-pages": "^4.0.0",
+    "react-app-rewired": "^2.2.1"
   }
 }

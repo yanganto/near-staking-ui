@@ -43,7 +43,7 @@ export class Wallet {
 				setupLedger({ iconUrl: LedgerIconUrl }),
 				setupNearWallet(),
 				setupWalletConnect({
-						projectId: process.env.walletConnectProjectId,
+					projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID,
 					metadata: {
 						name: "NEAR Wallet Selector",
 						description: "Connect with WalletConnect",
