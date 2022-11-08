@@ -2,6 +2,7 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import {SignInPrompt, SignOutButton} from "./ui/components/wallet/wallet-components";
 import CreateStakingPool from "./ui/components/staking/CreateStakingPool";
+import {Card, CardContent} from "@mui/material";
 
 
 export default function App({ isSignedIn, wallet }) {
@@ -15,13 +16,17 @@ export default function App({ isSignedIn, wallet }) {
 
 	return (
 		<Container component="main">
-			<Grid container pt={ 2 } justifyContent="flex-end">
+			<Grid container p={ 2 } justifyContent="flex-end">
 				<Grid item>
 					<SignOutButton accountId={ wallet.accountId } onClick={ () => wallet.signOut() }/>
 				</Grid>
 			</Grid>
 			<Grid item>
-				<CreateStakingPool wallet={ wallet }/>
+				<Card variant="outlined">
+					<CardContent>
+						<CreateStakingPool wallet={ wallet }/>
+					</CardContent>
+				</Card>
 			</Grid>
 		</Container>
 	);
