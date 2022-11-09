@@ -4,8 +4,8 @@
 import {providers} from 'near-api-js';
 
 // wallet selector UI
-import '@near-wallet-selector/modal-ui/styles.css';
-import {setupModal} from '@near-wallet-selector/modal-ui';
+import '@near-wallet-selector/modal-ui-js/styles.css';
+import {setupModal} from '@near-wallet-selector/modal-ui-js';
 import LedgerIconUrl from '@near-wallet-selector/ledger/assets/ledger-icon.png';
 import MyNearIconUrl from '@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png';
 
@@ -55,6 +55,10 @@ export class Wallet {
 		});
 
 		const isSignedIn = this.walletSelector.isSignedIn();
+
+		this.walletSelector.on("signedIn", () => {
+			window.location.replace(window.location.origin + window.location.pathname);
+		});
 
 		if (isSignedIn) {
 			this.wallet = await this.walletSelector.wallet();
