@@ -5,7 +5,7 @@ import React from "react";
 import {createStakingPool, generateKey} from "../../../helpers/staking";
 import TextField from '@mui/material/TextField';
 import Typography from "@mui/material/Typography";
-import {InputAdornment} from "@mui/material/index";
+import {InputAdornment, MenuItem} from "@mui/material/index";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import * as zip from "@zip.js/zip.js";
@@ -26,17 +26,17 @@ const CreateStakingPool = ({ wallet }) => {
 	const [keyPairErrorText, setKeyPairErrorText] = React.useState('');
 	const [confirmPasswordErrorText, setConfirmPasswordErrorText] = React.useState('');
 	const [isKeyPairDownloaded, setIsKeyPairDownloaded] = React.useState(true);
+	const [contractPool, setContractPool] = React.useState(2);
 
-
-	async function submitCreateStakingPool(e) {
+	const submitCreateStakingPool = async e => {
 		e.preventDefault();
 		if (chekForm()) {
-			await createStakingPool(wallet, poolName, ownerAccount, publicKey, percentageFee);
+			await createStakingPool(wallet, contractPool, poolName, ownerAccount, publicKey, percentageFee);
 		}
 	}
 
-	const handlePublicKeyChange = event => {
-		setPublicKey(event.target.value);
+	const handlePublicKeyChange = e => {
+		setPublicKey(e.target.value);
 		setPublicKeyErrorText('');
 		setKeyPair(null);
 	};
@@ -116,7 +116,6 @@ const CreateStakingPool = ({ wallet }) => {
 		}
 	}
 
-
 	return (
 		<Box
 			sx={ {
@@ -130,23 +129,39 @@ const CreateStakingPool = ({ wallet }) => {
 					Create staking pool
 				</Typography>
 				<SuccessMessage config={ wallet.walletSelector.options.network }/>
-				<TextField
-					margin="normal"
-					required
-					fullWidth
-					id="poolName"
-					label="Pool Name"
-					autoComplete="off"
-					autoFocus
-					InputProps={ {
-						endAdornment: <InputAdornment position="end">.{ process.env.REACT_APP_CONTRACT_POOL }</InputAdornment>,
-					} }
-					helperText={ poolNameErrorText }
-					error={ !!poolNameErrorText }
-					value={ poolName } onChange={ e => {
-					setPoolName(e.target.value);
-					setPoolNameErrorText("")
-				} }/>
+				<Grid container>
+					<Grid item xs={ 8 }>
+						<TextField
+							margin="normal"
+							required
+							fullWidth
+							id="poolName"
+							label="Pool Name"
+							autoComplete="off"
+							autoFocus
+							helperText={ poolNameErrorText }
+							error={ !!poolNameErrorText }
+							value={ poolName } onChange={ e => {
+							setPoolName(e.target.value);
+							setPoolNameErrorText("")
+						} }/>
+					</Grid>
+					<Grid item xs={ 4 }>
+						<TextField
+							margin="normal"
+							fullWidth
+							select
+							id="contractPool"
+							value={ contractPool }
+							onChange={ e => {
+								setContractPool(e.target.value);
+							} }
+						>
+							<MenuItem value={ 2 }>{ process.env.REACT_APP_CONTRACT_POOL }</MenuItem>
+							<MenuItem value={ 1 }>{ process.env.REACT_APP_CONTRACT_POOL_V1 }</MenuItem>
+						</TextField>
+					</Grid>
+				</Grid>
 				<TextField
 					margin="normal"
 					required
