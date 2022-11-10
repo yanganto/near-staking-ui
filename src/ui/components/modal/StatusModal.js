@@ -23,12 +23,6 @@ const style = {
 export default function StatusModal(props) {
 	const handleClose = () => props.setData({ ...props.data, open: false });
 
-	React.useEffect(() => {
-		const params = new URLSearchParams(window.location.search);
-		if (params.get("transactionHashes"))
-			props.setData({ open: true, hash: params.get("transactionHashes"), description: 'The pool is Live!' });
-	}, []);
-
 	return (
 		<div>
 			<Modal open={ props.data.open } onClose={ handleClose }>

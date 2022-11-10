@@ -29,6 +29,12 @@ const CreateStakingPool = ({ wallet }) => {
 	const [isKeyPairDownloaded, setIsKeyPairDownloaded] = React.useState(true);
 	const [contractPool, setContractPool] = React.useState(2);
 
+	React.useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		if (params.get("transactionHashes"))
+			setStatusModalData({ open: true, hash: params.get("transactionHashes"), description: 'The pool is Live!' });
+	}, []);
+
 	const submitCreateStakingPool = async e => {
 		e.preventDefault();
 		if (chekForm()) {
