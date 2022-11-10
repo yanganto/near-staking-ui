@@ -19,7 +19,7 @@ export async function createStakingPool(wallet, contractPool, poolName, ownerAcc
 		"reward_fee_fraction": { "numerator": parseInt(percentageFee), "denominator": 100 }
 	};
 
-	await wallet.callMethod({
+	return await wallet.callMethod({
 		contractId: contractPool === 2 ? process.env.REACT_APP_CONTRACT_POOL : process.env.REACT_APP_CONTRACT_POOL_V1,
 		method: 'create_staking_pool',
 		args,

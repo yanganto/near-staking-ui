@@ -1,4 +1,4 @@
-import SuccessMessage from "../modal/SuccessMessage";
+import StatusModal from "../modal/StatusModal";
 import Button from "@mui/material/Button";
 import Box from '@mui/material/Box';
 import React from "react";
@@ -12,6 +12,7 @@ import * as zip from "@zip.js/zip.js";
 
 
 const CreateStakingPool = ({ wallet }) => {
+	const [statusModalData, setStatusModalData] = React.useState({ open: false });
 	const [poolName, setPoolName] = React.useState('');
 	const [ownerAccount, setOwnerAccount] = React.useState('');
 	const [publicKey, setPublicKey] = React.useState('');
@@ -31,7 +32,25 @@ const CreateStakingPool = ({ wallet }) => {
 	const submitCreateStakingPool = async e => {
 		e.preventDefault();
 		if (chekForm()) {
-			await createStakingPool(wallet, contractPool, poolName, ownerAccount, publicKey, percentageFee);
+			if (wallet.wallet.id === 'ledger') {
+				try {
+					setStatusModalData({ open: true, description: 'Please confirm transaction on ledger' });
+					const r = await createStakingPool(wallet, contractPool, poolName, ownerAccount, publicKey, percentageFee);
+					if (r.status.hasOwnProperty('SuccessValue'))
+						setStatusModalData({ open: true, hash: r.transaction.hash, description: 'The pool is Live!' });
+					if (r.status.hasOwnProperty('Failure'))
+						setStatusModalData({
+							open: true,
+							hash: r.transaction.hash,
+							description: JSON.stringify(r.status.Failure.ActionError),
+							hasError: true
+						});
+				} catch (e) {
+					setStatusModalData({ open: true, description: e.message, hasError: true });
+				}
+			} else {
+				await createStakingPool(wallet, contractPool, poolName, ownerAccount, publicKey, percentageFee);
+			}
 		}
 	}
 
@@ -128,7 +147,8 @@ const CreateStakingPool = ({ wallet }) => {
 				<Typography component="h1" variant="h5" align={ "center" }>
 					Create staking pool
 				</Typography>
-				<SuccessMessage config={ wallet.walletSelector.options.network }/>
+				<StatusModal config={ wallet.walletSelector.options.network } data={ statusModalData }
+				             setData={ setStatusModalData }/>
 				<Grid container>
 					<Grid item xs={ 8 }>
 						<TextField
