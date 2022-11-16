@@ -5,9 +5,10 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {red} from "@mui/material/colors";
 import {Wallet} from './helpers/near-wallet';
+import {nearConfig} from "./helpers/nearConfig";
 
 
-const wallet = new Wallet({ network: process.env.REACT_APP_NETWORK });
+const wallet = new Wallet({ network: nearConfig.networkId });
 
 
 const theme = createTheme({

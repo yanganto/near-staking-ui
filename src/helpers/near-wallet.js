@@ -15,6 +15,7 @@ import {setupLedger} from '@near-wallet-selector/ledger';
 import {setupMyNearWallet} from '@near-wallet-selector/my-near-wallet';
 import {setupWalletConnect} from "@near-wallet-selector/wallet-connect";
 import {setupNearWallet} from "@near-wallet-selector/near-wallet";
+import {nearConfig} from "./nearConfig";
 
 const THIRTY_TGAS = '30000000000000';
 const NO_DEPOSIT = '0';
@@ -43,7 +44,7 @@ export class Wallet {
 				setupLedger({ iconUrl: LedgerIconUrl }),
 				setupNearWallet(),
 				setupWalletConnect({
-					projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID,
+					projectId: nearConfig.walletConnectProjectId,
 					metadata: {
 						name: "NEAR Wallet Selector",
 						description: "Connect with WalletConnect",

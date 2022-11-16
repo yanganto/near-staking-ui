@@ -1,35 +1,53 @@
-import React from 'react';
 import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container/Container";
+import {TextField} from "@mui/material";
+import {MenuItem} from "@mui/material/index";
 
 
 export function SignInPrompt({ onClick }) {
 	return (
-		<Container maxWidth="sm">
-			<Box sx={ {
-				marginTop: 8,
-				display: 'flex',
-				flexDirection: 'column',
-				alignItems: 'center',
-			} }>
-				<Typography component="h1" variant="h5">
-					Welcome to kuutamo!
-				</Typography>
-				<Typography variant="h4" component="h1">
-					<Button onClick={ onClick } variant="contained">Sign in with NEAR Wallet</Button>
-				</Typography>
-			</Box>
-		</Container>
+		<>
+			<TextField
+				select
+				label="Network"
+				id="networkId"
+				size="small"
+				value={ localStorage.getItem("networkId") || 'testnet' }
+				onChange={ e => {
+					localStorage.setItem("networkId", e.target.value);
+					window.location.replace(window.location.origin + window.location.pathname);
+				} }
+			>
+				<MenuItem value="testnet">testnet</MenuItem>
+				<MenuItem value="mainnet">mainnet</MenuItem>
+			</TextField>
+			<Button onClick={ onClick } variant="contained">Sign in with NEAR Wallet</Button>
+		</>
+
 	);
 }
 
 export function SignOutButton({ accountId, onClick }) {
 	return (
-		<Button onClick={ onClick } variant="outlined">
-			Sign out { accountId }
-		</Button>
+		<>
+			<TextField
+				select
+				label="Network"
+				id="networkId"
+				size="small"
+				value={ localStorage.getItem("networkId") || 'testnet' }
+				onChange={ e => {
+					localStorage.setItem("networkId", e.target.value);
+					window.location.replace(window.location.origin + window.location.pathname);
+					onClick();
+				} }
+			>
+				<MenuItem value="testnet">testnet</MenuItem>
+				<MenuItem value="mainnet">mainnet</MenuItem>
+			</TextField>
+			<Button onClick={ onClick } variant="outlined">
+				Sign out { accountId }
+			</Button>
+		</>
 	);
 }
 
