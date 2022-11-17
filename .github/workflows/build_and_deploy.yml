@@ -24,4 +24,4 @@ jobs:
           branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
-          cname: test.kuutamo.app
+          cname: test.near.kuutamo.app
