@@ -1,19 +1,13 @@
-import Grid from '@mui/material/Grid';
-import Container from '@mui/material/Container';
-import {SignInPrompt, SignOutButton} from "./ui/components/wallet/wallet-components";
+import {NavBar} from "./ui/components/wallet/wallet-components";
 import CreateStakingPool from "./ui/components/staking/CreateStakingPool";
-import {Card, CardContent, Typography} from "@mui/material";
+import {Grid, Container, Card, CardContent, Typography} from "@mui/material";
 
 
 export default function App({ isSignedIn, wallet }) {
 	return (
 		<Container component="main">
-			<Grid container p={ 2 } justifyContent="flex-end">
-				<Grid item>
-					{ isSignedIn ? <SignOutButton accountId={ wallet.accountId } onClick={ () => wallet.signOut() }/>
-						: <SignInPrompt onClick={ () => wallet.signIn() }/>
-					}
-				</Grid>
+			<Grid container pt={ 2 } pb={ 2 } justifyContent="flex-end">
+				<NavBar isSignedIn={ isSignedIn } wallet={ wallet }/>
 			</Grid>
 			<Grid item>
 				<Card variant="outlined">
@@ -21,9 +15,9 @@ export default function App({ isSignedIn, wallet }) {
 						{ isSignedIn ?
 							<CreateStakingPool isSignedIn={ isSignedIn } wallet={ wallet }/>
 							: <Container align="center">
-									<Typography component="h1" variant="h5">
-										Welcome to kuutamo!
-									</Typography>
+								<Typography component="h1" variant="h5">
+									Welcome to kuutamo!
+								</Typography>
 							</Container>
 						}
 					</CardContent>
