@@ -28,3 +28,13 @@ export async function createStakingPool(wallet, contractPool, poolName, ownerAcc
 		deposit: utils.format.parseNearAmount("30")
 	});
 }
+
+export async function stakeToKuutamoPool(wallet, poolName, amount) {
+	return await wallet.callMethod({
+		contractId: poolName,
+		method: 'deposit_and_stake',
+		args: {},
+		gas: 300000000000000,
+		deposit: utils.format.parseNearAmount(amount)
+	});
+}

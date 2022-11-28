@@ -1,7 +1,7 @@
 /* A helper file that simplifies using the wallet selector */
 
 // near api js
-import {providers} from 'near-api-js';
+import {connect, keyStores, providers} from 'near-api-js';
 
 // wallet selector UI
 import '@near-wallet-selector/modal-ui-js/styles.css';
@@ -116,6 +116,25 @@ export class Wallet {
 				},
 			],
 		});
+	}
+
+	async getAccountBalance(account_id) {
+		const { network } = this.walletSelector.options;
+		const nearConnection = await connect({ ...network, keyStore: new keyStores.BrowserLocalStorageKeyStore() });
+		const account = await nearConnection.account(account_id);
+		return await account.getAccountBalance();
+	}
+
+	async accountExists(account_id) {
+		const { network } = this.walletSelector.options;
+		const nearConnection = await connect({ ...network, keyStore: new keyStores.BrowserLocalStorageKeyStore() });
+		try {
+			const account = await nearConnection.account(account_id);
+			await account.state();
+			return true;
+		} catch (error) {
+			return false;
+		}
 	}
 
 	// Get transaction result from the network
