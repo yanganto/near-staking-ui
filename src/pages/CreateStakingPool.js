@@ -2,12 +2,11 @@ import {useEffect, useState} from "react";
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
-import {Card, CardContent, Grid, InputAdornment, MenuItem} from "@mui/material";
+import {Card, CardContent, Grid, InputAdornment, MenuItem, StepButton} from "@mui/material";
 import TextField from "@mui/material/TextField";
-import {nearConfig} from "../../../helpers/nearConfig";
-import {createStakingPool, generateKey} from "../../../helpers/staking";
+import {nearConfig} from "../helpers/nearConfig";
+import {createStakingPool, generateKey} from "../helpers/staking";
 import * as zip from "@zip.js/zip.js";
 import Typography from "@mui/material/Typography";
 import WarningIcon from "@mui/icons-material/Warning";
@@ -35,7 +34,6 @@ const DataForm = (props) => {
 		setPublicKey(e.target.value);
 		setPublicKeyErrorText('');
 		setKeyPair(null);
-		props.setCompletedSteps({ ...props.completedSteps, [props.activeStep]: (!!e.target.value && poolName) });
 		localStorage.setItem('publicKey', e.target.value)
 	};
 
@@ -47,7 +45,6 @@ const DataForm = (props) => {
 			localStorage.setItem('publicKey', kp.public_key);
 			setIsKeyPairDownloaded(false);
 			setPublicKeyErrorText('');
-			props.setCompletedSteps({ ...props.completedSteps, [props.activeStep]: false });
 		} else {
 			setPoolNameErrorText('Please enter Pool Name');
 		}
@@ -76,7 +73,6 @@ const DataForm = (props) => {
 		a.click();
 		setKeyPairErrorText('');
 		setIsKeyPairDownloaded(true);
-		props.setCompletedSteps({ ...props.completedSteps, [props.activeStep]: true });
 	}
 
 	const comparePasswords = () => {
@@ -93,9 +89,13 @@ const DataForm = (props) => {
 		}
 	}
 
-	const chekForm = () => {
+	const chekForm = async () => {
 		if (!poolName) {
 			setPoolNameErrorText('Please enter Pool Name');
+			return false;
+		}
+		if (await props.wallet.accountExists(poolName + '.' + (contractPool === 2 ? nearConfig.contractPool : nearConfig.contractPoolV1))) {
+			setPoolNameErrorText('The pool already exists');
 			return false;
 		}
 		if (!ownerAccount) {
@@ -119,9 +119,9 @@ const DataForm = (props) => {
 
 	const submitCreateStakingPool = async e => {
 		e.preventDefault();
-		if (chekForm()) {
-			props.setActiveStep(2);
+		if (await chekForm()) {
 			if (props.wallet.wallet.id === 'ledger') {
+				props.setActiveStep(2);
 				try {
 					setStatusData({ open: true, description: 'Please confirm transaction on ledger' });
 					const r = await createStakingPool(props.wallet, contractPool, poolName, ownerAccount, publicKey, percentageFee);
@@ -149,11 +149,12 @@ const DataForm = (props) => {
 			setStatusData({ open: true, hash: params.get("transactionHashes"), description: 'The pool is Live!' });
 	}, []);
 
+
 	return (
 		<Grid container justifyContent="center">
 			<Grid item xs={ 8 } p={ 2 }>
 				<Typography component="h1" variant="h5" align={ "center" }>
-					kuutamo
+					Create a new pool
 				</Typography>
 				{ props.activeStep < 2 ?
 					<>
@@ -173,7 +174,6 @@ const DataForm = (props) => {
 									setPoolName(e.target.value);
 									localStorage.setItem('poolName', e.target.value);
 									setPoolNameErrorText("");
-									props.setCompletedSteps({ ...props.completedSteps, 0: !!e.target.value });
 								} }/>
 							</Grid>
 							<Grid item xs={ 4 }>
@@ -281,8 +281,7 @@ const DataForm = (props) => {
 								} }/>
 								<div>
 									<Button onClick={ submitCreateStakingPool } variant="contained" fullWidth>
-										<span>LAUNCH POOL</span>
-										<div className="loader"/>
+										LAUNCH POOL
 									</Button>
 								</div>
 							</> : null
@@ -298,8 +297,10 @@ const DataForm = (props) => {
 								</Grid>
 								{ statusData.hash ?
 									<Grid item xs={ 12 }>
-										<Link href={ nearConfig.explorerUrl + '/transactions/' + statusData.hash } target="_blank"
-										      rel="noreferrer">
+										<Link
+											href={ props.wallet.walletSelector.options.network.explorerUrl + '/transactions/' + statusData.hash }
+											target="_blank"
+											rel="noreferrer">
 											View on Explorer
 										</Link>
 									</Grid>
@@ -314,7 +315,6 @@ const DataForm = (props) => {
 
 export default function CreateStakingPool({ wallet, isSignedIn }) {
 	const [activeStep, setActiveStep] = useState(0);
-	const [completedSteps, setCompletedSteps] = useState({});
 	const steps = ['Generate Key pair', 'Pool settings', 'Launch pool'];
 
 	const handleNext = () => {
@@ -325,29 +325,32 @@ export default function CreateStakingPool({ wallet, isSignedIn }) {
 		setActiveStep((prevActiveStep) => prevActiveStep - 1);
 	};
 
+	const handleStep = (step) => () => {
+		if (step <= 1) setActiveStep(step);
+	};
+
 	useEffect(() => {
-		if (localStorage.getItem('poolName') && localStorage.getItem('publicKey'))
-			setCompletedSteps({ 0: true });
 		const params = new URLSearchParams(window.location.search);
 		if (params.get("transactionHashes")) setActiveStep(2);
 	}, [isSignedIn]);
 
+	if (!isSignedIn) {
+		wallet.signIn();
+		return false;
+	}
+
 	return (
 		<Box sx={ { width: '100%' } }>
-			<Stepper activeStep={ activeStep }>
-				{ steps.map((label, index) => {
-					const stepProps = {};
-					const labelProps = {};
-					stepProps.completed = false;
-					return (
-						<Step key={ label } { ...stepProps }>
-							<StepLabel { ...labelProps }>{ label }</StepLabel>
-						</Step>
-					);
-				}) }
+			<Stepper nonLinear activeStep={ activeStep }>
+				{ steps.map((label, index) => (
+					<Step key={ label }>
+						<StepButton color="inherit" onClick={ handleStep(index) }>
+							{ label }
+						</StepButton>
+					</Step>
+				)) }
 			</Stepper>
-			<DataForm activeStep={ activeStep } setActiveStep={ setActiveStep } setCompletedSteps={ setCompletedSteps }
-			          completedSteps={ completedSteps } wallet={ wallet }/>
+			<DataForm activeStep={ activeStep } setActiveStep={ setActiveStep } wallet={ wallet }/>
 			<Box sx={ { display: 'flex', flexDirection: 'row', pt: 2 } }>
 				<Button
 					color="inherit"
@@ -359,7 +362,7 @@ export default function CreateStakingPool({ wallet, isSignedIn }) {
 				</Button>
 				<Box sx={ { flex: '1 1 auto' } }/>
 				{ activeStep < 1 ?
-					<Button onClick={ handleNext } disabled={ activeStep === 1 || !completedSteps[activeStep] }>
+					<Button onClick={ handleNext }>
 						Next
 					</Button> : null }
 			</Box>
