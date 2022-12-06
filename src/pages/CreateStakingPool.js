@@ -120,10 +120,10 @@ const DataForm = (props) => {
 	const submitCreateStakingPool = async e => {
 		e.preventDefault();
 		if (await chekForm()) {
-			if (props.wallet.wallet.id === 'ledger') {
+			if (props.wallet.wallet.id === 'ledger' || props.wallet.wallet.id === 'wallet-connect') {
 				props.setActiveStep(2);
 				try {
-					setStatusData({ open: true, description: 'Please confirm transaction on ledger' });
+					setStatusData({ open: true, description: 'Please confirm transaction on ' + props.wallet.wallet.id });
 					const r = await createStakingPool(props.wallet, contractPool, poolName, ownerAccount, publicKey, percentageFee);
 					if (r.status.hasOwnProperty('SuccessValue'))
 						setStatusData({ open: true, hash: r.transaction.hash, description: 'The pool is Live!' });

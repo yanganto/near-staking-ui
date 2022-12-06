@@ -60,6 +60,9 @@ export class Wallet {
 		this.walletSelector.on("signedIn", () => {
 			window.location.replace(window.location.origin + window.location.pathname);
 		});
+		this.walletSelector.on("signedOut", () => {
+			window.location.replace(window.location.origin + window.location.pathname);
+		});
 
 		if (isSignedIn) {
 			this.wallet = await this.walletSelector.wallet();
@@ -79,8 +82,6 @@ export class Wallet {
 	// Sign-out method
 	signOut() {
 		this.wallet.signOut();
-		this.wallet = this.accountId = this.createAccessKeyFor = null;
-		window.location.replace(window.location.origin + window.location.pathname);
 	}
 
 	// Make a read-only call to retrieve information from the network
@@ -136,6 +137,29 @@ export class Wallet {
 			return false;
 		}
 	}
+
+	/*
+		async fetchPools() {
+			const { network } = this.walletSelector.options;
+			const nearConnection = await connect({ ...network, keyStore: new keyStores.BrowserLocalStorageKeyStore() });
+			const account = await nearConnection.account(this.wallet.accountId);
+			const result = await account.connection.provider.sendJsonRpc(
+				"validators",
+				[null]
+			);
+			const pools = [];
+			result.current_validators.forEach((validator) => {
+				pools.push(validator.account_id);
+			});
+			result.next_validators.forEach((validator) =>
+				pools.push(validator.account_id)
+			);
+			result.current_proposals.forEach((validator) =>
+				pools.push(validator.account_id)
+			);
+			return pools;
+		}
+	*/
 
 	// Get transaction result from the network
 	async getTransactionResult(txhash) {

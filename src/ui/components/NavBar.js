@@ -108,7 +108,6 @@ const NavBar = ({ isSignedIn, wallet }) => {
 							        endIcon={ <LogoutIcon/> }
 							        onClick={ () => {
 								        wallet.signOut();
-								        window.location.replace(window.location.origin);
 							        } }>Sign out { wallet.accountId }</Button>
 							:
 							<Button sx={ { color: '#fff', border: '1px solid' } }

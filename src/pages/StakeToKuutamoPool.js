@@ -53,9 +53,9 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 		} else {
 			setHelperText('');
 			setError(false);
-			if (wallet.wallet.id === 'ledger') {
+			if (wallet.wallet.id === 'ledger' || wallet.wallet.id === 'wallet-connect') {
 				try {
-					setHelperText('Please confirm transaction on ledger');
+					setHelperText('Please confirm transaction on ' + wallet.wallet.id);
 					const r = await stakeToKuutamoPool(wallet, poolName, amount);
 					if (r.status.hasOwnProperty('SuccessValue')) {
 						setPoolName(null);
