@@ -104,11 +104,16 @@ const NavBar = ({ isSignedIn, wallet }) => {
 					</Box>
 					<Box>
 						{ isSignedIn ?
-							<Button sx={ { color: '#fff', border: '1px solid' } }
-							        endIcon={ <LogoutIcon/> }
-							        onClick={ () => {
-								        wallet.signOut();
-							        } }>Sign out { wallet.accountId }</Button>
+							<>
+								<Box component="span" sx={ { p: 2 } }>
+									{ wallet.accountId }
+								</Box>
+								<Button sx={ { color: '#fff', border: '1px solid' } }
+								        endIcon={ <LogoutIcon/> }
+								        onClick={ () => {
+									        wallet.signOut();
+								        } }>Sign out</Button>
+							</>
 							:
 							<Button sx={ { color: '#fff', border: '1px solid' } }
 							        startIcon={ <LoginIcon/> } onClick={ () => wallet.signIn() }>
