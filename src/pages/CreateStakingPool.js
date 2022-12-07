@@ -144,6 +144,7 @@ const DataForm = (props) => {
 	}
 
 	useEffect(() => {
+		setOwnerAccount(props.wallet.accountId);
 		const params = new URLSearchParams(window.location.search);
 		if (params.get("transactionHashes"))
 			setStatusData({ open: true, hash: params.get("transactionHashes"), description: 'The pool is Live!' });
@@ -253,9 +254,6 @@ const DataForm = (props) => {
 									id="ownerAccount"
 									label="Owner account"
 									autoComplete="off"
-									InputProps={ {
-										endAdornment: <InputAdornment position="end">.{ nearConfig.networkId }</InputAdornment>,
-									} }
 									helperText={ ownerAccountErrorText }
 									error={ !!ownerAccountErrorText }
 									value={ ownerAccount } onChange={ e => {

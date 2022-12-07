@@ -10,12 +10,12 @@ export async function createStakingPool(wallet, contractPool, poolName, ownerAcc
 	const args = contractPool === 2 ? {
 		"staking_pool_id": poolName,
 		"code_hash": nearConfig.poolCodeHash,
-		"owner_id": ownerAccount + '.' + nearConfig.networkId,
+		"owner_id": ownerAccount,
 		"stake_public_key": publicKey,
 		"reward_fee_fraction": { "numerator": parseInt(percentageFee), "denominator": 100 }
 	} : {
 		"staking_pool_id": poolName,
-		"owner_id": ownerAccount + '.' + nearConfig.networkId,
+		"owner_id": ownerAccount,
 		"stake_public_key": publicKey,
 		"reward_fee_fraction": { "numerator": parseInt(percentageFee), "denominator": 100 }
 	};
