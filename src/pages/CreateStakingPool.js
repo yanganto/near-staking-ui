@@ -144,11 +144,14 @@ const DataForm = (props) => {
 	}
 
 	useEffect(() => {
-		setOwnerAccount(props.wallet.accountId);
 		const params = new URLSearchParams(window.location.search);
 		if (params.get("transactionHashes"))
 			setStatusData({ open: true, hash: params.get("transactionHashes"), description: 'The pool is Live!' });
 	}, []);
+
+	useEffect(() => {
+		setOwnerAccount(props.wallet.accountId);
+	}, [props.wallet.accountId]);
 
 
 	return (
