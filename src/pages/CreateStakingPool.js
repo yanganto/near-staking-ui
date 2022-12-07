@@ -14,9 +14,9 @@ import Link from "@mui/material/Link";
 
 const DataForm = (props) => {
 	const [statusData, setStatusData] = useState({ open: false });
-	const [poolName, setPoolName] = useState(localStorage.getItem('poolName') || '');
+	const [poolName, setPoolName] = useState('');
 	const [ownerAccount, setOwnerAccount] = useState('');
-	const [publicKey, setPublicKey] = useState(localStorage.getItem('publicKey') || '');
+	const [publicKey, setPublicKey] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [keyPair, setKeyPair] = useState(null);
