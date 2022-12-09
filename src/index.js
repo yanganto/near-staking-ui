@@ -8,7 +8,7 @@ import {Wallet} from './helpers/near-wallet';
 import {nearConfig} from "./helpers/nearConfig";
 
 
-const wallet = new Wallet({createAccessKeyFor: "guest-book.testnet", network: nearConfig.networkId });
+const wallet = new Wallet({createAccessKeyFor: nearConfig.contractId, network: nearConfig.networkId });
 
 
 const theme = createTheme({
