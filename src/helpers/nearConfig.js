@@ -1,6 +1,6 @@
 const testnet = {
 	networkId: 'testnet',
-	contractId: 'mondlicht.pool.devnet',
+	contractId: process.env.REACT_APP_TESTNET_CONTRACT_ID,
 	contractPool: process.env.REACT_APP_TESTNET_CONTRACT_POOL,
 	contractPoolV1: process.env.REACT_APP_TESTNET_CONTRACT_POOL_V1,
 	poolCodeHash: process.env.REACT_APP_TESTNET_POOL_CODE_HASH,
@@ -10,7 +10,7 @@ const testnet = {
 
 const mainnet = {
 	networkId: 'mainnet',
-	contractId: 'calimero.pool.near',
+	contractId: process.env.REACT_APP_MAINNET_CONTRACT_ID,
 	contractPool: process.env.REACT_APP_MAINNET_CONTRACT_POOL,
 	contractPoolV1: process.env.REACT_APP_MAINNET_CONTRACT_POOL_V1,
 	poolCodeHash: process.env.REACT_APP_MAINNET_POOL_CODE_HASH,
