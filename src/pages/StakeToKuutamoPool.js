@@ -1,9 +1,10 @@
 import {
+	Alert,
 	Chip,
 	Container,
 	FormControl,
 	FormControlLabel,
-	FormHelperText,
+	Stack,
 	Grid,
 	Radio,
 	RadioGroup,
@@ -12,6 +13,7 @@ import {
 import {useEffect, useState} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
 import {getKuutamoValidators, stakeToKuutamoPool} from "../helpers/staking";
 import {Balances, YourCurrentValidators} from "../ui/components/Balances";
 
@@ -19,12 +21,19 @@ import {Balances, YourCurrentValidators} from "../ui/components/Balances";
 const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 	const [error, setError] = useState(false);
 	const [helperText, setHelperText] = useState('');
+	const [alertSeverity, setAlertSeverity] = useState('info');
+	const [transactionHashes, setTransactionHashes] = useState(null);
 	const [validators, setValidators] = useState([]);
 	const [poolName, setPoolName] = useState(null);
 	const [amount, setAmount] = useState(0);
 
 
 	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		if (params.get("transactionHashes")) {
+			setHelperText("Success! Your stake has successfully been delegated to your chosen validator");
+			setTransactionHashes(params.get("transactionHashes"));
+		}
 		(async () => {
 			const kuutamoValidators = await getKuutamoValidators(wallet);
 			setValidators(kuutamoValidators);
@@ -47,11 +56,14 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 			if (wallet.wallet.id === 'ledger' || wallet.wallet.id === 'wallet-connect') {
 				try {
 					setHelperText('Please confirm transaction on ' + wallet.wallet.id);
+					setAlertSeverity('info');
 					const r = await stakeToKuutamoPool(wallet, poolName, amount);
 					if (r.status.hasOwnProperty('SuccessValue')) {
 						setPoolName(null);
 						setAmount(0);
-						setHelperText('Success!');
+						setHelperText("Success! Your stake has successfully been delegated to your chosen validator");
+						setTransactionHashes(r.transaction.hash);
+						setAlertSeverity('success');
 					}
 					if (r.status.hasOwnProperty('Failure')) {
 						setError(true);
@@ -94,20 +106,32 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 								<FormControlLabel key={ v.account_id } value={ v.account_id } control={ <Radio/> }
 								                  label={
 									                  <>
-										                  { v.account_id } <Chip size="small" label={ v.fee + '% Fee' } variant="outlined" />
+										                  { v.account_id } <Chip size="small" label={ v.fee + '% Fee' } variant="outlined"/>
 									                  </>
 								                  }/>
 							))
 						}
 					</RadioGroup>
-					<FormHelperText variant="outlined">{ helperText }</FormHelperText>
+					{ helperText ?
+						<Stack sx={ { width: '100%' } } pb={ 1 }>
+							<Alert severity={ error ? 'error' : alertSeverity } mb={ 2 }>{ helperText }{ " " }
+								{ !error && transactionHashes ?
+									<Link
+										href={ wallet.walletSelector.options.network.explorerUrl + '/transactions/' + transactionHashes }
+										target="_blank"
+										rel="noreferrer">
+										View on Explorer
+									</Link> : null }
+							</Alert>
+						</Stack>
+						: null }
 					<Button variant="contained" fullWidth onClick={ handleSubmit }>
 						<span>Stake</span>
 					</Button>
 				</FormControl>
 			</Grid>
 		</Grid>
-		<YourCurrentValidators wallet={ wallet }/>
+		<YourCurrentValidators wallet={ wallet } transactionHashes={ transactionHashes }/>
 	</Container>);
 }
 

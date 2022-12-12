@@ -38,7 +38,7 @@ export const Balances = ({ wallet }) => {
 
 }
 
-export const YourCurrentValidators = ({ wallet }) => {
+export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 	const [yourCurrentValidators, setYourCurrentValidators] = useState([]);
 	const [validatorsIsReady, setValidatorsIsReady] = useState(false);
 
@@ -49,7 +49,7 @@ export const YourCurrentValidators = ({ wallet }) => {
 			setValidatorsIsReady(true);
 		})();
 
-	}, [wallet]);
+	}, [wallet, transactionHashes]);
 
 
 	return (
