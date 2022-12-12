@@ -1,4 +1,5 @@
 import {
+	Chip,
 	Container,
 	FormControl,
 	FormControlLabel,
@@ -11,33 +12,23 @@ import {
 import {useEffect, useState} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import {nearConfig} from "../helpers/nearConfig";
-import * as nearAPI from "near-api-js";
-import {stakeToKuutamoPool} from "../helpers/staking";
+import {getKuutamoValidators, stakeToKuutamoPool} from "../helpers/staking";
+import {Balances, YourCurrentValidators} from "../ui/components/Balances";
 
 
 const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 	const [error, setError] = useState(false);
 	const [helperText, setHelperText] = useState('');
 	const [validators, setValidators] = useState([]);
-	const [balance, setBalance] = useState(null);
 	const [poolName, setPoolName] = useState(null);
 	const [amount, setAmount] = useState(0);
 
-	useEffect(() => {
-		fetch('validators.' + nearConfig.networkId + '.json').then(response => {
-			return response.json();
-		}).then(data => {
-			setValidators(data);
-		}).catch(err => {
-			console.log("Error Reading data " + err);
-		});
 
-		const getAccountBalance = async () => {
-			const balance = await wallet.getAccountBalance(wallet.accountId);
-			setBalance(balance);
-		}
-		getAccountBalance().catch(console.error);
+	useEffect(() => {
+		(async () => {
+			const kuutamoValidators = await getKuutamoValidators(wallet);
+			setValidators(kuutamoValidators);
+		})();
 	}, [wallet]);
 
 	if (!isSignedIn) {
@@ -79,14 +70,12 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 
 	return (<Container align="center">
 		<Grid container justifyContent="center">
-			<Grid item xs={ 4 } p={ 2 }>
+			<Grid item xs={ 6 }>
 				<Typography component="h1" variant="h5">
 					Stake to a kuutamo pool
 				</Typography>
-				<Typography component="h1" variant="h6">
-					Balance: { balance ? nearAPI.utils.format.formatNearAmount(balance.available, 4) : '-' } Ⓝ
-				</Typography>
-				<FormControl fullWidth sx={ { m: 3 } } error={ error } variant="standard">
+				<Balances wallet={ wallet }/>
+				<FormControl fullWidth error={ error } variant="standard">
 					<TextField
 						type="number"
 						margin="normal"
@@ -98,23 +87,27 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 						value={ amount }
 						onChange={ (e) => setAmount(e.target.value) }
 					/>
-					<RadioGroup aria-labelledby="pool-label" name="poolName" value={ poolName }
+					<RadioGroup aria-labelledby="pool-label" name="poolName" value={ poolName } align="left"
 					            onChange={ (e) => setPoolName(e.target.value) }>
 						{
 							validators.map(v => (
-								v.is_enabled ?
-									<FormControlLabel key={ v.account_id } value={ v.account_id } control={ <Radio/> }
-									                  label={ v.account_id }/> : null
+								<FormControlLabel key={ v.account_id } value={ v.account_id } control={ <Radio/> }
+								                  label={
+									                  <>
+										                  { v.account_id } <Chip size="small" label={ v.fee + '% Fee' } variant="outlined" />
+									                  </>
+								                  }/>
 							))
 						}
 					</RadioGroup>
 					<FormHelperText variant="outlined">{ helperText }</FormHelperText>
-					<Button variant="contained" fullWidth onClick={ handleSubmit } sx={ { mt: 1, mr: 1 } }>
+					<Button variant="contained" fullWidth onClick={ handleSubmit }>
 						<span>Stake</span>
 					</Button>
 				</FormControl>
 			</Grid>
 		</Grid>
+		<YourCurrentValidators wallet={ wallet }/>
 	</Container>);
 }
 

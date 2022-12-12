@@ -138,28 +138,12 @@ export class Wallet {
 		}
 	}
 
-	/*
-		async fetchPools() {
-			const { network } = this.walletSelector.options;
-			const nearConnection = await connect({ ...network, keyStore: new keyStores.BrowserLocalStorageKeyStore() });
-			const account = await nearConnection.account(this.wallet.accountId);
-			const result = await account.connection.provider.sendJsonRpc(
-				"validators",
-				[null]
-			);
-			const pools = [];
-			result.current_validators.forEach((validator) => {
-				pools.push(validator.account_id);
-			});
-			result.next_validators.forEach((validator) =>
-				pools.push(validator.account_id)
-			);
-			result.current_proposals.forEach((validator) =>
-				pools.push(validator.account_id)
-			);
-			return pools;
-		}
-	*/
+	async sendJsonRpc(cmd) {
+		const { network } = this.walletSelector.options;
+		const nearConnection = await connect({ ...network, keyStore: new keyStores.BrowserLocalStorageKeyStore() });
+		const account = await nearConnection.account(this.wallet.accountId);
+		return await account.connection.provider.sendJsonRpc(cmd, [null]);
+	}
 
 	// Get transaction result from the network
 	async getTransactionResult(txhash) {
