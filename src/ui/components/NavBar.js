@@ -27,7 +27,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
 	const [mobileOpen, setMobileOpen] = React.useState(false);
-	const [selectedIndex, setSelectedIndex] = React.useState(0);
+	const [selectedIndex, setSelectedIndex] = React.useState(window.location.pathname);
 
 	const handleListItemClick = (event, index) => {
 		setSelectedIndex(index);
@@ -55,10 +55,12 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 	const drawer = (
 		<>
 			<Toolbar/>
-			<List onClick={ handleDrawerToggle }>
+			<List onClick={ () => {
+				setMobileOpen(false);
+			} }>
 				<ListItem disablePadding to="/" component={ Link }
-				          selected={ selectedIndex === 1 }
-				          onClick={ (event) => handleListItemClick(event, 1) }>
+				          selected={ selectedIndex === "/" }
+				          onClick={ (event) => handleListItemClick(event, "/") }>
 					<ListItemButton>
 						<ListItemIcon>
 							<HomeIcon color="primary"/>
@@ -67,8 +69,8 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 					</ListItemButton>
 				</ListItem>
 				<ListItem disablePadding to="/pool" component={ Link }
-				          selected={ selectedIndex === 2 }
-				          onClick={ (event) => handleListItemClick(event, 2) }>
+				          selected={ selectedIndex === "/pool" }
+				          onClick={ (event) => handleListItemClick(event, "/pool") }>
 					<ListItemButton>
 						<ListItemIcon>
 							<AddIcon color="primary"/>
@@ -77,8 +79,8 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 					</ListItemButton>
 				</ListItem>
 				<ListItem disablePadding to="/stake" component={ Link }
-				          selected={ selectedIndex === 3 }
-				          onClick={ (event) => handleListItemClick(event, 3) }>
+				          selected={ selectedIndex === "/stake" }
+				          onClick={ (event) => handleListItemClick(event, "/stake") }>
 					<ListItemButton>
 						<ListItemIcon>
 							<SavingsIcon color="primary"/>
@@ -87,8 +89,8 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 					</ListItemButton>
 				</ListItem>
 				<ListItem disablePadding to="/news" component={ Link }
-				          selected={ selectedIndex === 4 }
-				          onClick={ (event) => handleListItemClick(event, 4) }>
+				          selected={ selectedIndex === "/news" }
+				          onClick={ (event) => handleListItemClick(event, "/news") }>
 					<ListItemButton>
 						<ListItemIcon>
 							<FeedIcon color="primary"/>
