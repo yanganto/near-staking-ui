@@ -149,30 +149,31 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 							</Button>
 						}
 					</Box>
-					<Box pl={ 1 } sx={ { display: { xs: 'none', sm: 'block' } } }>
-
-						{ !isSignedIn ?
+					{ !isSignedIn ?
+						<Box pl={ 1 } sx={ { display: { xs: 'none', sm: 'block' } } }>
 							<Button sx={ { color: '#fff', border: '1px solid' } }
 							        aria-controls={ open ? 'basic-menu' : undefined }
 							        aria-haspopup="true"
 							        aria-expanded={ open ? 'true' : undefined }
 							        onClick={ handleClickNetwork }
 							>
+								<ArrowDropDownIcon/>
 								Network: { localStorage.getItem("networkId") || 'testnet' }
-							</Button> : null }
-						<Menu
-							id="basic-menu"
-							anchorEl={ anchorEl }
-							open={ open }
-							onClose={ handleClose }
-							MenuListProps={ {
-								'aria-labelledby': 'basic-button',
-							} }
-						>
-							<MenuItem value="testnet" onClick={ () => changeNetwork('testnet') }>testnet</MenuItem>
-							<MenuItem value="mainnet" onClick={ () => changeNetwork('mainnet') }>mainnet</MenuItem>
-						</Menu>
-					</Box>
+							</Button>
+							<Menu
+								id="basic-menu"
+								anchorEl={ anchorEl }
+								open={ open }
+								onClose={ handleClose }
+								MenuListProps={ {
+									'aria-labelledby': 'basic-button',
+								} }
+							>
+								<MenuItem value="testnet" onClick={ () => changeNetwork('testnet') }>testnet</MenuItem>
+								<MenuItem value="mainnet" onClick={ () => changeNetwork('mainnet') }>mainnet</MenuItem>
+							</Menu>
+						</Box>
+						: null }
 				</Toolbar>
 			</AppBar>
 			<Box
