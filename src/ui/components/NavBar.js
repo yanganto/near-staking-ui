@@ -21,6 +21,7 @@ import FeedIcon from '@mui/icons-material/Feed';
 import AddIcon from '@mui/icons-material/Add';
 import SavingsIcon from '@mui/icons-material/Savings';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
 
 const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
@@ -78,6 +79,22 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 						<ListItemText primary="Create pool"/>
 					</ListItemButton>
 				</ListItem>
+				<ListItem disablePadding disabled component={ Link }>
+					<ListItemButton>
+						<ListItemIcon>
+							<NotInterestedIcon color="primary"/>
+						</ListItemIcon>
+						<ListItemText primary="Mount pool"/>
+					</ListItemButton>
+				</ListItem>
+				<ListItem disablePadding disabled component={ Link }>
+					<ListItemButton>
+						<ListItemIcon>
+							<NotInterestedIcon color="primary"/>
+						</ListItemIcon>
+						<ListItemText primary="Monitoring"/>
+					</ListItemButton>
+				</ListItem>
 				<ListItem disablePadding to="/stake" component={ Link }
 				          selected={ selectedIndex === "/stake" }
 				          onClick={ (event) => handleListItemClick(event, "/stake") }>
@@ -86,6 +103,14 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 							<SavingsIcon color="primary"/>
 						</ListItemIcon>
 						<ListItemText primary="Stake"/>
+					</ListItemButton>
+				</ListItem>
+				<ListItem disablePadding disabled component={ Link }>
+					<ListItemButton>
+						<ListItemIcon>
+							<NotInterestedIcon color="primary"/>
+						</ListItemIcon>
+						<ListItemText primary="Rewards"/>
 					</ListItemButton>
 				</ListItem>
 				<ListItem disablePadding to="/news" component={ Link }
