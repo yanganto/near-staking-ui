@@ -2,29 +2,34 @@ import NavBar from "./ui/components/NavBar";
 import Home from "./pages/Home";
 import CreateStakingPool from "./pages/CreateStakingPool";
 import StakeToKuutamoPool from "./pages/StakeToKuutamoPool";
-import {Grid, Container, Card, CardContent} from "@mui/material";
+import News from "./pages/News";
+import {Card, CardContent, Toolbar} from "@mui/material";
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import Box from "@mui/material/Box";
 
+const drawerWidth = 220;
 
 export default function App({ isSignedIn, wallet }) {
 	return (
 		<BrowserRouter>
-			<Container component="main">
-				<Grid container pt={ 2 } pb={ 2 } justifyContent="flex-end">
-					<NavBar isSignedIn={ isSignedIn } wallet={ wallet }/>
-				</Grid>
-				<Grid item pt={6}>
+			<Box sx={ { display: 'flex', zIndex: (theme) => theme.zIndex.drawer + 1 } }>
+				<NavBar isSignedIn={ isSignedIn } wallet={ wallet } drawerWidth={ drawerWidth }/>
+				<Box component="main"
+				     sx={ { flexGrow: 1, p: 3, width: { sm: `calc(100% - ${ drawerWidth }px)` } } }
+				>
+					<Toolbar/>
 					<Card variant="outlined">
 						<CardContent>
 							<Routes>
 								<Route index element={ <Home/> }/>
 								<Route path="/pool" element={ <CreateStakingPool isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
 								<Route path="/stake" element={ <StakeToKuutamoPool isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
+								<Route path="/news" element={ <News/> }/>
 							</Routes>
 						</CardContent>
 					</Card>
-				</Grid>
-			</Container>
+				</Box>
+			</Box>
 		</BrowserRouter>
 	);
 }

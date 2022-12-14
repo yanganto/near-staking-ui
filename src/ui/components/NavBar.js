@@ -4,11 +4,10 @@ import {
 	Toolbar,
 	Button,
 	Box,
-	Divider,
 	List,
 	ListItem,
 	ListItemButton,
-	ListItemText, Drawer, IconButton
+	ListItemText, Drawer, IconButton, ListItemIcon, Divider, Chip, Tooltip
 } from "@mui/material";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -17,12 +16,22 @@ import Typography from "@mui/material/Typography";
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from "@mui/icons-material/Menu";
+import HomeIcon from '@mui/icons-material/Home';
+import FeedIcon from '@mui/icons-material/Feed';
+import AddIcon from '@mui/icons-material/Add';
+import SavingsIcon from '@mui/icons-material/Savings';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 
-const NavBar = ({ isSignedIn, wallet }) => {
+const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
 	const [mobileOpen, setMobileOpen] = React.useState(false);
+	const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+	const handleListItemClick = (event, index) => {
+		setSelectedIndex(index);
+	};
 	const handleClickNetwork = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
@@ -42,51 +51,66 @@ const NavBar = ({ isSignedIn, wallet }) => {
 		setMobileOpen(!mobileOpen);
 	};
 
+
 	const drawer = (
-		<Box sx={ { textAlign: 'center' } }>
-			<Typography variant="h6" sx={ { my: 2 } }>
-				kuutamo
-			</Typography>
-			<Divider/>
+		<>
+			<Toolbar/>
 			<List onClick={ handleDrawerToggle }>
-				<ListItem disablePadding to="/" component={ Link }>
-					<ListItemButton sx={ { textAlign: 'center' } }>
+				<ListItem disablePadding to="/" component={ Link }
+				          selected={ selectedIndex === 1 }
+				          onClick={ (event) => handleListItemClick(event, 1) }>
+					<ListItemButton>
+						<ListItemIcon>
+							<HomeIcon color="primary"/>
+						</ListItemIcon>
 						<ListItemText primary="Home"/>
 					</ListItemButton>
 				</ListItem>
-				<ListItem disablePadding to="/pool" component={ Link }>
-					<ListItemButton sx={ { textAlign: 'center' } }>
-						<ListItemText primary="Create a new pool"/>
+				<ListItem disablePadding to="/pool" component={ Link }
+				          selected={ selectedIndex === 2 }
+				          onClick={ (event) => handleListItemClick(event, 2) }>
+					<ListItemButton>
+						<ListItemIcon>
+							<AddIcon color="primary"/>
+						</ListItemIcon>
+						<ListItemText primary="Create pool"/>
 					</ListItemButton>
 				</ListItem>
-				<ListItem disablePadding to="/stake" component={ Link }>
-					<ListItemButton sx={ { textAlign: 'center' } }>
-						<ListItemText primary="Stake to a kuutamo pool"/>
+				<ListItem disablePadding to="/stake" component={ Link }
+				          selected={ selectedIndex === 3 }
+				          onClick={ (event) => handleListItemClick(event, 3) }>
+					<ListItemButton>
+						<ListItemIcon>
+							<SavingsIcon color="primary"/>
+						</ListItemIcon>
+						<ListItemText primary="Stake"/>
+					</ListItemButton>
+				</ListItem>
+				<ListItem disablePadding to="/news" component={ Link }
+				          selected={ selectedIndex === 4 }
+				          onClick={ (event) => handleListItemClick(event, 4) }>
+					<ListItemButton>
+						<ListItemIcon>
+							<FeedIcon color="primary"/>
+						</ListItemIcon>
+						<ListItemText primary="News"/>
 					</ListItemButton>
 				</ListItem>
 			</List>
-			{ !isSignedIn ?
-				<List>
-					<ListItem disablePadding onClick={ handleClickNetwork }>
-						<ListItemButton sx={ { textAlign: 'center' } }>
-							<ListItemText primary={ 'Network: ' + localStorage.getItem("networkId") || 'testnet' }/>
-						</ListItemButton>
-					</ListItem>
-				</List> : null }
-		</Box>
+		</>
 	);
 
 
 	return (
 		<>
-			<AppBar component="nav">
+			<AppBar position="fixed" sx={ { zIndex: (theme) => theme.zIndex.drawer + 1 } }>
 				<Toolbar>
 					<IconButton
 						color="inherit"
 						aria-label="open drawer"
 						edge="start"
 						onClick={ handleDrawerToggle }
-						sx={ { mr: 2, display: { lg: "none" } } }
+						sx={ { mr: 2, display: { sm: 'none' } } }
 					>
 						<MenuIcon/>
 					</IconButton>
@@ -97,17 +121,19 @@ const NavBar = ({ isSignedIn, wallet }) => {
 					>
 						kuutamo
 					</Typography>
-					<Box sx={ { flexGrow: 1, display: { xs: 'none', lg: 'block' } } }>
-						<Button sx={ { color: '#fff' } } to="/" component={ Link }>Home</Button>
-						<Button sx={ { color: '#fff' } } to="/pool" component={ Link }>Create a new pool</Button>
-						<Button sx={ { color: '#fff' } } to="/stake" component={ Link }>Stake to a kuutamo pool</Button>
-					</Box>
-					<Box>
+					<Box align="right">
 						{ isSignedIn ?
 							<>
-								<Box component="span" sx={ { p: 2 } }>
-									{ wallet.accountId }
-								</Box>
+								<Tooltip title="Click to Copy to Clipboard">
+									<Button sx={ { color: '#fff' } } onClick={ () => {
+										navigator.clipboard.writeText(wallet.accountId)
+									} }>
+										{ wallet.accountId.length > 16 ?
+											wallet.accountId.substring(0, 8) + '...' + wallet.accountId.substring(wallet.accountId.length - 8)
+											: wallet.accountId
+										}
+									</Button>
+								</Tooltip>
 								<Button sx={ { color: '#fff', border: '1px solid' } }
 								        endIcon={ <LogoutIcon/> }
 								        onClick={ () => {
@@ -117,11 +143,11 @@ const NavBar = ({ isSignedIn, wallet }) => {
 							:
 							<Button sx={ { color: '#fff', border: '1px solid' } }
 							        startIcon={ <LoginIcon/> } onClick={ () => wallet.signIn() }>
-								Sign in with NEAR Wallet
+								Sign in
 							</Button>
 						}
 					</Box>
-					<Box pl={ 1 } sx={ { display: { xs: 'none', lg: 'block' } } }>
+					<Box pl={ 1 } sx={ { display: { xs: 'none', sm: 'block' } } }>
 
 						{ !isSignedIn ?
 							<Button sx={ { color: '#fff', border: '1px solid' } }
@@ -147,7 +173,10 @@ const NavBar = ({ isSignedIn, wallet }) => {
 					</Box>
 				</Toolbar>
 			</AppBar>
-			<Box component="nav">
+			<Box
+				component="nav"
+				sx={ { width: { sm: drawerWidth }, flexShrink: { sm: 0 } } }
+			>
 				<Drawer
 					variant="temporary"
 					open={ mobileOpen }
@@ -156,9 +185,33 @@ const NavBar = ({ isSignedIn, wallet }) => {
 						keepMounted: true, // Better open performance on mobile.
 					} }
 					sx={ {
-						display: { xs: 'block', lg: 'none' },
-						'& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
+						display: { xs: 'block', sm: 'none' },
+						'& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
 					} }
+				>
+					{ drawer }
+					{ !isSignedIn ?
+						<>
+							<Divider/>
+							<List>
+								<ListItem disablePadding onClick={ handleClickNetwork } component={ Link }>
+									<ListItemButton>
+										<ListItemText>
+											<Chip label={ `Network: ${ localStorage.getItem("networkId") || 'testnet' } ` } variant="outlined"
+											      color="primary" icon={ <ArrowDropDownIcon/> }/>
+										</ListItemText>
+									</ListItemButton>
+								</ListItem>
+							</List>
+						</> : null }
+				</Drawer>
+				<Drawer
+					variant="permanent"
+					sx={ {
+						display: { xs: 'none', sm: 'block' },
+						'& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+					} }
+					open
 				>
 					{ drawer }
 				</Drawer>
