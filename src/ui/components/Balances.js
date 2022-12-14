@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {
-	Divider,
 	Grid,
 	LinearProgress,
 	TableBody,
@@ -43,6 +42,7 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 	const [validatorsIsReady, setValidatorsIsReady] = useState(false);
 
 	useEffect(() => {
+		setValidatorsIsReady(false);
 		(async () => {
 			const stakedValidators = await getStakedValidators(wallet);
 			setYourCurrentValidators(stakedValidators);
@@ -57,10 +57,9 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 			<Grid item xs={ 8 }>
 				<Typography component="h1" variant="h5">
 					Your Current Validators
-					<Divider/>
 				</Typography>
 
-				<TableContainer component={ Paper }>
+				<TableContainer component={ Paper } variant="outlined">
 					<Table size="small" aria-label="Your Current Validators">
 						<TableHead>
 							<TableRow>

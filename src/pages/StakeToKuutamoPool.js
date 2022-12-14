@@ -19,6 +19,7 @@ import {Balances, YourCurrentValidators} from "../ui/components/Balances";
 
 
 const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
+	const [isSubmit, setIsSubmit] = useState(false);
 	const [error, setError] = useState(false);
 	const [helperText, setHelperText] = useState('');
 	const [alertSeverity, setAlertSeverity] = useState('info');
@@ -31,6 +32,7 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
 		if (params.get("transactionHashes")) {
+			window.history.replaceState(null, '', 'stake');
 			setHelperText("Success! Your stake has successfully been delegated to your chosen validator");
 			setTransactionHashes(params.get("transactionHashes"));
 		}
@@ -53,6 +55,7 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 		} else {
 			setHelperText('');
 			setError(false);
+			setIsSubmit(true);
 			if (wallet.wallet.id === 'ledger' || wallet.wallet.id === 'wallet-connect') {
 				try {
 					setHelperText('Please confirm transaction on ' + wallet.wallet.id);
@@ -76,6 +79,7 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 			} else {
 				await stakeToKuutamoPool(wallet, poolName, amount);
 			}
+			setIsSubmit(false);
 		}
 	};
 
@@ -125,7 +129,7 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 							</Alert>
 						</Stack>
 						: null }
-					<Button variant="contained" fullWidth onClick={ handleSubmit }>
+					<Button variant="contained" fullWidth onClick={ handleSubmit } disabled={isSubmit}>
 						<span>Stake</span>
 					</Button>
 				</FormControl>
