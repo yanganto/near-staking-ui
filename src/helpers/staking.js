@@ -39,6 +39,18 @@ export async function stakeToKuutamoPool(wallet, poolName, amount) {
 	});
 }
 
+export async function unstakeWithdraw(wallet, data) {
+	const args = data.all ? {} : {
+		"amount": utils.format.parseNearAmount(data.amount)
+	};
+	return await wallet.callMethod({
+		contractId: data.pool,
+		method: data.all ? data.cmd + '_all': data.cmd,
+		args,
+		gas: 300000000000000
+	});
+}
+
 export async function getKuutamoValidators(wallet) {
 	const validatorsWithFee = [];
 	const validators = await fetch('validators.' + nearConfig.networkId + '.json').then(response => {
@@ -90,6 +102,7 @@ export async function getStakedValidators(wallet) {
 				method: "get_account_unstaked_balance",
 				args: { account_id: wallet.accountId }
 			});
+			console.log(account_id, unstakedBalance);
 
 			if (totalBalance > 0 || stakedBalance > 0 || unstakedBalance > 0) {
 				const fee = await wallet.viewMethod({ contractId: account_id, method: "get_reward_fee_fraction" });
