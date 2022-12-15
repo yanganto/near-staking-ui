@@ -46,10 +46,10 @@ export class Wallet {
 				setupWalletConnect({
 					projectId: nearConfig.walletConnectProjectId,
 					metadata: {
-						name: "NEAR Wallet Selector",
+						name: "kuutamo",
 						description: "Connect with WalletConnect",
-						url: "https://github.com/near/wallet-selector",
-						icons: ["https://avatars.githubusercontent.com/u/37784886"],
+						url: window.location.origin,
+						icons: [window.location.origin + "/favicon.ico"],
 					},
 				}),
 			],
