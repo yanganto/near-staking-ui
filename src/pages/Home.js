@@ -5,7 +5,7 @@ const Home = () => {
 		<Typography component="h1" variant="h4">
 			Welcome to kuutamo!
 		</Typography>
-		<img src="kuutamo.png"/>
+		<img src="kuutamo.png" alt="kuutamo"/>
 	</Container>;
 };
 
