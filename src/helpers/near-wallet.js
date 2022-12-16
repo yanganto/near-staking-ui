@@ -81,7 +81,14 @@ export class Wallet {
 
 	// Sign-out method
 	signOut() {
-		this.wallet.signOut();
+		this.wallet.signOut().then(() => {
+				console.log("sign out");
+			}
+		).catch((e) => {
+				console.error("Failed to sign out");
+				console.error(e);
+			}
+		);
 	}
 
 	// Make a read-only call to retrieve information from the network

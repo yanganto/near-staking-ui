@@ -33,7 +33,7 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 		const params = new URLSearchParams(window.location.search);
 		if (params.get("transactionHashes")) {
 			window.history.replaceState(null, '', 'stake');
-			setHelperText("Success! Your stake has successfully been delegated to your chosen validator");
+			setHelperText("Success!");
 			setTransactionHashes(params.get("transactionHashes"));
 		}
 		(async () => {
@@ -64,7 +64,7 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 					if (r.status.hasOwnProperty('SuccessValue')) {
 						setPoolName(null);
 						setAmount(0);
-						setHelperText("Success! Your stake has successfully been delegated to your chosen validator");
+						setHelperText("Success!");
 						setTransactionHashes(r.transaction.hash);
 						setAlertSeverity('success');
 					}
