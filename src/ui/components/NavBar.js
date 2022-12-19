@@ -22,6 +22,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SavingsIcon from '@mui/icons-material/Savings';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import ShareIcon from '@mui/icons-material/Share';
 
 
 const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
@@ -77,6 +78,16 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 							<AddIcon color="primary"/>
 						</ListItemIcon>
 						<ListItemText primary="Create pool"/>
+					</ListItemButton>
+				</ListItem>
+				<ListItem disablePadding to="/pools" component={ Link }
+				          selected={ selectedIndex === "/pools" }
+				          onClick={ (event) => handleListItemClick(event, "/pools") }>
+					<ListItemButton>
+						<ListItemIcon>
+							<ShareIcon color="primary"/>
+						</ListItemIcon>
+						<ListItemText primary="My Pools"/>
 					</ListItemButton>
 				</ListItem>
 				<ListItem disablePadding disabled component={ Link }>
