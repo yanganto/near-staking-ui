@@ -166,14 +166,18 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 									<TableCell align="right">{ row.stakedBalance }</TableCell>
 									<TableCell align="right">{ row.unstakedBalance }</TableCell>
 									<TableCell>
-										<Button size="small" variant="outlined" fullWidth onClick={ () => {
-											setDataUnstakeWithdraw({ cmd: 'unstake', pool: row.account_id });
-											handleClickOpen();
-										} }>unstake</Button>
-										<Button size="small" variant="contained" fullWidth sx={ { mt: 1 } } onClick={ () => {
-											setDataUnstakeWithdraw({ cmd: 'withdraw', pool: row.account_id });
-											handleClickOpen();
-										} }>withdraw</Button>
+										<Button size="small" variant="outlined" fullWidth
+										        disabled={ row.stakedBalance <= 0 }
+										        onClick={ () => {
+											        setDataUnstakeWithdraw({ cmd: 'unstake', pool: row.account_id });
+											        handleClickOpen();
+										        } }>unstake</Button>
+										<Button size="small" variant="contained" fullWidth sx={ { mt: 1 } }
+										        disabled={ !row.isUnstakedBalanceAvailable || row.unstakedBalance <= 0 }
+										        onClick={ () => {
+											        setDataUnstakeWithdraw({ cmd: 'withdraw', pool: row.account_id });
+											        handleClickOpen();
+										        } }>withdraw</Button>
 									</TableCell>
 								</TableRow>
 							)) }
