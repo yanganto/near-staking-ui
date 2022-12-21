@@ -1,6 +1,7 @@
 import NavBar from "./ui/components/NavBar";
 import Home from "./pages/Home";
 import CreateStakingPool from "./pages/CreateStakingPool";
+import Pools from "./pages/Pools";
 import StakeToKuutamoPool from "./pages/StakeToKuutamoPool";
 import News from "./pages/News";
 import {Card, CardContent, Toolbar} from "@mui/material";
@@ -22,7 +23,8 @@ export default function App({ isSignedIn, wallet }) {
 						<CardContent>
 							<Routes>
 								<Route index element={ <Home/> }/>
-								<Route path="/pool" element={ <CreateStakingPool isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
+								<Route path="/pools" element={ <Pools isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
+								<Route path="/pools/create" element={ <CreateStakingPool isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
 								<Route path="/stake" element={ <StakeToKuutamoPool isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
 								<Route path="/news" element={ <News/> }/>
 							</Routes>

@@ -148,7 +148,7 @@ export class Wallet {
 	async sendJsonRpc(cmd) {
 		const { network } = this.walletSelector.options;
 		const nearConnection = await connect({ ...network, keyStore: new keyStores.BrowserLocalStorageKeyStore() });
-		const account = await nearConnection.account(this.wallet.accountId);
+		const account = await nearConnection.account(this.wallet?.accountId);
 		return await account.connection.provider.sendJsonRpc(cmd, [null]);
 	}
 
