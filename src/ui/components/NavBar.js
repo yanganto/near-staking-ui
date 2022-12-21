@@ -18,7 +18,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from '@mui/icons-material/Home';
 import FeedIcon from '@mui/icons-material/Feed';
-import AddIcon from '@mui/icons-material/Add';
 import SavingsIcon from '@mui/icons-material/Savings';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
@@ -68,16 +67,6 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 							<HomeIcon color="primary"/>
 						</ListItemIcon>
 						<ListItemText primary="Home"/>
-					</ListItemButton>
-				</ListItem>
-				<ListItem disablePadding to="/pool" component={ Link }
-				          selected={ selectedIndex === "/pool" }
-				          onClick={ (event) => handleListItemClick(event, "/pool") }>
-					<ListItemButton>
-						<ListItemIcon>
-							<AddIcon color="primary"/>
-						</ListItemIcon>
-						<ListItemText primary="Create pool"/>
 					</ListItemButton>
 				</ListItem>
 				<ListItem disablePadding to="/pools" component={ Link }

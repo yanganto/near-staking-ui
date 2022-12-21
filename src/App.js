@@ -23,8 +23,8 @@ export default function App({ isSignedIn, wallet }) {
 						<CardContent>
 							<Routes>
 								<Route index element={ <Home/> }/>
-								<Route path="/pool" element={ <CreateStakingPool isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
 								<Route path="/pools" element={ <Pools isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
+								<Route path="/pools/create" element={ <CreateStakingPool isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
 								<Route path="/stake" element={ <StakeToKuutamoPool isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
 								<Route path="/news" element={ <News/> }/>
 							</Routes>
