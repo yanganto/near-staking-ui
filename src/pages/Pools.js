@@ -7,15 +7,16 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
+	Paper,
+	Table,
+	styled,
 	Typography
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import {getMyPools} from "../helpers/staking";
-import Paper from "@mui/material/Paper/Paper";
-import Table from "@mui/material/Table/Table";
-import {styled} from '@mui/material/styles';
 import {Link} from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 	[`&.${ tableCellClasses.head }`]: {
@@ -59,9 +60,9 @@ const Pools = ({ wallet, isSignedIn }) => {
 			My Pools
 		</Typography>
 		<Typography align="right">
-		<Button to="/pools/create" component={ Link } startIcon={ <AddIcon/> } variant="contained" sx={ { mb: 2 } }>
-			Create new pool
-		</Button>
+			<Button to="/pools/create" component={ Link } startIcon={ <AddIcon/> } variant="contained" sx={ { mb: 2 } }>
+				Create new pool
+			</Button>
 		</Typography>
 		<TableContainer component={ Paper } variant="outlined">
 			<Table size="small" aria-label="Pools">

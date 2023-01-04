@@ -1,16 +1,24 @@
 import {useEffect, useState} from "react";
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import Button from '@mui/material/Button';
-import {Card, CardContent, Grid, InputAdornment, MenuItem, StepButton} from "@mui/material";
-import TextField from "@mui/material/TextField";
+import {
+	Card,
+	CardContent,
+	Grid,
+	InputAdornment,
+	MenuItem,
+	Step,
+	StepButton,
+	Box,
+	Stepper,
+	Button,
+	Link,
+	Typography,
+	TextField
+} from "@mui/material";
 import {nearConfig} from "../helpers/nearConfig";
 import {createStakingPool, generateKey} from "../helpers/staking";
 import * as zip from "@zip.js/zip.js";
-import Typography from "@mui/material/Typography";
 import WarningIcon from "@mui/icons-material/Warning";
-import Link from "@mui/material/Link";
+
 
 const DataForm = (props) => {
 	const [statusData, setStatusData] = useState({ open: false });
@@ -112,10 +120,32 @@ const DataForm = (props) => {
 		}
 		if (keyPair && !isKeyPairDownloaded) {
 			setKeyPairErrorText('Please download Key Pair');
+			setPublicKeyErrorText('Please download Key Pair');
 			return false;
 		}
 		return true;
 	};
+
+	const onPoolCreated = (transactionHashes, account_id) => {
+		(async () => {
+			const requestOptions = {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					network: nearConfig.networkId,
+					account_id: account_id
+				})
+			};
+			await fetch(
+				nearConfig.backendUrl + "pools/update", requestOptions
+			).then(async response => {
+				await response.json();
+			}).catch(error => {
+				console.error('There was an error!', error);
+			});
+		})();
+		setStatusData({ open: true, hash: transactionHashes, description: 'The pool is Live!' });
+	}
 
 	const submitCreateStakingPool = async e => {
 		e.preventDefault();
@@ -126,7 +156,7 @@ const DataForm = (props) => {
 					setStatusData({ open: true, description: 'Please confirm transaction on ' + props.wallet.wallet.id });
 					const r = await createStakingPool(props.wallet, contractPool, poolName, ownerAccount, publicKey, percentageFee);
 					if (r.status.hasOwnProperty('SuccessValue'))
-						setStatusData({ open: true, hash: r.transaction.hash, description: 'The pool is Live!' });
+						onPoolCreated(r.transaction.hash, props.wallet.accountId);
 					if (r.status.hasOwnProperty('Failure'))
 						setStatusData({
 							open: true,
@@ -145,11 +175,8 @@ const DataForm = (props) => {
 
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
-		if (params.get("transactionHashes"))
-			setStatusData({ open: true, hash: params.get("transactionHashes"), description: 'The pool is Live!' });
-	}, []);
-
-	useEffect(() => {
+		if (params.get("transactionHashes") && props.wallet.accountId)
+			onPoolCreated(params.get("transactionHashes"), props.wallet.accountId);
 		setOwnerAccount(props.wallet.accountId);
 	}, [props.wallet.accountId]);
 

@@ -8,12 +8,12 @@ import {
 	Grid,
 	Radio,
 	RadioGroup,
+	TextField,
+	Button,
+	Link,
 	Typography
 } from "@mui/material";
 import {useEffect, useState} from "react";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
 import {getKuutamoValidators, stakeToKuutamoPool} from "../helpers/staking";
 import {Balances, YourCurrentValidators} from "../ui/components/Balances";
 
@@ -27,7 +27,6 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 	const [validators, setValidators] = useState([]);
 	const [poolName, setPoolName] = useState(null);
 	const [amount, setAmount] = useState(0);
-
 
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);

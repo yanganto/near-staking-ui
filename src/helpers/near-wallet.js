@@ -67,6 +67,24 @@ export class Wallet {
 		if (isSignedIn) {
 			this.wallet = await this.walletSelector.wallet();
 			this.accountId = this.walletSelector.store.getState().accounts[0].accountId;
+
+			await (async () => {
+				const requestOptions = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						network: nearConfig.networkId,
+						account_id: this.accountId
+					})
+				};
+				await fetch(
+					nearConfig.backendUrl + "add-account", requestOptions
+				).then(async response => {
+					await response.json();
+				}).catch(error => {
+					console.error('There was an error!', error);
+				});
+			})();
 		}
 
 		return isSignedIn;
@@ -75,7 +93,7 @@ export class Wallet {
 	// Sign-in method
 	signIn() {
 		const description = 'Please select a wallet to sign in.';
-		const modal = setupModal(this.walletSelector, {contractId: this.createAccessKeyFor, description });
+		const modal = setupModal(this.walletSelector, { contractId: this.createAccessKeyFor, description });
 		modal.show();
 	}
 

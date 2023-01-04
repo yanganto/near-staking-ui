@@ -3,21 +3,22 @@ import {
 	Alert,
 	Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
 	Grid,
-	LinearProgress, Stack,
+	LinearProgress,
+	Stack,
 	TableBody,
 	TableCell,
 	TableContainer,
 	TableHead,
 	TableRow,
+	TextField,
+	Link,
+	Button,
+	Paper,
+	Table,
 	Typography
 } from "@mui/material";
 import * as nearAPI from "near-api-js";
 import {getStakedValidators, unstakeWithdraw} from "../../helpers/staking";
-import Table from "@mui/material/Table/Table";
-import Paper from "@mui/material/Paper/Paper";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
 
 
 export const Balances = ({ wallet }) => {
@@ -165,7 +166,7 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 									<TableCell align="right">{ row.totalBalance }</TableCell>
 									<TableCell align="right">{ row.stakedBalance }</TableCell>
 									<TableCell align="right">{ row.unstakedBalance }</TableCell>
-									<TableCell>
+									<TableCell align="center">
 										<Button size="small" variant="outlined" fullWidth
 										        disabled={ row.stakedBalance <= 0 }
 										        onClick={ () => {
@@ -173,11 +174,12 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 											        handleClickOpen();
 										        } }>unstake</Button>
 										<Button size="small" variant="contained" fullWidth sx={ { mt: 1 } }
-										        disabled={ !row.isUnstakedBalanceAvailable || row.unstakedBalance <= 0 }
+										        disabled={ !row.canWithdraw || row.unstakedBalance <= 0 }
 										        onClick={ () => {
 											        setDataUnstakeWithdraw({ cmd: 'withdraw', pool: row.account_id });
 											        handleClickOpen();
 										        } }>withdraw</Button>
+										{ row.leftToWithdraw }
 									</TableCell>
 								</TableRow>
 							)) }

@@ -103,18 +103,39 @@ export async function getStakedValidators(wallet) {
 				args: { account_id: wallet.accountId }
 			});
 			if (totalBalance > 0 || stakedBalance > 0 || unstakedBalance > 0) {
-				const isUnstakedBalanceAvailable = await wallet.viewMethod({
+				const canWithdraw = await wallet.viewMethod({
 					contractId: account_id,
 					method: "is_account_unstaked_balance_available",
 					args: { account_id: wallet.accountId }
 				});
 				const fee = await wallet.viewMethod({ contractId: account_id, method: "get_reward_fee_fraction" });
+				let data = {};
+				if (!canWithdraw) {
+					const requestOptions = {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							network: nearConfig.networkId,
+							account_id: wallet.accountId,
+							pool: account_id
+						})
+					};
+					await fetch(
+						nearConfig.backendUrl + "calc-withdraw", requestOptions
+					).then(async response => {
+						data = await response.json();
+					//	console.log(data.status);
+					}).catch(error => {
+						//console.error('There was an error!', error);
+					});
+				}
 				myPools.push({
 					account_id,
 					totalBalance: utils.format.formatNearAmount(totalBalance, 2),
 					stakedBalance: utils.format.formatNearAmount(stakedBalance, 2),
 					unstakedBalance: utils.format.formatNearAmount(unstakedBalance, 2),
-					isUnstakedBalanceAvailable,
+					canWithdraw,
+					leftToWithdraw: data?.status,
 					fee: (fee.numerator * 100) / fee.denominator
 				})
 			}
@@ -126,71 +147,39 @@ export async function getStakedValidators(wallet) {
 }
 
 export async function getMyPools(wallet) {
-	const result = await wallet.sendJsonRpc("validators");
+	let validators = {};
+	const requestOptions = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			network: nearConfig.networkId,
+			account_id: wallet.accountId
+		})
+	};
+	await fetch(
+		nearConfig.backendUrl + "pools", requestOptions
+	).then(async response => {
+		validators = await response.json();
+		console.log(validators);
+	}).catch(error => {
+		console.error('There was an error!', error);
+	});
+
 	let myPools = {};
-
-	for (const validator of result.next_validators) {
-		if (!myPools[validator.account_id]) {
-			try {
-				const owner_id = await wallet.viewMethod({ contractId: validator.account_id, method: "get_owner_id" });
-				if (owner_id === wallet.accountId) {
-					const fee = await wallet.viewMethod({ contractId: validator.account_id, method: "get_reward_fee_fraction" });
-					myPools[validator.account_id] = {
-						public_key: validator.public_key,
-						fee: (fee.numerator * 100) / fee.denominator,
-						owner_id,
-						status: ['next_validators']
-					}
-				}
-			} catch (error) {
-				//console.log(error);
+	for (const validator of validators.myPools) {
+		try {
+			const fee = await wallet.viewMethod({ contractId: validator.pool_id, method: "get_reward_fee_fraction" });
+			const public_key = await wallet.viewMethod({ contractId: validator.pool_id, method: "get_staking_key" });
+			myPools[validator.pool_id] = {
+				public_key: public_key,
+				fee: (fee.numerator * 100) / fee.denominator,
+				owner_id: wallet.accountId
 			}
-		} else {
-			myPools[validator.account_id]['status'] = [...myPools[validator.account_id].status, 'next_validators']
+		} catch (error) {
+			//console.log(error);
 		}
 	}
 
-	for (const validator of result.current_proposals) {
-		if (!myPools[validator.account_id]) {
-			try {
-				const owner_id = await wallet.viewMethod({ contractId: validator.account_id, method: "get_owner_id" });
-				if (owner_id === wallet.accountId) {
-					const fee = await wallet.viewMethod({ contractId: validator.account_id, method: "get_reward_fee_fraction" });
-					myPools[validator.account_id] = {
-						public_key: validator.public_key,
-						fee: (fee.numerator * 100) / fee.denominator,
-						owner_id,
-						status: ['current_proposals']
-					}
-				}
-			} catch (error) {
-				//console.log(error);
-			}
-		} else {
-			myPools[validator.account_id]['status'] = [...myPools[validator.account_id].status, 'current_proposals']
-		}
-	}
-
-	for (const validator of result.current_validators) {
-		if (!myPools[validator.account_id]) {
-			try {
-				const owner_id = await wallet.viewMethod({ contractId: validator.account_id, method: "get_owner_id" });
-				if (owner_id === wallet.accountId) {
-					const fee = await wallet.viewMethod({ contractId: validator.account_id, method: "get_reward_fee_fraction" });
-					myPools[validator.account_id] = {
-						public_key: validator.public_key,
-						fee: (fee.numerator * 100) / fee.denominator,
-						owner_id,
-						status: ['current_validators']
-					}
-				}
-			} catch (error) {
-				//console.log(error);
-			}
-		} else {
-			myPools[validator.account_id]['status'] = [...myPools[validator.account_id].status, 'current_validators']
-		}
-	}
 	return myPools;
 }
 
