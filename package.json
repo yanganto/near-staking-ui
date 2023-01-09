@@ -15,9 +15,11 @@
     "@near-wallet-selector/wallet-connect": "^7.4.0",
     "@zip.js/zip.js": "^2.6.52",
     "buffer": "^6.0.3",
+    "chart.js": "^4.1.1",
     "html-react-parser": "^3.0.4",
     "near-api-js": "^1.1.0",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.1.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.3"
   },

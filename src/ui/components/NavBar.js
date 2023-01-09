@@ -105,6 +105,16 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 						<ListItemText primary="Stake"/>
 					</ListItemButton>
 				</ListItem>
+				<ListItem disablePadding to="/rewards" component={ Link }
+				          selected={ selectedIndex === "/rewards" }
+				          onClick={ (event) => handleListItemClick(event, "/rewards") }>
+					<ListItemButton>
+						<ListItemIcon>
+							<SavingsIcon color="primary"/>
+						</ListItemIcon>
+						<ListItemText primary="Rewards"/>
+					</ListItemButton>
+				</ListItem>
 				<ListItem disablePadding to="/news" component={ Link }
 				          selected={ selectedIndex === "/news" }
 				          onClick={ (event) => handleListItemClick(event, "/news") }>

@@ -7,6 +7,7 @@ import News from "./pages/News";
 import {Card, CardContent, Toolbar} from "@mui/material";
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Box from "@mui/material/Box";
+import Rewards from "./pages/Rewards";
 
 const drawerWidth = 220;
 
@@ -27,6 +28,7 @@ export default function App({ isSignedIn, wallet }) {
 								<Route path="/pools/create" element={ <CreateStakingPool isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
 								<Route path="/stake" element={ <StakeToKuutamoPool isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
 								<Route path="/news" element={ <News/> }/>
+								<Route path="/rewards" element={ <Rewards isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
 							</Routes>
 						</CardContent>
 					</Card>
