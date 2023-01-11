@@ -126,7 +126,7 @@ export async function getStakedValidators(wallet) {
 						data = await response.json();
 					//	console.log(data.status);
 					}).catch(error => {
-						//console.error('There was an error!', error);
+						console.log('There was an error!', error);
 					});
 				}
 				myPools.push({
@@ -160,7 +160,6 @@ export async function getMyPools(wallet) {
 		nearConfig.backendUrl + "pools", requestOptions
 	).then(async response => {
 		validators = await response.json();
-		console.log(validators);
 	}).catch(error => {
 		console.error('There was an error!', error);
 	});

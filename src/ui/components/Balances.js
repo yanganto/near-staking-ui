@@ -18,6 +18,7 @@ import {
 	Typography
 } from "@mui/material";
 import * as nearAPI from "near-api-js";
+import {useConfirm} from "material-ui-confirm";
 import {getStakedValidators, unstakeWithdraw} from "../../helpers/staking";
 
 
@@ -49,6 +50,7 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 	const [alertSeverity, setAlertSeverity] = useState('info');
 	const [transactionHashesUW, setTransactionHashesUW] = useState(null);
 
+	const confirm = useConfirm();
 	const handleClickOpen = () => {
 		setHelperText('');
 		setOpen(true);
@@ -171,7 +173,17 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 										        disabled={ row.stakedBalance <= 0 }
 										        onClick={ () => {
 											        setDataUnstakeWithdraw({ cmd: 'unstake', pool: row.account_id });
-											        handleClickOpen();
+											        if (row.canWithdraw && row.unstakedBalance > 0)
+												        confirm({
+													        confirmationText: "Continue", confirmationButtonProps: { autoFocus: true },
+													        description: "You have funds available to widthdraw now, if you unstake more, these funds will be locked for 4 epochs"
+												        })
+													        .then(() => {
+														        handleClickOpen();
+													        }).catch(() => {
+												        });
+											        else
+												        handleClickOpen();
 										        } }>unstake</Button>
 										<Button size="small" variant="contained" fullWidth sx={ { mt: 1 } }
 										        disabled={ !row.canWithdraw || row.unstakedBalance <= 0 }

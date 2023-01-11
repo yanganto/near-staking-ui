@@ -17,6 +17,7 @@
     "buffer": "^6.0.3",
     "chart.js": "^4.1.1",
     "html-react-parser": "^3.0.4",
+    "material-ui-confirm": "^3.0.7",
     "near-api-js": "^1.1.0",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.1.0",
