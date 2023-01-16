@@ -54,7 +54,13 @@ export class Wallet {
 				}),
 			],
 		});
-
+		this.walletSelector.options.network.officialRpc = this.walletSelector.options.network.nodeUrl;
+		if (localStorage.getItem('use_own_rpc_url')) {
+			if (this.network === 'testnet' && localStorage.getItem('testnet_rpc_url'))
+				this.walletSelector.options.network.nodeUrl = localStorage.getItem('testnet_rpc_url');
+			if (this.network === 'mainnet' && localStorage.getItem('mainnet_rpc_url'))
+				this.walletSelector.options.network.nodeUrl = localStorage.getItem('mainnet_rpc_url');
+		}
 		const isSignedIn = this.walletSelector.isSignedIn();
 
 		this.walletSelector.on("signedIn", () => {

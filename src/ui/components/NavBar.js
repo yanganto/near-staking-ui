@@ -7,7 +7,17 @@ import {
 	List,
 	ListItem,
 	ListItemButton,
-	ListItemText, Drawer, IconButton, ListItemIcon, Divider, Chip, Tooltip
+	ListItemText,
+	Drawer,
+	IconButton,
+	ListItemIcon,
+	Divider,
+	Chip,
+	Tooltip,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	TextField, Radio, DialogActions
 } from "@mui/material";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -28,6 +38,12 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
 	const [mobileOpen, setMobileOpen] = React.useState(false);
+	const [openRpcDialog, setOpenRpcDialog] = React.useState(false);
+	const [ownRpcUrl, setOwnRpcUrl] = React.useState(
+		wallet.network === 'mainnet' ? localStorage.getItem('mainnet_rpc_url') :
+			localStorage.getItem('testnet_rpc_url')
+	);
+	const [useOwnRpcUrl, setUseOwnRpcUrl] = React.useState(localStorage.getItem('use_own_rpc_url') || '');
 	const [selectedIndex, setSelectedIndex] = React.useState(window.location.pathname);
 
 	const handleListItemClick = (event, index) => {
@@ -48,6 +64,13 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 			window.location.replace(window.location.origin);
 		}
 	};
+	const changeRpcUrl = (RpcUrl) => {
+		setOwnRpcUrl(RpcUrl);
+		if (wallet.network === 'mainnet')
+			localStorage.setItem('mainnet_rpc_url', RpcUrl);
+		else
+			localStorage.setItem('testnet_rpc_url', RpcUrl);
+	}
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
 	};
@@ -124,6 +147,14 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 						</ListItemIcon>
 						<ListItemText primary="News"/>
 					</ListItemButton>
+				</ListItem>
+			</List>
+			<Divider/>
+			<List>
+				<ListItem onClick={ () => setOpenRpcDialog(true) } component={ Link }>
+					<Chip sx={ { width: 180 } } label={ !!useOwnRpcUrl && !!ownRpcUrl ? `rpc: custom` : `rpc: official` }
+					      size="small"
+					      color="primary" icon={ <ArrowDropDownIcon/> }/>
 				</ListItem>
 			</List>
 		</>
@@ -224,13 +255,10 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 						<>
 							<Divider/>
 							<List>
-								<ListItem disablePadding onClick={ handleClickNetwork } component={ Link }>
-									<ListItemButton>
-										<ListItemText>
-											<Chip label={ `Network: ${ localStorage.getItem("networkId") || 'testnet' } ` } variant="outlined"
-											      color="primary" icon={ <ArrowDropDownIcon/> }/>
-										</ListItemText>
-									</ListItemButton>
+								<ListItem onClick={ handleClickNetwork } component={ Link }>
+									<Chip sx={ { width: 180 } } label={ `Network: ${ localStorage.getItem("networkId") || 'testnet' } ` }
+									      variant="outlined"
+									      size="small" color="primary" icon={ <ArrowDropDownIcon/> }/>
 								</ListItem>
 							</List>
 						</> : null }
@@ -246,6 +274,55 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 					{ drawer }
 				</Drawer>
 			</Box>
+			<Dialog open={ openRpcDialog } fullWidth>
+				<DialogTitle id="alert-dialog-title">
+					RPC
+				</DialogTitle>
+				<DialogContent>
+					<List>
+						<ListItem>
+							<Radio
+								checked={ !useOwnRpcUrl || !ownRpcUrl }
+								onChange={ () => {
+									setUseOwnRpcUrl(false);
+									localStorage.setItem('use_own_rpc_url', '')
+								} }
+							/>
+							<TextField
+								type="text"
+								margin="normal"
+								fullWidth
+								id="official_rpc"
+								label="Official RPC"
+								disabled
+								value={ wallet.walletSelector.options.network.officialRpc }
+							/>
+						</ListItem>
+						<ListItem>
+							<Radio
+								checked={ !!useOwnRpcUrl && !!ownRpcUrl }
+								onChange={ () => {
+									setUseOwnRpcUrl(true);
+									localStorage.setItem('use_own_rpc_url', 'true')
+								} }
+							/>
+							<TextField
+								type="text"
+								margin="normal"
+								fullWidth
+								id="custom_rpc"
+								label="Custom RPC"
+								autoComplete="off"
+								value={ ownRpcUrl }
+								onChange={ (e) => changeRpcUrl(e.target.value) }
+							/>
+						</ListItem>
+					</List>
+					<DialogActions>
+						<Button onClick={ () => window.location.replace(window.location.origin + window.location.pathname) } variant="outlined">Close</Button>
+					</DialogActions>
+				</DialogContent>
+			</Dialog>
 		</>
 
 	);
