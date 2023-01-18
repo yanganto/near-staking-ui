@@ -15,15 +15,15 @@ const drawerWidth = 220;
 export default function App({ isSignedIn, wallet }) {
 	return (
 		<BrowserRouter>
-			<Box sx={ { display: 'flex', zIndex: (theme) => theme.zIndex.drawer + 1 } }>
-				<NavBar isSignedIn={ isSignedIn } wallet={ wallet } drawerWidth={ drawerWidth }/>
-				<Box component="main"
-				     sx={ { flexGrow: 1, p: 3, width: { sm: `calc(100% - ${ drawerWidth }px)` } } }
-				>
-					<Toolbar/>
-					<Card variant="outlined">
-						<CardContent>
-							<ConfirmProvider>
+			<ConfirmProvider>
+				<Box sx={ { display: 'flex', zIndex: (theme) => theme.zIndex.drawer + 1 } }>
+					<NavBar isSignedIn={ isSignedIn } wallet={ wallet } drawerWidth={ drawerWidth }/>
+					<Box component="main"
+					     sx={ { flexGrow: 1, p: 3, width: { sm: `calc(100% - ${ drawerWidth }px)` } } }
+					>
+						<Toolbar/>
+						<Card variant="outlined">
+							<CardContent>
 								<Routes>
 									<Route index element={ <Home/> }/>
 									<Route path="/pools" element={ <Pools isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
@@ -32,11 +32,11 @@ export default function App({ isSignedIn, wallet }) {
 									<Route path="/news" element={ <News/> }/>
 									<Route path="/rewards" element={ <Rewards isSignedIn={ isSignedIn } wallet={ wallet }/> }/>
 								</Routes>
-							</ConfirmProvider>
-						</CardContent>
-					</Card>
+							</CardContent>
+						</Card>
+					</Box>
 				</Box>
-			</Box>
+			</ConfirmProvider>
 		</BrowserRouter>
 	);
 }

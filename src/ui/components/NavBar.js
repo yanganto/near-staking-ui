@@ -17,7 +17,7 @@ import {
 	Dialog,
 	DialogTitle,
 	DialogContent,
-	TextField, Radio, DialogActions
+	TextField, Radio, DialogActions, CircularProgress
 } from "@mui/material";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -32,6 +32,7 @@ import SavingsIcon from '@mui/icons-material/Savings';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import ShareIcon from '@mui/icons-material/Share';
+import {useConfirm} from "material-ui-confirm";
 
 
 const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
@@ -45,6 +46,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 	);
 	const [useOwnRpcUrl, setUseOwnRpcUrl] = React.useState(localStorage.getItem('use_own_rpc_url') || '');
 	const [selectedIndex, setSelectedIndex] = React.useState(window.location.pathname);
+	const confirm = useConfirm();
 
 	const handleListItemClick = (event, index) => {
 		setSelectedIndex(index);
@@ -57,12 +59,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 	};
 	const changeNetwork = (networkId) => {
 		localStorage.setItem("networkId", networkId);
-		if (isSignedIn) {
-			wallet.signOut();
-			window.location.replace(window.location.origin + window.location.pathname);
-		} else {
-			window.location.replace(window.location.origin);
-		}
+		window.location.replace(window.location.origin);
 	};
 	const changeRpcUrl = (RpcUrl) => {
 		setOwnRpcUrl(RpcUrl);
@@ -73,6 +70,22 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 	}
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
+	};
+
+	const signOut = () => {
+		if (wallet.wallet.id === 'wallet-connect') {
+			confirm({
+				confirmationText: "Force sign out", confirmationButtonProps: { autoFocus: true },
+				title: "Please confirm this action in your wallet",
+				content: <Box align="center"><CircularProgress/></Box>
+			})
+				.then(() => {
+					localStorage.setItem('wc@2:client:0.3//session', '[]');
+					window.location.replace(window.location.origin);
+				}).catch(() => {
+			});
+		}
+		wallet.signOut();
 	};
 
 
@@ -196,9 +209,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 								</Tooltip>
 								<Button sx={ { color: '#fff', border: '1px solid' } }
 								        endIcon={ <LogoutIcon/> }
-								        onClick={ () => {
-									        wallet.signOut();
-								        } }>Sign out</Button>
+								        onClick={ () => signOut() }>Sign out</Button>
 							</>
 							:
 							<Button sx={ { color: '#fff', border: '1px solid' } }
@@ -319,7 +330,8 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 						</ListItem>
 					</List>
 					<DialogActions>
-						<Button onClick={ () => window.location.replace(window.location.origin + window.location.pathname) } variant="outlined">Close</Button>
+						<Button onClick={ () => window.location.replace(window.location.origin + window.location.pathname) }
+						        variant="outlined">Close</Button>
 					</DialogActions>
 				</DialogContent>
 			</Dialog>
