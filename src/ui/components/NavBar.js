@@ -324,7 +324,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 								id="custom_rpc"
 								label="Custom RPC"
 								autoComplete="off"
-								value={ ownRpcUrl }
+								value={ ownRpcUrl || '' }
 								onChange={ (e) => changeRpcUrl(e.target.value) }
 							/>
 						</ListItem>
