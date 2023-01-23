@@ -1,0 +1,25 @@
+{
+  "name": "near-staking-analytics",
+  "version": "0.1.0",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node -r dotenv/config src/index.js dotenv_config_path=.env.production",
+    "start:dev": "nodemon -r dotenv/config src/index.js dotenv_config_path=.env.development",
+    "start:local": "nodemon -r dotenv/config src/index.js dotenv_config_path=.env.development.local",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.8.1",
+    "near-api-js": "^1.1.0",
+    "node-cron": "^3.0.2",
+    "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20",
+    "prettier": "^2.5.1"
+  }
+}
