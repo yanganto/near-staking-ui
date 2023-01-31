@@ -53,7 +53,7 @@ export async function unstakeWithdraw(wallet, data) {
 
 export async function getKuutamoValidators(wallet) {
 	const validatorsWithFee = [];
-	const validators = await fetch('validators.' + nearConfig.networkId + '.json').then(response => {
+	const validators = await fetch(nearConfig.backendUrl + 'validators.' + nearConfig.networkId + '.json').then(response => {
 		return response.json();
 	}).then(data => {
 		return (data);

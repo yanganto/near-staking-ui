@@ -2,6 +2,7 @@ import {Box, Card, CardActions, CardContent, CardHeader, Container, Link, Typogr
 import parse from 'html-react-parser'
 import {useEffect, useState} from "react";
 import {useTheme} from '@mui/material/styles';
+import {nearConfig} from "../helpers/nearConfig";
 
 
 const News = () => {
@@ -10,7 +11,7 @@ const News = () => {
 
 	useEffect(() => {
 		(async () => {
-			const res = await fetch('news.json').then(response => {
+			const res = await fetch(nearConfig.backendUrl + 'news.json').then(response => {
 				return response.json();
 			}).then(data => {
 				return (data);
