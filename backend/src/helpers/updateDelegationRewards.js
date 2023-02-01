@@ -15,7 +15,7 @@ const maxRewardRate = new Decimal('0.14').div(365).mul(10).toFixed(8);
 const getEpochTransactions = async (network, prevBlock, Block, account_id, pool) => {
 	const pgClient = new pg.Client({
 		connectionString: network === 'mainnet' ? process.env.MAINNET_POSTGRESQL_CONNECTION_STRING : process.env.TESTNET_POSTGRESQL_CONNECTION_STRING,
-		statement_timeout: 900000
+//		statement_timeout: 900000
 	});
 	await pgClient.connect();
 	const pgRes = await pgClient.query(`SELECT a.transaction_hash,
@@ -71,7 +71,7 @@ const getNextEpochBlock = async (network, account_id, pool) => {
 
 	const pgClient = new pg.Client({
 		connectionString: network === 'mainnet' ? process.env.MAINNET_POSTGRESQL_CONNECTION_STRING : process.env.TESTNET_POSTGRESQL_CONNECTION_STRING,
-		statement_timeout: 900000
+//		statement_timeout: 900000
 	});
 	await pgClient.connect();
 	const pgRes = await pgClient.query(`SELECT

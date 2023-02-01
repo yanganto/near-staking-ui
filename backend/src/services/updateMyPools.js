@@ -5,7 +5,7 @@ const getMyPools = async (network, account_id) => {
 	try {
 		const pgClient = new pg.Client({
 			connectionString: network === 'mainnet' ? process.env.MAINNET_POSTGRESQL_CONNECTION_STRING : process.env.TESTNET_POSTGRESQL_CONNECTION_STRING,
-			statement_timeout: 900000
+//			statement_timeout: 900000
 		});
 		await pgClient.connect();
 		const pgRes = await pgClient.query(`SELECT
