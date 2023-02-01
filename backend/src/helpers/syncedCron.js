@@ -1,10 +1,30 @@
 import cron from "node-cron";
-import {updateRewards} from "./updateRewards.js";
+import {updateEpochs} from "./updateEpochs.js";
+import {updateDelegationRewards} from "./updateDelegationRewards.js";
 
-export const SyncedCron = cron.schedule('* * * * *', async () =>  {
-	console.log('SyncedCron: updateRewards starts...');
-	await updateRewards('testnet');
-	await updateRewards('mainnet');
-}, {
-	scheduled: false
+
+let isUpdateEpochsRun = false;
+cron.schedule('*/10 * * * *', async () => {
+	if (!isUpdateEpochsRun) {
+		console.log('CRON: isUpdateEpochsRun starts');
+		isUpdateEpochsRun = true;
+		await updateEpochs('testnet');
+		await updateEpochs('mainnet');
+		isUpdateEpochsRun = false;
+	} else {
+		console.log('CRON: updateEpochs is running');
+	}
+});
+
+let isUpdateDelegationRewardsRun = false;
+cron.schedule('* * * * *', async () => {
+	if (!isUpdateDelegationRewardsRun) {
+		console.log('CRON: updateRewards starts');
+		isUpdateDelegationRewardsRun = true;
+		await updateDelegationRewards('testnet');
+		await updateDelegationRewards('mainnet');
+		isUpdateDelegationRewardsRun = false;
+	} else {
+		console.log('CRON: updateDelegationRewards is running');
+	}
 });
