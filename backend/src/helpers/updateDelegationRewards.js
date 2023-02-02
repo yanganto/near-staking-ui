@@ -1,10 +1,10 @@
-import pg from "pg";
 import nearApi from "near-api-js";
 import {mainnet_Epochs, testnet_Epochs} from "../models/mEpochs.js";
 import {mainnet_Accounts, testnet_Accounts} from "../models/mAccounts.js";
 import {mainnet_DelegationRewards, testnet_DelegationRewards} from "../models/mDelegationRewards.js";
 import Decimal from "decimal.js";
 import fs from "node:fs";
+import {pgQuery} from "./pgQuery.js";
 
 
 const TESTNET_FIRST_EPOCH_HEIGHT = 42376888;
@@ -14,12 +14,7 @@ const maxRewardRate = new Decimal('0.14').div(365).mul(10).toFixed(8);
 
 const getEpochTransactions = async (network, prevBlock, Block, account_id, pool) => {
 	try {
-		const pgClient = new pg.Client({
-			connectionString: network === 'mainnet' ? process.env.MAINNET_POSTGRESQL_CONNECTION_STRING : process.env.TESTNET_POSTGRESQL_CONNECTION_STRING,
-//		statement_timeout: 900000
-		});
-		await pgClient.connect();
-		const pgRes = await pgClient.query(`SELECT a.transaction_hash,
+		const response = await pgQuery(network, `SELECT a.transaction_hash,
               b.block_timestamp,
               b.block_height,
               r.receiver_account_id,
@@ -47,8 +42,7 @@ const getEpochTransactions = async (network, prevBlock, Block, account_id, pool)
              ('deposit', 'deposit_and_stake', 'withdraw_all', 'withdraw', 'stake', 'unstake', 'unstake_all')
          AND r.predecessor_account_id = $1 AND r.receiver_account_id = $2
        ORDER BY b.block_timestamp`, [account_id, pool, prevBlock, Block]);
-		await pgClient.end();
-		return pgRes.rows;
+		return response.rows;
 	} catch (e) {
 		console.log(e);
 		return false;
@@ -74,13 +68,7 @@ const getNextEpochBlock = async (network, account_id, pool) => {
 			const epoch = await Epochs.findOne({ blockTimestamp: { $gt: lastUpdatedEpoch.blockTimestamp } }).sort({ blockHeight: 1 });
 			return { blockHeight: epoch?.blockHeight, blockTimestamp: epoch?.blockTimestamp };
 		}
-
-		const pgClient = new pg.Client({
-			connectionString: network === 'mainnet' ? process.env.MAINNET_POSTGRESQL_CONNECTION_STRING : process.env.TESTNET_POSTGRESQL_CONNECTION_STRING,
-//		statement_timeout: 900000
-		});
-		await pgClient.connect();
-		const pgRes = await pgClient.query(`SELECT
+		const response = await pgQuery(network, `SELECT
 				to_char(to_timestamp(block_timestamp::numeric / 1000000000), 'yyyy-mm-dd') as date
         FROM receipts r,
              blocks b
@@ -89,8 +77,8 @@ const getNextEpochBlock = async (network, account_id, pool) => {
           AND r.receiver_account_id = $2
         ORDER BY b.block_timestamp
         limit 1;`, [account_id, pool]);
-		await pgClient.end();
-		const epoch = await Epochs.findOne({ timestamp: { $gt: pgRes.rows[0]?.date } }).sort({ blockHeight: 1 });
+		if (response === false) return false;
+		const epoch = await Epochs.findOne({ timestamp: { $gt: response.rows[0]?.date } }).sort({ blockHeight: 1 });
 		return { blockHeight: epoch?.blockHeight, blockTimestamp: epoch?.blockTimestamp };
 	} catch (e) {
 		console.log(e);
@@ -227,12 +215,11 @@ export const updateDelegationRewards = async (network) => {
 		const DelegationRewards = network === 'mainnet' ? mainnet_DelegationRewards : testnet_DelegationRewards;
 		const accounts = await Accounts.find({});
 		const pools = await getKuutamoPools(network);
-		console.log('pools',pools);
 		for (const pool of pools) {
-			console.log('pool',pool);
 			const ownerId = await getOwnerId(network, pool, null);
 			for (const account of accounts) {
 				const account_id = account.account_id;
+				console.log('network, account_id, pool', network, account_id, pool);
 				let block = await getNextEpochBlock(network, account_id, pool);
 				console.log('block',block);
 				if (block === false) continue;
