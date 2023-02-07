@@ -165,7 +165,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 			<Divider/>
 			<List>
 				<ListItem onClick={ () => setOpenRpcDialog(true) } component={ Link }>
-					<Chip sx={ { width: 180 } } label={ !!useOwnRpcUrl && !!ownRpcUrl ? `rpc: custom` : `rpc: official` }
+					<Chip sx={ { width: 180 } } label={ !!useOwnRpcUrl && !!ownRpcUrl ? `rpc: custom` : `rpc: Pagoda` }
 					      size="small"
 					      color="primary" icon={ <ArrowDropDownIcon/> }/>
 				</ListItem>
@@ -304,7 +304,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 								margin="normal"
 								fullWidth
 								id="official_rpc"
-								label="Official RPC"
+								label="Pagoda RPC"
 								disabled
 								value={ wallet.walletSelector.options.network.officialRpc }
 							/>
