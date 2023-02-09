@@ -2,6 +2,7 @@ import nearApi from "near-api-js";
 import {mainnet_Epochs, testnet_Epochs} from "../models/mEpochs.js";
 import {mainnet_Accounts, testnet_Accounts} from "../models/mAccounts.js";
 import {mainnet_DelegationRewards, testnet_DelegationRewards} from "../models/mDelegationRewards.js";
+import {mainnet_Pools, testnet_Pools} from "../models/mPools.js";
 import Decimal from "decimal.js";
 import fs from "node:fs";
 import {pgQuery} from "./pgQuery.js";
@@ -210,54 +211,62 @@ const removeLeftDash = (amountStr) => {
 
 export const updateDelegationRewards = async (network) => {
 	try {
-		const Epochs = network === 'mainnet' ? mainnet_Epochs : testnet_Epochs;
 		const Accounts = network === 'mainnet' ? mainnet_Accounts : testnet_Accounts;
-		const DelegationRewards = network === 'mainnet' ? mainnet_DelegationRewards : testnet_DelegationRewards;
 		const accounts = await Accounts.find({});
 		const pools = await getKuutamoPools(network);
 		for (const pool of pools) {
 			const ownerId = await getOwnerId(network, pool, null);
 			for (const account of accounts) {
-				const account_id = account.account_id;
-				console.log('network, account_id, pool', network, account_id, pool);
-				let block = await getNextEpochBlock(network, account_id, pool);
-				console.log('block',block);
-				if (block === false) continue;
-				let prevBlock = await getPrevEpochBlock(network, account_id, pool);
-				const LastEpoch = await Epochs.findOne({}).sort({ blockHeight: - 1 });
-
-				while (block.blockHeight <= LastEpoch.blockHeight) {
-					const account_balance = await getStakedBalance(network, account_id, pool, block.blockHeight);
-					const transactionInfo = await getEpochTransactions(network, prevBlock.blockHeight, block.blockHeight, account_id, pool);
-					if (transactionInfo === false) continue;
-					const r = await calculateRewards(network, prevBlock.blockHeight, block.blockHeight, account_id, pool, account_balance.staked_balance, account_balance.unstaked_balance, transactionInfo, ownerId);
-
-					await DelegationRewards.findOneAndUpdate({ account_id, blockHeight: block.blockHeight, pool },
-						{
-							account_id,
-							blockTimestamp: block.blockTimestamp,
-							date: bigintToDate(block.blockTimestamp),
-							blockHeight: block.blockHeight,
-							pool,
-							staked: r.staked,
-							unstaked: r.unStaked,
-							withdrawn: r.withdrawn,
-							staked_balance: account_balance.staked_balance,
-							unstaked_balance: account_balance.unstaked_balance,
-							rewards: r.rewards
-						}, { upsert: true }).then().catch(e => console.log(e));
-					block = await getNextEpochBlock(network, account_id, pool);
-					if (block === false) continue;
-					prevBlock = await getPrevEpochBlock(network, account_id, pool);
-				}
+				await updateRewards(network, account.account_id, pool, ownerId);
 			}
+		}
+		const Pools = network === 'mainnet' ? mainnet_Pools : testnet_Pools;
+		const myPools = await Pools.find({});
+		for (const myPool of myPools) {
+			const ownerId = await getOwnerId(network, myPool.pool_id, null);
+			await updateRewards(network, ownerId, myPool.pool_id, ownerId);
 		}
 		console.log(network, 'updateDelegationRewards END');
 		return [];
-
 	} catch (e) {
 		console.log(e);
 		return [];
+	}
+}
+
+const updateRewards = async (network, account_id, pool, ownerId) => {
+	const Epochs = network === 'mainnet' ? mainnet_Epochs : testnet_Epochs;
+	const DelegationRewards = network === 'mainnet' ? mainnet_DelegationRewards : testnet_DelegationRewards;
+	console.log('network, account_id, pool', network, account_id, pool);
+	let block = await getNextEpochBlock(network, account_id, pool);
+	console.log('block', block);
+	if (block === false) return;
+	let prevBlock = await getPrevEpochBlock(network, account_id, pool);
+	const LastEpoch = await Epochs.findOne({}).sort({ blockHeight: - 1 });
+
+	while (block.blockHeight <= LastEpoch.blockHeight) {
+		const account_balance = await getStakedBalance(network, account_id, pool, block.blockHeight);
+		const transactionInfo = await getEpochTransactions(network, prevBlock.blockHeight, block.blockHeight, account_id, pool);
+		if (transactionInfo === false) continue;
+		const r = await calculateRewards(network, prevBlock.blockHeight, block.blockHeight, account_id, pool, account_balance.staked_balance, account_balance.unstaked_balance, transactionInfo, ownerId);
+
+		await DelegationRewards.findOneAndUpdate({ account_id, blockHeight: block.blockHeight, pool },
+			{
+				account_id,
+				blockTimestamp: block.blockTimestamp,
+				date: bigintToDate(block.blockTimestamp),
+				blockHeight: block.blockHeight,
+				pool,
+				staked: r.staked,
+				unstaked: r.unStaked,
+				withdrawn: r.withdrawn,
+				staked_balance: account_balance.staked_balance,
+				unstaked_balance: account_balance.unstaked_balance,
+				rewards: r.rewards
+			}, { upsert: true }).then().catch(e => console.log(e));
+		block = await getNextEpochBlock(network, account_id, pool);
+		if (block === false) continue;
+		prevBlock = await getPrevEpochBlock(network, account_id, pool);
 	}
 }
 
