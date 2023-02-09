@@ -1,4 +1,5 @@
 import {testnet_Pools, mainnet_Pools} from "../models/mPools.js";
+import {mainnet_Accounts, testnet_Accounts} from "../models/mAccounts.js";
 import pg from "pg";
 
 const getMyPools = async (network, account_id) => {
@@ -56,5 +57,27 @@ export const updateMyPools = async (req, res) => {
 		res
 			.status(500)
 			.send({ error: 'Please try again' });
+	}
+}
+
+export const updateMyPoolsCron = async (network) => {
+	try {
+		const Accounts = network === 'mainnet' ? mainnet_Accounts : testnet_Accounts;
+		const accounts = await Accounts.find({});
+		for (const account of accounts) {
+			const myPools = await getMyPools(network, account.account_id);
+			const Pools = network === 'mainnet' ? mainnet_Pools : testnet_Pools;
+			for (const pool of myPools) {
+				Pools.findOneAndUpdate({ account_id: account.account_id, pool_id: pool.pool_id },
+					{
+						account_id: account.account_id,
+						pool_id: pool.pool_id
+					}, { upsert: true }).then().catch(e => console.log(e));
+			}
+		}
+
+	} catch (e) {
+		console.log(e);
+
 	}
 }
