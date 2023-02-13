@@ -1,6 +1,8 @@
 import cors from 'cors';
 import express from 'express';
 import mongoose from 'mongoose';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import {routes} from './routes/collector.routes.js';
 import "./helpers/syncedCron.js";
 
@@ -12,7 +14,7 @@ await mongoose.connect(process.env.MONGO);
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.dirname(fileURLToPath(import.meta.url)) + '/../public'));
 routes(app);
 
 app.listen(process.env.PORT, () => {
