@@ -6,6 +6,8 @@ import {mainnet_Pools, testnet_Pools} from "../models/mPools.js";
 import Decimal from "decimal.js";
 import fs from "node:fs";
 import {pgQuery} from "./pgQuery.js";
+import path from "path";
+import {fileURLToPath} from "url";
 
 
 const TESTNET_FIRST_EPOCH_HEIGHT = 42376888;
@@ -90,7 +92,8 @@ const getNextEpochBlock = async (network, account_id, pool) => {
 const getKuutamoPools = async (network) => {
 	if (network !== 'testnet' && network !== 'mainnet') return [];
 	try {
-		const data = JSON.parse(fs.readFileSync('./public/validators.' + network + '.json', 'utf8'));
+		const data = JSON.parse(fs.readFileSync(path.dirname(fileURLToPath(import.meta.url)) +
+			'/../../public/validators.' + network + '.json', 'utf8'));
 		const pools = [];
 		for (let i in data) {
 			if (data[i].is_enabled) pools.push(data[i].account_id);
@@ -244,7 +247,7 @@ const updateRewards = async (network, account_id, pool, ownerId) => {
 	let prevBlock = await getPrevEpochBlock(network, account_id, pool);
 	const LastEpoch = await Epochs.findOne({}).sort({ blockHeight: - 1 });
 
-	while (block.blockHeight <= LastEpoch.blockHeight) {
+	while (block && LastEpoch && block.blockHeight <= LastEpoch.blockHeight) {
 		const account_balance = await getStakedBalance(network, account_id, pool, block.blockHeight);
 		const transactionInfo = await getEpochTransactions(network, prevBlock.blockHeight, block.blockHeight, account_id, pool);
 		if (transactionInfo === false) continue;
