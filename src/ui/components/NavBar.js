@@ -179,7 +179,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 					      color="primary" icon={ <ArrowDropDownIcon/> }/>
 				</ListItem>
 				<ListItem onClick={ () => setOpenBackendDialog(true) } component={ Link }>
-					<Chip sx={ { width: 180 } } label={ !!useOwnBackendUrl && !!ownBackendUrl ? `backend: custom` : `backend: default` }
+					<Chip sx={ { width: 180 } } label={ !!useOwnBackendUrl && !!ownBackendUrl ? `backend: custom` : `backend: kuutamo` }
 					      size="small"
 					      color="primary" icon={ <ArrowDropDownIcon/> }/>
 				</ListItem>
