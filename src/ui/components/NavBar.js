@@ -33,6 +33,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import ShareIcon from '@mui/icons-material/Share';
 import {useConfirm} from "material-ui-confirm";
+import {nearConfig} from "../../helpers/nearConfig.js";
 
 
 const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
@@ -45,6 +46,9 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 			localStorage.getItem('testnet_rpc_url')
 	);
 	const [useOwnRpcUrl, setUseOwnRpcUrl] = React.useState(localStorage.getItem('use_own_rpc_url') || '');
+	const [openBackendDialog, setOpenBackendDialog] = React.useState(false);
+	const [ownBackendUrl, setOwnBackendUrl] = React.useState(localStorage.getItem('own_backend_url'));
+	const [useOwnBackendUrl, setUseOwnBackendUrl] = React.useState(localStorage.getItem('use_own_backend_url') || '');
 	const [selectedIndex, setSelectedIndex] = React.useState(window.location.pathname);
 	const confirm = useConfirm();
 
@@ -68,6 +72,11 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 		else
 			localStorage.setItem('testnet_rpc_url', RpcUrl);
 	}
+	const changeBackendUrl = (BackendUrl) => {
+		setOwnBackendUrl(BackendUrl);
+		localStorage.setItem('own_backend_url', BackendUrl);
+	}
+
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
 	};
@@ -166,6 +175,11 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 			<List>
 				<ListItem onClick={ () => setOpenRpcDialog(true) } component={ Link }>
 					<Chip sx={ { width: 180 } } label={ !!useOwnRpcUrl && !!ownRpcUrl ? `rpc: custom` : `rpc: Pagoda` }
+					      size="small"
+					      color="primary" icon={ <ArrowDropDownIcon/> }/>
+				</ListItem>
+				<ListItem onClick={ () => setOpenBackendDialog(true) } component={ Link }>
+					<Chip sx={ { width: 180 } } label={ !!useOwnBackendUrl && !!ownBackendUrl ? `backend: custom` : `backend: default` }
 					      size="small"
 					      color="primary" icon={ <ArrowDropDownIcon/> }/>
 				</ListItem>
@@ -326,6 +340,56 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 								autoComplete="off"
 								value={ ownRpcUrl || '' }
 								onChange={ (e) => changeRpcUrl(e.target.value) }
+							/>
+						</ListItem>
+					</List>
+					<DialogActions>
+						<Button onClick={ () => window.location.replace(window.location.origin + window.location.pathname) }
+						        variant="outlined">Close</Button>
+					</DialogActions>
+				</DialogContent>
+			</Dialog>
+			<Dialog open={ openBackendDialog } fullWidth>
+				<DialogTitle id="alert-dialog-title">
+					Backend
+				</DialogTitle>
+				<DialogContent>
+					<List>
+						<ListItem>
+							<Radio
+								checked={ !useOwnBackendUrl || !ownBackendUrl }
+								onChange={ () => {
+									setUseOwnBackendUrl(false);
+									localStorage.setItem('use_own_backend_url', '')
+								} }
+							/>
+							<TextField
+								type="text"
+								margin="normal"
+								fullWidth
+								id="default_backend"
+								label="default"
+								disabled
+								value={ nearConfig.defaultBackendUrl }
+							/>
+						</ListItem>
+						<ListItem>
+							<Radio
+								checked={ !!useOwnBackendUrl && !!ownBackendUrl }
+								onChange={ () => {
+									setUseOwnBackendUrl(true);
+									localStorage.setItem('use_own_backend_url', 'true')
+								} }
+							/>
+							<TextField
+								type="text"
+								margin="normal"
+								fullWidth
+								id="custom_backend"
+								label="custom"
+								autoComplete="off"
+								value={ ownBackendUrl || '' }
+								onChange={ (e) => changeBackendUrl(e.target.value) }
 							/>
 						</ListItem>
 					</List>
