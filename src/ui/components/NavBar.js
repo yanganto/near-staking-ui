@@ -368,7 +368,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 								margin="normal"
 								fullWidth
 								id="default_backend"
-								label="default"
+								label="kuutamo"
 								disabled
 								value={ nearConfig.defaultBackendUrl }
 							/>
