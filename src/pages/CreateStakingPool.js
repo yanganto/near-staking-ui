@@ -62,8 +62,12 @@ const DataForm = (props) => {
 		if (!comparePasswords()) return false;
 		const zipWriter = new zip.ZipWriter(new zip.BlobWriter("application/zip"));
 		await Promise.all([
-			zipWriter.add(poolName + '.' + (contractPool === 2 ? nearConfig.contractPool : nearConfig.contractPoolV1) + '.json',
+			zipWriter.add('validator_key.json',
 				new zip.TextReader(JSON.stringify(keyPair, null, 2)),
+				{ password }
+			),
+			zipWriter.add('node_key.json',
+				new zip.TextReader(JSON.stringify(generateKey('node'), null, 2)),
 				{ password }
 			),
 		]);
