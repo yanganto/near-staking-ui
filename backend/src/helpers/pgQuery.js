@@ -12,7 +12,10 @@ export async function pgQuery(network, queryString, queryParameters) {
 		await client.end();
 		return response;
 	} catch (e) {
-		console.log('catch error', e);
+		if (e.code === '53300')
+			console.log('Error: All available connection slots to the PostgreSQL database are occupied');
+		else
+			console.log('catch error', e);
 		return false;
 	}
 }

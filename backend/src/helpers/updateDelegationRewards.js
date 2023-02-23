@@ -240,9 +240,9 @@ export const updateDelegationRewards = async (network) => {
 const updateRewards = async (network, account_id, pool, ownerId) => {
 	const Epochs = network === 'mainnet' ? mainnet_Epochs : testnet_Epochs;
 	const DelegationRewards = network === 'mainnet' ? mainnet_DelegationRewards : testnet_DelegationRewards;
-	console.log('network, account_id, pool', network, account_id, pool);
+	console.log(network, account_id, pool);
 	let block = await getNextEpochBlock(network, account_id, pool);
-	console.log('block', block);
+	//console.log('block', block);
 	if (block === false) return;
 	let prevBlock = await getPrevEpochBlock(network, account_id, pool);
 	const LastEpoch = await Epochs.findOne({}).sort({ blockHeight: - 1 });
