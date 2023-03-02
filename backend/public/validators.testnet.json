@@ -10,5 +10,9 @@
   {
     "account_id": "kuutamobravo.pool.devnet",
     "is_enabled": true
+  },
+  {
+    "account_id": "do0k13-kuutamod.pool.devnet",
+    "is_enabled": true
   }
 ]
