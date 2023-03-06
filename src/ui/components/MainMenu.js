@@ -1,0 +1,119 @@
+import TreeView from "@mui/lab/TreeView";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+import {Box, Chip} from "@mui/material";
+import * as React from "react";
+import {styled} from "@mui/material/styles";
+import TreeItem, {treeItemClasses} from "@mui/lab/TreeItem";
+import Typography from "@mui/material/Typography";
+import {Link} from 'react-router-dom';
+
+
+const MainMenu = () => {
+	const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
+		color: theme.palette.text.secondary,
+		[`& .${ treeItemClasses.content }`]: {
+			fontSize: '24px',
+			backgroundColor: '#FEFEFF',
+			border: '1px solid #D2D1DA',
+			height: '72px',
+			width: '264px',
+			color: '#002147',
+			borderRadius: '15px',
+			fontWeight: '400',
+			'&.Mui-expanded': {
+				backgroundColor: '#802FF3',
+				border: '1px solid #802FF3',
+				color: '#FEFEFF',
+				boxShadow: '0px 38px 80px rgba(128, 47, 243, 0.0393604), 0px 15.8755px 33.4221px rgba(128, 47, 243, 0.056545), ' +
+					'0px 8.4878px 17.869px rgba(128, 47, 243, 0.07), 0px 4.75819px 10.0172px rgba(128, 47, 243, 0.083455), ' +
+					'0px 2.52704px 5.32008px rgba(128, 47, 243, 0.10064), 0px 1.05156px 2.21381px rgba(128, 47, 243, 0.14)',
+			},
+			'&:hover': {
+				backgroundColor: '#FEFEFF',
+				border: '1px solid #802FF3',
+				color: '#002147',
+			},
+			'&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
+				backgroundColor: '#FEFEFF',
+				border: '1px solid #802FF3',
+				color: '#002147',
+			},
+			[`& .${ treeItemClasses.label }`]: {
+				fontSize: '24px',
+				fontWeight: 'inherit',
+				color: 'inherit',
+			},
+		},
+		[`& .${ treeItemClasses.group }`]: {
+			[`& .${ treeItemClasses.content }`]: {
+				width: '238px',
+			},
+		},
+	}));
+
+	function StyledTreeItem(props) {
+		const {
+			labelIcon: LabelIcon,
+			labelText,
+			to,
+			...other
+		} = props;
+
+		return (
+			<StyledTreeItemRoot sx={ { margin: 1 } }
+			                    label={
+				                    <Box sx={ { display: 'flex', alignItems: 'center' } } to={ to } component={ Link }
+				                         style={ { textDecoration: 'none', color: 'inherit' } }>
+					                    {/*<Box component={ LabelIcon } color="inherit" sx={ { mr: 1 } }/>*/ }
+					                    <Typography variant="body2"
+					                                sx={ { fontWeight: 'inherit', fontSize: 'inherit', flexGrow: 1 } }>
+						                    { labelText }
+					                    </Typography>
+				                    </Box>
+			                    }
+			                    { ...other }
+			/>
+		);
+	}
+
+	return (
+		<>
+			<TreeView
+				sx={ { paddingTop: '60px', paddingLeft: '20px' } }
+				aria-label="protocol"
+				//selected={ '11' }
+				//defaultExpanded={ ['1'] }
+				defaultCollapseIcon={ <ArrowDropDownIcon sx={ { marginLeft: '450px' } }/> }
+				defaultExpandIcon={ <ArrowLeftIcon sx={ { marginLeft: '450px' } }/> }
+				defaultEndIcon={ <div style={ { width: 24 } }/> }
+			>
+
+				<Box pl={ 1 } pr={ 1 }>
+					<Chip sx={ { width: 264, height: 32, fontSize: '16px' } } label="PROTOCOL"/>
+				</Box>
+
+				<StyledTreeItem nodeId="1" labelText="Staking">
+					<StyledTreeItem nodeId="11" labelText="Delegate" to="/stake"/>
+					<StyledTreeItem nodeId="12" labelText="Reporting" to="/rewards"/>
+				</StyledTreeItem>
+				<StyledTreeItem nodeId="2" labelText="Validators">
+					<StyledTreeItem nodeId="21" labelText="Monitoring"/>
+					<StyledTreeItem nodeId="22" labelText="List of validators" to="/pools"/>
+				</StyledTreeItem>
+
+				<Box pl={ 1 } pr={ 1 } pt={ 2 }>
+					<Chip sx={ { width: 264, height: 32, fontSize: '16px' } } label="INFRASTRUCTURE"/>
+				</Box>
+
+				<StyledTreeItem nodeId="3" labelText="Servers"/>
+				<StyledTreeItem nodeId="4" labelText="Keys"/>
+
+			</TreeView>
+		</>
+	)
+		;
+}
+
+
+export default MainMenu;
