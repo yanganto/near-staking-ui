@@ -18,6 +18,7 @@ import {nearConfig} from "../helpers/nearConfig";
 import {createStakingPool, generateKey} from "../helpers/staking";
 import * as zip from "@zip.js/zip.js";
 import WarningIcon from "@mui/icons-material/Warning";
+import { useNavigate  } from 'react-router-dom';
 
 
 const DataForm = (props) => {
@@ -348,13 +349,15 @@ const DataForm = (props) => {
 export default function CreateStakingPool({ wallet, isSignedIn }) {
 	const [activeStep, setActiveStep] = useState(0);
 	const steps = ['Generate Key pair', 'Pool settings', 'Launch pool'];
+	let navigate = useNavigate();
 
 	const handleNext = () => {
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
 	};
 
 	const handleBack = () => {
-		setActiveStep((prevActiveStep) => prevActiveStep - 1);
+		if (activeStep === 0) navigate('/pools');
+		else setActiveStep((prevActiveStep) => prevActiveStep - 1);
 	};
 
 	const handleStep = (step) => () => {
@@ -386,7 +389,7 @@ export default function CreateStakingPool({ wallet, isSignedIn }) {
 			<Box sx={ { display: 'flex', flexDirection: 'row', pt: 2 } }>
 				<Button
 					color="inherit"
-					disabled={ activeStep === 0 }
+					//disabled={ activeStep === 0 }
 					onClick={ handleBack }
 					sx={ { mr: 1 } }
 				>

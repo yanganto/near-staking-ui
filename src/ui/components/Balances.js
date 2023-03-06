@@ -7,13 +7,11 @@ import {
 	Stack,
 	TableBody,
 	TableCell,
-	TableContainer,
 	TableHead,
 	TableRow,
 	TextField,
 	Link,
 	Button,
-	Paper,
 	Table,
 	Typography
 } from "@mui/material";
@@ -95,9 +93,9 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 	}, [wallet, transactionHashes, transactionHashesUW]);
 
 	return (
-		<Grid container justifyContent="center" pt={ 2 }>
-			<Grid item xs={ 8 }>
-				<Typography component="h1" variant="h5">
+		<Grid container justifyContent="center" pt={ 1 }>
+			<Grid item xs={ 12 }>
+				<Typography component="h1" variant="h5" sx={ { textAlign: 'left' } } p={ 1 }>
 					Your Current Validators
 				</Typography>
 				<Dialog open={ open }>
@@ -143,61 +141,59 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 						} } variant="contained">{ dataUnstakeWithdraw.cmd } all</Button>
 					</DialogActions>
 				</Dialog>
-				<TableContainer component={ Paper } variant="outlined">
-					<Table size="small" aria-label="Your Current Validators">
-						<TableHead>
-							<TableRow>
-								<TableCell>Validator</TableCell>
-								<TableCell align="right">Fee</TableCell>
-								<TableCell align="right">Total</TableCell>
-								<TableCell align="right">Staked</TableCell>
-								<TableCell align="right">Unstaked</TableCell>
-								<TableCell/>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{ yourCurrentValidators.map((row) => (
-								<TableRow
-									key={ row.account_id }
-									sx={ { '&:last-child td, &:last-child th': { border: 0 } } }
-								>
-									<TableCell component="th" scope="row">
-										{ row.account_id }
-									</TableCell>
-									<TableCell align="right">{ row.fee }%</TableCell>
-									<TableCell align="right">{ row.totalBalance }</TableCell>
-									<TableCell align="right">{ row.stakedBalance }</TableCell>
-									<TableCell align="right">{ row.unstakedBalance }</TableCell>
-									<TableCell align="center">
-										<Button size="small" variant="outlined" fullWidth
-										        disabled={ row.stakedBalance <= 0 }
-										        onClick={ () => {
-											        setDataUnstakeWithdraw({ cmd: 'unstake', pool: row.account_id });
-											        if (row.canWithdraw && row.unstakedBalance > 0)
-												        confirm({
-													        confirmationText: "Continue", confirmationButtonProps: { autoFocus: true },
-													        description: "You have funds available to widthdraw now, if you unstake more, these funds will be locked for 4 epochs"
-												        })
-													        .then(() => {
-														        handleClickOpen();
-													        }).catch(() => {
-												        });
-											        else
-												        handleClickOpen();
-										        } }>unstake</Button>
-										<Button size="small" variant="contained" fullWidth sx={ { mt: 1 } }
-										        disabled={ !row.canWithdraw || row.unstakedBalance <= 0 }
-										        onClick={ () => {
-											        setDataUnstakeWithdraw({ cmd: 'withdraw', pool: row.account_id });
+				<Table aria-label="Your Current Validators">
+					<TableHead>
+						<TableRow>
+							<TableCell sx={ { borderRadius: '10px 0 0 10px' } }>Validator</TableCell>
+							<TableCell align="right">Fee</TableCell>
+							<TableCell align="right">Total</TableCell>
+							<TableCell align="right">Staked</TableCell>
+							<TableCell>Unstaked</TableCell>
+							<TableCell align="right" sx={ { borderRadius: '0 10px 10px 0' } }/>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{ yourCurrentValidators.map((row) => (
+							<TableRow
+								key={ row.account_id }
+							>
+								<TableCell component="th" scope="row" sx={ { borderRadius: '5px 0 0 5px' } }>
+									{ row.account_id }
+								</TableCell>
+								<TableCell align="right">{ row.fee }%</TableCell>
+								<TableCell align="right">{ row.totalBalance }</TableCell>
+								<TableCell align="right">{ row.stakedBalance }</TableCell>
+								<TableCell align="right">{ row.unstakedBalance }</TableCell>
+								<TableCell align="center" sx={ { borderRadius: '0 5px 5px 0' } }>
+									<Button size="small" variant="outlined" fullWidth
+									        sx={ { maxWidth: '200px' } }
+									        disabled={ row.stakedBalance <= 0 }
+									        onClick={ () => {
+										        setDataUnstakeWithdraw({ cmd: 'unstake', pool: row.account_id });
+										        if (row.canWithdraw && row.unstakedBalance > 0)
+											        confirm({
+												        confirmationText: "Continue", confirmationButtonProps: { autoFocus: true },
+												        description: "You have funds available to widthdraw now, if you unstake more, these funds will be locked for 4 epochs"
+											        })
+												        .then(() => {
+													        handleClickOpen();
+												        }).catch(() => {
+											        });
+										        else
 											        handleClickOpen();
-										        } }>withdraw</Button>
-										{ row.leftToWithdraw }
-									</TableCell>
-								</TableRow>
-							)) }
-						</TableBody>
-					</Table>
-				</TableContainer>
+									        } }>unstake</Button>
+									<Button size="small" variant="contained" fullWidth sx={ { mt: 1,  maxWidth: '200px' } }
+									        disabled={ !row.canWithdraw || row.unstakedBalance <= 0 }
+									        onClick={ () => {
+										        setDataUnstakeWithdraw({ cmd: 'withdraw', pool: row.account_id });
+										        handleClickOpen();
+									        } }>withdraw</Button>
+									{ row.leftToWithdraw }
+								</TableCell>
+							</TableRow>
+						)) }
+					</TableBody>
+				</Table>
 				{ !validatorsIsReady ?
 					<Grid item xs={ 12 }>
 						<LinearProgress/>

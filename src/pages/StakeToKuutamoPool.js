@@ -16,6 +16,7 @@ import {
 import {useEffect, useState} from "react";
 import {getKuutamoValidators, stakeToKuutamoPool} from "../helpers/staking";
 import {Balances, YourCurrentValidators} from "../ui/components/Balances";
+import Box from "@mui/material/Box";
 
 
 const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
@@ -86,35 +87,34 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 	return (<Container align="center">
 		<Grid container justifyContent="center">
 			<Grid item xs={ 6 }>
-				<Typography component="h1" variant="h5">
+				<Typography component="h1" variant="h4">
 					Stake to a kuutamo pool
 				</Typography>
 				<Balances wallet={ wallet }/>
+
 				<FormControl fullWidth error={ error } variant="standard">
-					<TextField
-						type="number"
-						margin="normal"
-						required
-						fullWidth
-						id="amount"
-						label="Amount"
-						autoComplete="off"
-						value={ amount }
-						onChange={ (e) => setAmount(e.target.value) }
-					/>
-					<RadioGroup aria-labelledby="pool-label" name="poolName" value={ poolName } align="left"
-					            onChange={ (e) => setPoolName(e.target.value) }>
-						{
-							validators.map(v => (
-								<FormControlLabel key={ v.account_id } value={ v.account_id } control={ <Radio/> }
-								                  label={
-									                  <>
-										                  { v.account_id } <Chip size="small" label={ v.fee + '% Fee' } variant="outlined"/>
-									                  </>
-								                  }/>
-							))
-						}
-					</RadioGroup>
+
+
+					<Box display="flex" alignItems="stretch" p={1}>
+						<TextField
+							type="number"
+							required
+							id="amount"
+							label="Amount"
+							autoComplete="off"
+							value={ amount }
+							sx={ {
+								width: '420px', paddingRight: '10px'
+							} }
+							InputProps={{ sx: { height: '48px', borderRadius: '10px' } }}
+							onChange={ (e) => setAmount(e.target.value) }
+						/>
+						<Button variant="outlined" onClick={ handleSubmit } disabled={ isSubmit } sx={ {
+							paddingLeft: '10px',
+							width: '140px',
+							height: '48px'
+						} }>Stake</Button>
+					</Box>
 					{ helperText ?
 						<Stack sx={ { width: '100%' } } pb={ 1 }>
 							<Alert severity={ error ? 'error' : alertSeverity } mb={ 2 }>{ helperText }{ " " }
@@ -128,9 +128,21 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 							</Alert>
 						</Stack>
 						: null }
-					<Button variant="contained" fullWidth onClick={ handleSubmit } disabled={isSubmit}>
-						<span>Stake</span>
-					</Button>
+					<Stack sx={ { width: '100%' } } pl={ 1 }>
+					<RadioGroup aria-labelledby="pool-label" name="poolName" value={ poolName } align="left"
+					            onChange={ (e) => setPoolName(e.target.value) } >
+						{
+							validators.map(v => (
+								<FormControlLabel key={ v.account_id } value={ v.account_id } control={ <Radio/> }
+								                  label={
+									                  <>
+										                  { v.account_id } <Chip size="small" label={ v.fee + '% Fee' } variant="outlined"/>
+									                  </>
+								                  }/>
+							))
+						}
+					</RadioGroup>
+					</Stack>
 				</FormControl>
 			</Grid>
 		</Grid>
