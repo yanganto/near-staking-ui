@@ -30,8 +30,7 @@ export default function App({ isSignedIn, wallet }) {
 						</Routes>
 					</Box>
 				</Box>
-				<Box sx={ { textAlign: "center", width: '100%', height: '40px' } }>© 2023 kuutamo, Inc. All rights
-					reserved</Box>
+				<Box sx={ { textAlign: "center", width: '100%', height: '40px' } }>© 2023 kuutamo. All rights reserved</Box>
 			</ConfirmProvider>
 		</BrowserRouter>
 	);
