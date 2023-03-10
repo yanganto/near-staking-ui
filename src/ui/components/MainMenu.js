@@ -57,11 +57,12 @@ const MainMenu = () => {
 			labelIcon: LabelIcon,
 			labelText,
 			to,
+			disabled,
 			...other
 		} = props;
 
 		return (
-			<StyledTreeItemRoot sx={ { margin: 1 } }
+			<StyledTreeItemRoot sx={ { margin: 1 } } disabled={ disabled }
 			                    label={
 				                    <Box sx={ { display: 'flex', alignItems: 'center' } } to={ to } component={ Link }
 				                         style={ { textDecoration: 'none', color: 'inherit' } }>
@@ -98,7 +99,7 @@ const MainMenu = () => {
 					<StyledTreeItem nodeId="12" labelText="Reporting" to="/rewards"/>
 				</StyledTreeItem>
 				<StyledTreeItem nodeId="2" labelText="Validators">
-					<StyledTreeItem nodeId="21" labelText="Monitoring"/>
+					<StyledTreeItem nodeId="21" labelText="Monitoring" disabled/>
 					<StyledTreeItem nodeId="22" labelText="List of validators" to="/pools"/>
 				</StyledTreeItem>
 
@@ -106,8 +107,8 @@ const MainMenu = () => {
 					<Chip sx={ { width: 264, height: 32, fontSize: '16px' } } label="INFRASTRUCTURE"/>
 				</Box>
 
-				<StyledTreeItem nodeId="3" labelText="Servers"/>
-				<StyledTreeItem nodeId="4" labelText="Keys"/>
+				<StyledTreeItem nodeId="3" labelText="Servers" disabled/>
+				<StyledTreeItem nodeId="4" labelText="Keys" disabled/>
 
 			</TreeView>
 		</>

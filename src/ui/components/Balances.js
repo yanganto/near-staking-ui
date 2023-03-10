@@ -148,8 +148,8 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 							<TableCell align="right">Fee</TableCell>
 							<TableCell align="right">Total</TableCell>
 							<TableCell align="right">Staked</TableCell>
-							<TableCell>Unstaked</TableCell>
-							<TableCell align="right" sx={ { borderRadius: '0 10px 10px 0' } }/>
+							<TableCell align="right">Unstaked</TableCell>
+							<TableCell sx={ { borderRadius: '0 10px 10px 0' } }/>
 						</TableRow>
 					</TableHead>
 					<TableBody>
