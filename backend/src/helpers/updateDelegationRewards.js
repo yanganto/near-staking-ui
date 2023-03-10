@@ -62,8 +62,9 @@ const getPrevEpochBlock = async (network, account_id, pool) => {
 	} else return { blockHeight: 0, blockTimestamp: 0 };
 }
 
-const getNextEpochBlock = async (network, account_id, pool) => {
+const getNextEpochBlock = async (network, account_id, pool, ownerId) => {
 	try {
+		let response = false;
 		const Epochs = network === 'mainnet' ? mainnet_Epochs : testnet_Epochs;
 		const DelegationRewards = network === 'mainnet' ? mainnet_DelegationRewards : testnet_DelegationRewards;
 		const lastUpdatedEpoch = await DelegationRewards.findOne({ account_id: account_id, pool }).sort({ date: - 1 });
@@ -71,7 +72,18 @@ const getNextEpochBlock = async (network, account_id, pool) => {
 			const epoch = await Epochs.findOne({ blockTimestamp: { $gt: lastUpdatedEpoch.blockTimestamp } }).sort({ blockHeight: 1 });
 			return { blockHeight: epoch?.blockHeight, blockTimestamp: epoch?.blockTimestamp };
 		}
-		const response = await pgQuery(network, `SELECT
+		if (ownerId === account_id) {
+			response = await pgQuery(network, `SELECT
+				to_char(to_timestamp(block_timestamp::numeric / 1000000000), 'yyyy-mm-dd') as date
+        FROM receipts r,
+             blocks b
+        WHERE b.block_timestamp = r.included_in_block_timestamp
+          AND r.receiver_account_id = $1
+        ORDER BY b.block_timestamp
+        limit 1;`, [pool]);
+		} else {
+			{
+				response = await pgQuery(network, `SELECT
 				to_char(to_timestamp(block_timestamp::numeric / 1000000000), 'yyyy-mm-dd') as date
         FROM receipts r,
              blocks b
@@ -80,6 +92,8 @@ const getNextEpochBlock = async (network, account_id, pool) => {
           AND r.receiver_account_id = $2
         ORDER BY b.block_timestamp
         limit 1;`, [account_id, pool]);
+			}
+		}
 		if (response === false) return false;
 		const epoch = await Epochs.findOne({ timestamp: { $gt: response.rows[0]?.date } }).sort({ blockHeight: 1 });
 		return { blockHeight: epoch?.blockHeight, blockTimestamp: epoch?.blockTimestamp };
@@ -241,7 +255,7 @@ const updateRewards = async (network, account_id, pool, ownerId) => {
 	const Epochs = network === 'mainnet' ? mainnet_Epochs : testnet_Epochs;
 	const DelegationRewards = network === 'mainnet' ? mainnet_DelegationRewards : testnet_DelegationRewards;
 	console.log(network, account_id, pool);
-	let block = await getNextEpochBlock(network, account_id, pool);
+	let block = await getNextEpochBlock(network, account_id, pool, ownerId);
 	//console.log('block', block);
 	if (block === false) return;
 	let prevBlock = await getPrevEpochBlock(network, account_id, pool);
@@ -325,7 +339,7 @@ async function getStakedBalance(network, accountId, pool, blockId) {
 	}
 }
 
-async function getOwnerId(network, pool, blockId) {
+export async function getOwnerId(network, pool, blockId) {
 	try {
 		const accountBalance = await providerQuery(
 			network,
@@ -334,7 +348,7 @@ async function getOwnerId(network, pool, blockId) {
 			"get_owner_id",
 			Buffer.from(`{"AccountId": "${ pool }"}`).toString('base64'),
 			blockId,
-			'{}'
+			false
 		);
 		return accountBalance;
 	} catch (e) {
