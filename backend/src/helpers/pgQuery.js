@@ -16,6 +16,8 @@ export async function pgQuery(network, queryString, queryParameters) {
 			console.log('POSTGRESQL Error 53300: All available connection slots to the PostgreSQL database are occupied');
 		else if (e.code === '40001')
 			console.log('POSTGRESQL Error 40001: User query might have needed to see row versions that must be removed');
+		else if (e.code === '57014')
+			console.log('POSTGRESQL Error 57014: canceling statement due to statement timeout');
 		else
 			console.log('catch error', e);
 		return false;

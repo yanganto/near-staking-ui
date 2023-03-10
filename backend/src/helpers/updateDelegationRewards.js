@@ -241,7 +241,7 @@ export const updateDelegationRewards = async (network) => {
 		const myPools = await Pools.find({});
 		for (const myPool of myPools) {
 			const ownerId = await getOwnerId(network, myPool.pool_id, null);
-			await updateRewards(network, ownerId, myPool.pool_id, ownerId);
+			await updateRewards(network, myPool.account_id, myPool.pool_id, ownerId);
 		}
 		console.log(network, 'updateDelegationRewards END');
 		return [];
