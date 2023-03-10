@@ -7,22 +7,26 @@ import {
 	TableHead,
 	TableRow,
 	Table,
-	Typography
+	Typography, Dialog, DialogContent, TextField, DialogActions, DialogTitle
 } from "@mui/material";
 import {useEffect, useState} from "react";
-import {getMyPools} from "../helpers/staking";
+import {getMyPools, getSignature} from "../helpers/staking";
 import {Link} from 'react-router-dom';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import Box from "@mui/material/Box";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import {nearConfig} from "../helpers/nearConfig";
 
 
 const Pools = ({ wallet, isSignedIn }) => {
 	const [myPools, setMyPools] = useState({});
 	const [myPoolsIsReady, setMyPoolsIsReady] = useState(false);
+	const [openDialog, setOpenDialog] = useState(false);
+	const [existingValidator, setExistingValidator] = useState('');
 
 	useEffect(() => {
 		(async () => {
+			setMyPoolsIsReady(false);
 			const res = await getMyPools(wallet);
 			setMyPools(res);
 			setMyPoolsIsReady(true);
@@ -34,19 +38,70 @@ const Pools = ({ wallet, isSignedIn }) => {
 		return false;
 	}
 
+	const addExistingValidator = async () => {
+		const {signature, public_key} = await getSignature(wallet, existingValidator);
+		const requestOptions = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				network: nearConfig.networkId,
+				account_id: wallet.accountId,
+				pool_id: existingValidator,
+				signature,
+				public_key,
+			})
+		};
+		await fetch(
+			nearConfig.backendUrl + "add-existing-validator", requestOptions
+		).then(async response => {
+			await response.json();
+		}).catch(error => {
+			console.error('There was an error!', error);
+		});
+		setOpenDialog(false);
+		setExistingValidator('');
+		setMyPoolsIsReady(false);
+		const res = await getMyPools(wallet);
+		setMyPools(res);
+		setMyPoolsIsReady(true);
+	}
+
 	return <Container>
-		<Box sx={{ display: 'flex', alignItems: 'center' }}>
-			<Typography component="h1" variant="h4"  align="left">
+		<Dialog open={ openDialog }>
+			<DialogTitle id="alert-dialog-title">
+				Add existing validator
+			</DialogTitle>
+			<DialogContent>
+				<TextField
+					type="text"
+					margin="normal"
+					required
+					fullWidth
+					id="validator"
+					label="Validator name"
+					autoComplete="off"
+					value={ existingValidator }
+					onChange={ (e) => setExistingValidator(e.target.value) }
+				/>
+			</DialogContent>
+			<DialogActions>
+				<Button onClick={ () => setOpenDialog(false) } variant="outlined">Close</Button>
+				<Button onClick={ addExistingValidator } variant="contained" disabled={!existingValidator}>Add</Button>
+			</DialogActions>
+		</Dialog>
+		<Box sx={ { display: 'flex', alignItems: 'center' } }>
+			<Typography component="h1" variant="h4" align="left">
 				List of validators
 			</Typography>
-			<Box sx={{ flexGrow: 1 }} />
-			<Button to="/pools/add" component={ Link } startIcon={ <AddBoxOutlinedIcon/> } variant="text"
+			<Box sx={ { flexGrow: 1 } }/>
+			<Button onClick={ () => setOpenDialog(true) } startIcon={ <AddBoxOutlinedIcon/> } variant="text"
 			        sx={ {
 				        padding: '16px 32px',
 				        boxShadow: '0px 0px 8px rgb(0 33 71 / 10%)',
 				        color: '#002147',
 				        border: 'inherit',
 				        fontSize: '15px',
+				        margin: '16px 4px 16px 8px',
 			        } }>
 				Add existing validator
 			</Button>
@@ -57,15 +112,11 @@ const Pools = ({ wallet, isSignedIn }) => {
 				        color: '#002147',
 				        border: 'inherit',
 				        fontSize: '15px',
-				        margin: '16px 4px 16px 16px',
+				        margin: '16px 4px 16px 8px',
 			        } }>
 				New validator
 			</Button>
 		</Box>
-
-
-
-
 		<Table aria-label="Pools">
 			<TableHead>
 				<TableRow>
@@ -98,7 +149,7 @@ const Pools = ({ wallet, isSignedIn }) => {
 							{ myPools[key].public_key && myPools[key].public_key.length > 24 ?
 								myPools[key].public_key.substring(0, 12) + '...' + myPools[key].public_key.substring(myPools[key].public_key.length - 12)
 								: myPools[key].public_key
-							} <ContentCopyIcon color="action" fontSize="small" />
+							} <ContentCopyIcon color="action" fontSize="small"/>
 						</TableCell>
 						<TableCell sx={ { borderRadius: '0 5px 5px 0' } }>{ myPools[key].fee }%</TableCell>
 					</TableRow>

@@ -1,5 +1,6 @@
-import {utils} from "near-api-js";
+import {keyStores, utils} from "near-api-js";
 import {nearConfig} from "./nearConfig";
+import bs58 from "bs58";
 
 export function generateKey(account_id) {
 	const keyPair = utils.key_pair.KeyPairEd25519.fromRandom();
@@ -172,7 +173,7 @@ export async function getMyPools(wallet) {
 			myPools[validator.pool_id] = {
 				public_key: public_key,
 				fee: (fee.numerator * 100) / fee.denominator,
-				owner_id: wallet.accountId
+				owner_id: validator.owner_id
 			}
 		} catch (error) {
 			//console.log(error);
@@ -182,3 +183,14 @@ export async function getMyPools(wallet) {
 	return myPools;
 }
 
+export function toED25519(key) {
+	return `${ bs58.encode(Buffer.from(key)) }`;
+}
+
+export const getSignature = async (wallet, message) => {
+	const keyStore = new keyStores.BrowserLocalStorageKeyStore();
+	const keyPair = await keyStore.getKey(wallet.network, wallet.accountId);
+	const msg = Buffer.from(message);
+	const { signature } = keyPair.sign(msg);
+	return { signature: toED25519(signature), public_key: keyPair.publicKey.toString() };
+};

@@ -16,6 +16,8 @@ import {setupMyNearWallet} from '@near-wallet-selector/my-near-wallet';
 import {setupWalletConnect} from "@near-wallet-selector/wallet-connect";
 import {setupNearWallet} from "@near-wallet-selector/near-wallet";
 import {nearConfig} from "./nearConfig";
+import {getSignature} from "./staking";
+
 
 const THIRTY_TGAS = '30000000000000';
 const NO_DEPOSIT = '0';
@@ -75,11 +77,14 @@ export class Wallet {
 			this.accountId = this.walletSelector.store.getState().accounts[0].accountId;
 
 			await (async () => {
+				const { signature, public_key } = await getSignature(this, this.accountId);
 				const requestOptions = {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
 						network: nearConfig.networkId,
+						signature,
+						public_key,
 						account_id: this.accountId
 					})
 				};

@@ -13,7 +13,9 @@ export async function pgQuery(network, queryString, queryParameters) {
 		return response;
 	} catch (e) {
 		if (e.code === '53300')
-			console.log('Error: All available connection slots to the PostgreSQL database are occupied');
+			console.log('POSTGRESQL Error 53300: All available connection slots to the PostgreSQL database are occupied');
+		else if (e.code === '40001')
+			console.log('POSTGRESQL Error 40001: User query might have needed to see row versions that must be removed');
 		else
 			console.log('catch error', e);
 		return false;

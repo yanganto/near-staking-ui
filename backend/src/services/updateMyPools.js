@@ -71,7 +71,8 @@ export const updateMyPoolsCron = async (network) => {
 				Pools.findOneAndUpdate({ account_id: account.account_id, pool_id: pool.pool_id },
 					{
 						account_id: account.account_id,
-						pool_id: pool.pool_id
+						pool_id: pool.pool_id,
+						owner_id: account.account_id,
 					}, { upsert: true }).then().catch(e => console.log(e));
 			}
 		}
