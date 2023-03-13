@@ -10,13 +10,13 @@ import {
 	RadioGroup,
 	TextField,
 	Button,
+	Box,
 	Link,
 	Typography
 } from "@mui/material";
 import {useEffect, useState} from "react";
-import {getKuutamoValidators, stakeToKuutamoPool} from "../helpers/staking";
+import {getKuutamoValidators, getMyPools, stakeToKuutamoPool} from "../helpers/staking";
 import {Balances, YourCurrentValidators} from "../ui/components/Balances";
-import Box from "@mui/material/Box";
 
 
 const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
@@ -26,6 +26,7 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 	const [alertSeverity, setAlertSeverity] = useState('info');
 	const [transactionHashes, setTransactionHashes] = useState(null);
 	const [validators, setValidators] = useState([]);
+	const [myPools, setMyPools] = useState({});
 	const [poolName, setPoolName] = useState(null);
 	const [amount, setAmount] = useState(0);
 
@@ -37,6 +38,8 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 			setTransactionHashes(params.get("transactionHashes"));
 		}
 		(async () => {
+			const myValidators = await getMyPools(wallet);
+			setMyPools(myValidators);
 			const kuutamoValidators = await getKuutamoValidators(wallet);
 			setValidators(kuutamoValidators);
 		})();
@@ -86,16 +89,13 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 
 	return (<Container align="center">
 		<Grid container justifyContent="center">
-			<Grid item xs={ 6 }>
+			<Grid item xs={ 8 }>
 				<Typography component="h1" variant="h4">
 					Stake to a kuutamo pool
 				</Typography>
 				<Balances wallet={ wallet }/>
-
-				<FormControl fullWidth error={ error } variant="standard">
-
-
-					<Box display="flex" alignItems="stretch" p={1}>
+				<FormControl error={ error } variant="standard">
+					<Box display="flex" alignItems="stretch" pt={ 1 } pb={ 1 }>
 						<TextField
 							type="number"
 							required
@@ -104,9 +104,9 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 							autoComplete="off"
 							value={ amount }
 							sx={ {
-								width: '420px', paddingRight: '10px'
+								maxWidth: '420px', paddingRight: '10px'
 							} }
-							InputProps={{ sx: { height: '48px', borderRadius: '10px' } }}
+							InputProps={ { sx: { height: '48px', borderRadius: '10px' } } }
 							onChange={ (e) => setAmount(e.target.value) }
 						/>
 						<Button variant="outlined" onClick={ handleSubmit } disabled={ isSubmit } sx={ {
@@ -128,25 +128,48 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 							</Alert>
 						</Stack>
 						: null }
-					<Stack sx={ { width: '100%' } } pl={ 1 }>
-					<RadioGroup aria-labelledby="pool-label" name="poolName" value={ poolName } align="left"
-					            onChange={ (e) => setPoolName(e.target.value) } >
-						{
-							validators.map(v => (
-								<FormControlLabel key={ v.account_id } value={ v.account_id } control={ <Radio/> }
-								                  label={
-									                  <>
-										                  { v.account_id } <Chip size="small" label={ v.fee + '% Fee' } variant="outlined"/>
-									                  </>
-								                  }/>
-							))
-						}
-					</RadioGroup>
+					{ Object.keys(myPools).length > 0 ?
+						<>
+							<Typography component="h1" variant="h6" pt={ 1 }>Your pools</Typography>
+							<Stack sx={ { width: '100%', border: '1px solid #D2D1DA', borderRadius: '15px' } } pl={ 1 }>
+								<RadioGroup aria-labelledby="pool-label" name="poolName" value={ poolName } align="left"
+								            onChange={ (e) => setPoolName(e.target.value) }>
+									{
+										Object.keys(myPools).map((key, index) => (
+											<FormControlLabel key={ key } value={ key } control={ <Radio size="small"/> }
+											                  label={
+												                  <>
+													                  { key } <Chip size="small" label={ myPools[key].fee + '% Fee' }
+													                                variant="outlined"/>
+												                  </>
+											                  }/>
+										))
+									}
+								</RadioGroup>
+							</Stack></> : <></> }
+					<Typography component="h1" variant="h6" pt={ 1 }>kuutamo pools</Typography>
+					<Stack sx={ { width: '100%', border: '1px solid #D2D1DA', borderRadius: '15px' } } pl={ 1 }>
+						<RadioGroup aria-labelledby="pool-label" name="poolName" value={ poolName } align="left"
+						            onChange={ (e) => setPoolName(e.target.value) }>
+							{
+								validators.map(v => (
+									<FormControlLabel key={ v.account_id } value={ v.account_id } control={ <Radio size="small"/> }
+									                  label={
+										                  <>
+											                  { v.account_id } <Chip size="small" label={ v.fee + '% Fee' }
+											                                         variant="outlined"/>
+										                  </>
+									                  }/>
+								))
+							}
+						</RadioGroup>
 					</Stack>
 				</FormControl>
 			</Grid>
+			<Grid item xs={ 12 }>
+				<YourCurrentValidators wallet={ wallet } transactionHashes={ transactionHashes }/>
+			</Grid>
 		</Grid>
-		<YourCurrentValidators wallet={ wallet } transactionHashes={ transactionHashes }/>
 	</Container>);
 }
 

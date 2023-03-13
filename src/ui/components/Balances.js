@@ -96,7 +96,7 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 		<Grid container justifyContent="center" pt={ 1 }>
 			<Grid item xs={ 12 }>
 				<Typography component="h1" variant="h5" sx={ { textAlign: 'left' } } p={ 1 }>
-					Your Current Validators
+					Your current delegations
 				</Typography>
 				<Dialog open={ open }>
 					<DialogTitle id="alert-dialog-title">

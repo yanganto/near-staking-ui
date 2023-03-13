@@ -73,20 +73,10 @@ export async function getKuutamoValidators(wallet) {
 }
 
 export async function getStakedValidators(wallet) {
-	const result = await wallet.sendJsonRpc("validators");
-	let pools = [];
+	const pools = await getKuutamoValidators(wallet);
 	const myPools = [];
-	result.current_validators.forEach((validator) => {
-		pools.push(validator.account_id);
-	});
-	result.next_validators.forEach((validator) =>
-		pools.push(validator.account_id)
-	);
-	result.current_proposals.forEach((validator) =>
-		pools.push(validator.account_id)
-	);
-	pools = [...new Set(pools)]
-	for (const account_id of pools) {
+	for (const pool of pools) {
+		const account_id = pool.account_id;
 		try {
 			const totalBalance = await wallet.viewMethod({
 				contractId: account_id,
@@ -125,7 +115,7 @@ export async function getStakedValidators(wallet) {
 						nearConfig.backendUrl + "calc-withdraw", requestOptions
 					).then(async response => {
 						data = await response.json();
-					//	console.log(data.status);
+						//	console.log(data.status);
 					}).catch(error => {
 						console.log('There was an error!', error);
 					});

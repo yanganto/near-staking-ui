@@ -30,11 +30,12 @@ ChartJS.register(
 );
 
 const Rewards = ({ wallet, isSignedIn }) => {
-	const [kuutamoPools, setKuutamoPools] = useState([]);
+	const [delegationsPools, setDelegationsPools] = useState([]);
 	const [myPools, setMyPools] = useState([]);
 
 	useEffect(() => {
 		(async () => {
+			const addedPools = [];
 			const requestOptions = {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -50,7 +51,10 @@ const Rewards = ({ wallet, isSignedIn }) => {
 			}).then(data => {
 				const pools = [];
 				for (const v of data.myPools) {
-					pools.push(v.pool_id);
+					if (v.owner_id === wallet.accountId)
+						pools.push(v.pool_id);
+					else
+						addedPools.push(v.pool_id);
 				}
 				return (pools);
 			}).catch(error => {
@@ -69,7 +73,7 @@ const Rewards = ({ wallet, isSignedIn }) => {
 				console.error("Error Reading data " + err);
 			});
 			setMyPools(mp);
-			setKuutamoPools(kp);
+			setDelegationsPools(addedPools.concat(kp));
 		})();
 
 	}, [wallet]);
@@ -89,10 +93,10 @@ const Rewards = ({ wallet, isSignedIn }) => {
 			<RewardsLine key={ pool } pool={ pool } accountId={ wallet.accountId }/>
 		) }
 		<Divider/>
-		<Typography component="h1" variant="h5" align="center" pt={2}>
+		<Typography component="h1" variant="h5" align="center" pt={ 2 }>
 			Delegations rewards
 		</Typography>
-		{ kuutamoPools.map((pool) =>
+		{ delegationsPools.map((pool) =>
 			<RewardsLine key={ pool } pool={ pool } accountId={ wallet.accountId }/>
 		) }
 
