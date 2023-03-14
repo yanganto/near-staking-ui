@@ -98,10 +98,7 @@ const MainMenu = () => {
 					<StyledTreeItem nodeId="11" labelText="Delegate" to="/stake"/>
 					<StyledTreeItem nodeId="12" labelText="Reporting" to="/rewards"/>
 				</StyledTreeItem>
-				<StyledTreeItem nodeId="2" labelText="Validators">
-					<StyledTreeItem nodeId="21" labelText="Monitoring" disabled/>
-					<StyledTreeItem nodeId="22" labelText="List of validators" to="/pools"/>
-				</StyledTreeItem>
+				<StyledTreeItem nodeId="2" labelText="Validators" to="/pools"/>
 
 				<Box pl={ 1 } pr={ 1 } pt={ 2 }>
 					<Chip sx={ { width: 264, height: 32, fontSize: '16px' } } label="INFRASTRUCTURE"/>
