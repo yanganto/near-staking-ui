@@ -48,7 +48,8 @@ export const updateMyPools = async (req, res) => {
 			Pools.findOneAndUpdate({ account_id: req.body.account_id, pool_id: pool.pool_id },
 				{
 					account_id: req.body.account_id,
-					pool_id: pool.pool_id
+					pool_id: pool.pool_id,
+					owner_id: req.body.account_id,
 				}, { upsert: true }).then().catch(e => console.log(e));
 		}
 		res.send({ status: 'ok' });
