@@ -74,6 +74,10 @@ export async function getKuutamoValidators(wallet) {
 
 export async function getStakedValidators(wallet) {
 	const pools = await getKuutamoValidators(wallet);
+	const mp = await getMyPools(wallet);
+	for (const pool in mp) {
+		pools.push({ account_id: pool, fee: mp[pool].fee });
+	}
 	const myPools = [];
 	for (const pool of pools) {
 		const account_id = pool.account_id;
