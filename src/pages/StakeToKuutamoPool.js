@@ -14,12 +14,14 @@ import {
 	Link,
 	Typography
 } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 import {useEffect, useState} from "react";
 import {getKuutamoValidators, getMyPools, stakeToKuutamoPool} from "../helpers/staking";
 import {Balances, YourCurrentValidators} from "../ui/components/Balances";
 
 
-const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
+const StakeToKuutamoPool = ({ wallet, isSignedIn}) => {
+	const theme = useTheme();
 	const [isSubmit, setIsSubmit] = useState(false);
 	const [error, setError] = useState(false);
 	const [helperText, setHelperText] = useState('');
@@ -131,7 +133,10 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 					{ Object.keys(myPools).length > 0 ?
 						<>
 							<Typography component="h1" variant="h6" pt={ 1 }>Your pools</Typography>
-							<Stack sx={ { width: '100%', border: '1px solid #D2D1DA', borderRadius: '15px' } } pl={ 1 }>
+							<Stack sx={ {
+								width: '100%', borderRadius: '15px',
+								border: theme.palette.mode === 'dark' ? '1px solid #565c6c' : '1px solid #D2D1DA'
+							} } pl={ 1 }>
 								<RadioGroup aria-labelledby="pool-label" name="poolName" value={ poolName } align="left"
 								            onChange={ (e) => setPoolName(e.target.value) }>
 									{
@@ -148,7 +153,10 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 								</RadioGroup>
 							</Stack></> : <></> }
 					<Typography component="h1" variant="h6" pt={ 1 }>kuutamo pools</Typography>
-					<Stack sx={ { width: '100%', border: '1px solid #D2D1DA', borderRadius: '15px' } } pl={ 1 }>
+					<Stack sx={ {
+						width: '100%', borderRadius: '15px',
+						border: theme.palette.mode === 'dark' ? '1px solid #565c6c' : '1px solid #D2D1DA'
+					} } pl={ 1 }>
 						<RadioGroup aria-labelledby="pool-label" name="poolName" value={ poolName } align="left"
 						            onChange={ (e) => setPoolName(e.target.value) }>
 							{

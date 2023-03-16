@@ -24,9 +24,17 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {useConfirm} from "material-ui-confirm";
 import {nearConfig} from "../../helpers/nearConfig.js";
 import MainMenu from "./MainMenu";
+import {styled, useTheme} from '@mui/material/styles';
+
+const MyButton = styled(Button)(({ theme }) => ({
+	color: theme.palette.text.primary,
+	backgroundColor: theme.palette.background.default,
+	textTransform: 'none'
+}));
 
 
-const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
+const NavBar = ({ isSignedIn, wallet, drawerWidth, changeTheme }) => {
+	const theme = useTheme();
 	const [mobileOpen, setMobileOpen] = React.useState(false);
 	const [openRpcDialog, setOpenRpcDialog] = React.useState(false);
 	const [ownRpcUrl, setOwnRpcUrl] = React.useState(
@@ -76,8 +84,8 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 	const drawer = (
 		<>
 			<Toolbar/>
-			<MainMenu/>
-			<List sx={{ paddingLeft: '12px'}}>
+			<MainMenu theme={theme}/>
+			<List sx={ { paddingLeft: '12px' } }>
 				<ListItem onClick={ () => setOpenRpcDialog(true) } component={ Link }>
 					<Chip sx={ { width: 264, height: 32 } }
 					      label={ !!useOwnRpcUrl && !!ownRpcUrl ? `rpc: custom` : `rpc: Pagoda` }
@@ -100,8 +108,9 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 				height: '96px',
 				justifyContent: 'center',
 				color: 'inherit',
-				bgcolor: '#FEFEFF',
-				borderBottom: '1px solid #D2D1DA',
+				bgcolor: theme.palette.mode === 'dark' ? '#091429' : '#FEFEFF',
+				borderBottom: theme.palette.mode === 'dark' ? '1px solid #4F4B6D' : '1px solid #D2D1DA',
+				backgroundImage: 'none',
 				boxShadow: 'none'
 			} }>
 				<Toolbar>
@@ -120,32 +129,17 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 						sx={ { flexGrow: 1 } }
 					>
 						<Box display="flex" alignItems="center">
-							{ isSignedIn ?
-								<Tooltip title="Click to Copy to Clipboard">
-									<Button sx={ { color: '#002147', textTransform: 'none' } }
-									        variant="text"
-									        endIcon={ <ArrowDropDownIcon/> }
-									        onClick={ () => {
-										        navigator.clipboard.writeText(wallet.accountId)
-									        } }>
-										{ wallet.accountId.length > 16 ?
-											wallet.accountId.substring(0, 8) + '...' + wallet.accountId.substring(wallet.accountId.length - 8)
-											: wallet.accountId
-										}
-									</Button>
-								</Tooltip>
-								: <></>
-							}
-							<Typography pl={ 3 }>
-								<img src="/dark-mode.png" alt="dark-mode"/>
-							</Typography>
-							<Typography pl={ 2 }>
-								<img src="/notifications.png" alt="notifications"/>
-							</Typography>
+							<IconButton sx={ { ml: 1 } } onClick={ changeTheme } color="inherit">
+								{ theme.palette.mode === 'dark' ? <img src="/icons/ic-sun.png" alt="dark mode"/> :
+									<img src="/icons/ic-circular.png" alt="light mode"/> }
+							</IconButton>
+							<IconButton sx={ { ml: 1 } } color="inherit">
+								<img src={ "/icons/ic-notifications-" + theme.palette.mode + ".png" } alt="notifications"/>
+							</IconButton>
 						</Box>
 					</Typography>
 					<Typography component="div" sx={ { flexGrow: 1 } }>
-						<Box display="flex" alignItems="center" pl={2}>
+						<Box display="flex" alignItems="center" pl={ 2 }>
 							<img src="/kuutamo-logo.png" alt="kuutamo"/>
 							<Typography pl={ 1 } pr={ 2 } sx={ {
 								fontWeight: 600,
@@ -158,10 +152,20 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth }) => {
 					<Box align="right">
 						{ isSignedIn ?
 							<>
-								<Button sx={ { color: '#002147', textTransform: 'none' } }
-								        variant="text"
+								<Tooltip title="Click to Copy to Clipboard">
+									<MyButton
+									        onClick={ () => {
+										        navigator.clipboard.writeText(wallet.accountId)
+									        } }>
+										{ wallet.accountId.length > 16 ?
+											wallet.accountId.substring(0, 8) + '...' + wallet.accountId.substring(wallet.accountId.length - 8)
+											: wallet.accountId
+										}
+									</MyButton>
+								</Tooltip>
+								<MyButton
 								        startIcon={ <LogoutIcon/> }
-								        onClick={ () => signOut() }>Log out</Button>
+								        onClick={ () => signOut() }/>
 							</>
 							:
 							<Button sx={ { color: '#002147', textTransform: 'none' } }

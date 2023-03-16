@@ -7,7 +7,7 @@ import {
 	TableHead,
 	TableRow,
 	Table,
-	Typography, Dialog, DialogContent, TextField, DialogActions, DialogTitle
+	Typography, Dialog, DialogContent, TextField, DialogActions, DialogTitle, IconButton
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import {getMyPools, getSignature} from "../helpers/staking";
@@ -16,9 +16,11 @@ import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import Box from "@mui/material/Box";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {nearConfig} from "../helpers/nearConfig";
+import {useTheme} from "@mui/material/styles";
 
 
 const Pools = ({ wallet, isSignedIn }) => {
+	const theme = useTheme();
 	const [myPools, setMyPools] = useState({});
 	const [myPoolsIsReady, setMyPoolsIsReady] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false);
@@ -39,7 +41,7 @@ const Pools = ({ wallet, isSignedIn }) => {
 	}
 
 	const addExistingValidator = async () => {
-		const {signature, public_key} = await getSignature(wallet, existingValidator);
+		const { signature, public_key } = await getSignature(wallet, existingValidator);
 		const requestOptions = {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -86,7 +88,7 @@ const Pools = ({ wallet, isSignedIn }) => {
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={ () => setOpenDialog(false) } variant="outlined">Close</Button>
-				<Button onClick={ addExistingValidator } variant="contained" disabled={!existingValidator}>Add</Button>
+				<Button onClick={ addExistingValidator } variant="contained" disabled={ !existingValidator }>Add</Button>
 			</DialogActions>
 		</Dialog>
 		<Box sx={ { display: 'flex', alignItems: 'center' } }>
@@ -98,7 +100,7 @@ const Pools = ({ wallet, isSignedIn }) => {
 			        sx={ {
 				        padding: '16px 32px',
 				        boxShadow: '0px 0px 8px rgb(0 33 71 / 10%)',
-				        color: '#002147',
+				        color: theme.palette.mode === 'dark' ? '#FEFEFF' : '#002147',
 				        border: 'inherit',
 				        fontSize: '15px',
 				        margin: '16px 4px 16px 8px',
@@ -109,7 +111,7 @@ const Pools = ({ wallet, isSignedIn }) => {
 			        sx={ {
 				        padding: '16px 32px',
 				        boxShadow: '0px 0px 8px rgb(0 33 71 / 10%)',
-				        color: '#002147',
+				        color: theme.palette.mode === 'dark' ? '#FEFEFF' : '#002147',
 				        border: 'inherit',
 				        fontSize: '15px',
 				        margin: '16px 4px 16px 8px',
@@ -149,7 +151,9 @@ const Pools = ({ wallet, isSignedIn }) => {
 							{ myPools[key].public_key && myPools[key].public_key.length > 24 ?
 								myPools[key].public_key.substring(0, 12) + '...' + myPools[key].public_key.substring(myPools[key].public_key.length - 12)
 								: myPools[key].public_key
-							} <ContentCopyIcon color="action" fontSize="small"/>
+							} <IconButton color="inherit">
+								<ContentCopyIcon color="action" fontSize="small"/>
+							</IconButton>
 						</TableCell>
 						<TableCell sx={ { borderRadius: '0 5px 5px 0' } }>{ myPools[key].fee }%</TableCell>
 					</TableRow>
