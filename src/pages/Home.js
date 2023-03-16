@@ -3,9 +3,12 @@ import * as React from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import {useTheme} from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 
 
 const Home = ({ isSignedIn, wallet }) => {
+	const theme = useTheme();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
 
@@ -24,7 +27,7 @@ const Home = ({ isSignedIn, wallet }) => {
 		{ !isSignedIn ?
 			<>
 				<Box sx={ { position: 'fixed', top: '0', right: '0' } }>
-					<Button sx={ { color: '#002147', border: '0px', textTransform: 'none' } }
+					<Button sx={ { color: theme.palette.text.primary, border: '0px', textTransform: 'none' } }
 					        aria-controls={ open ? 'basic-menu' : undefined }
 					        aria-haspopup="true"
 					        aria-expanded={ open ? 'true' : undefined }
@@ -47,7 +50,21 @@ const Home = ({ isSignedIn, wallet }) => {
 					</Menu>
 				</Box>
 				<Container align="center" sx={ { paddingTop: '100px' } }>
-					<img src="kuutamo.png" alt="kuutamo"/>
+
+					<Stack spacing={ 6 } direction="row" alignItems="center" justifyContent="center" pt={ 5 }>
+						<Box display="flex" alignItems="center" pl={ 2 }>
+							<img src="/kuutamo-logo.png" alt="kuutamo" width="120px"/>
+							<Typography sx={ {
+								padding: '30px',
+								fontWeight: 600,
+								fontSize: '58px'
+							} }>kuutamo</Typography>
+							<Typography sx={ { paddingLeft: '30px',fontWeight: 400, fontSize: '32px', borderLeft: '1px solid #D2D1DA' } }>protocol
+								infrastucture</Typography>
+						</Box>
+					</Stack>
+
+
 					<Stack spacing={ 6 } direction="row" alignItems="center" justifyContent="center" pt={ 5 }>
 						<Button
 							variant="contained"
@@ -71,7 +88,7 @@ const Home = ({ isSignedIn, wallet }) => {
 								width: '280px',
 								height: '77px',
 								fontSize: '23px',
-								color: '#002147',
+								color: theme.palette.text.primary,
 								borderRadius: '15px',
 								border: '1px solid #802FF3'
 							} }
