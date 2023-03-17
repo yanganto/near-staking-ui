@@ -15,32 +15,14 @@ import {
 	Table,
 	Typography
 } from "@mui/material";
-import * as nearAPI from "near-api-js";
 import {useConfirm} from "material-ui-confirm";
 import {getStakedValidators, unstakeWithdraw} from "../../helpers/staking";
+import {useTheme} from "@mui/material/styles";
 
 
-export const Balances = ({ wallet }) => {
-	const [balance, setBalance] = useState(null);
-
-	useEffect(() => {
-		(async () => {
-			const balance = await wallet.getAccountBalance(wallet.accountId);
-			setBalance(balance);
-		})();
-	}, [wallet]);
-
-	return (
-		<>
-			<Typography component="h1" variant="h6">
-				Balance: { balance ? nearAPI.utils.format.formatNearAmount(balance.available, 4) : '-' } NEAR
-			</Typography>
-		</>
-	)
-}
-
-export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
-	const [yourCurrentValidators, setYourCurrentValidators] = useState([]);
+export const YourCurrentDelegations = ({ wallet, transactionHashes }) => {
+	const theme = useTheme();
+	const [yourCurrentDelegations, setYourCurrentDelegations] = useState([]);
 	const [validatorsIsReady, setValidatorsIsReady] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [dataUnstakeWithdraw, setDataUnstakeWithdraw] = useState({});
@@ -56,14 +38,13 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 	const handleClose = () => {
 		setOpen(false);
 	};
-	const submitUnstakeWithdraw = async (all) => {
-		if (all)
-			setDataUnstakeWithdraw({ ...dataUnstakeWithdraw, all: all, amount: all ? '' : dataUnstakeWithdraw.amount });
+	const submitUnstakeWithdraw = async (all, data = false) => {
+		const dataJson = data !== false ? data : dataUnstakeWithdraw;
 		if (wallet.wallet.id === 'ledger' || wallet.wallet.id === 'wallet-connect') {
 			try {
 				setHelperText('Please confirm transaction on ' + wallet.wallet.id);
 				setAlertSeverity('info');
-				const r = await unstakeWithdraw(wallet, { ...dataUnstakeWithdraw, all: all });
+				const r = await unstakeWithdraw(wallet, { ...dataJson, all: all });
 				if (r.status.hasOwnProperty('SuccessValue')) {
 					setHelperText("Success!");
 					setTransactionHashesUW(r.transaction.hash);
@@ -78,7 +59,7 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 				setAlertSeverity('error');
 			}
 		} else {
-			await unstakeWithdraw(wallet, { ...dataUnstakeWithdraw, all: all });
+			await unstakeWithdraw(wallet, { ...dataJson, all: all });
 		}
 	};
 
@@ -86,7 +67,7 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 		setValidatorsIsReady(false);
 		(async () => {
 			const stakedValidators = await getStakedValidators(wallet);
-			setYourCurrentValidators(stakedValidators);
+			setYourCurrentDelegations(stakedValidators);
 			setValidatorsIsReady(true);
 		})();
 
@@ -153,7 +134,7 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{ yourCurrentValidators.map((row) => (
+						{ yourCurrentDelegations.map((row) => (
 							<TableRow
 								key={ row.account_id }
 							>
@@ -164,7 +145,7 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 								<TableCell align="right">{ row.totalBalance }</TableCell>
 								<TableCell align="right">{ row.stakedBalance }</TableCell>
 								<TableCell align="right">{ row.unstakedBalance }</TableCell>
-								<TableCell align="center" sx={ { borderRadius: '0 5px 5px 0' } }>
+								<TableCell align="center" sx={ { borderRadius: '0 5px 5px 0', maxWidth: '200px' } }>
 									<Button size="small" variant="outlined" fullWidth
 									        sx={ { maxWidth: '200px' } }
 									        disabled={ row.stakedBalance <= 0 }
@@ -182,13 +163,34 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 										        else
 											        handleClickOpen();
 									        } }>unstake</Button>
-									<Button size="small" variant="contained" fullWidth sx={ { mt: 1,  maxWidth: '200px' } }
+									<Button size="small" variant="outlined" fullWidth
+									        sx={ { mt: 1, maxWidth: '200px' } }
+									        disabled={ row.stakedBalance <= 0 }
+									        onClick={ () => {
+										        setDataUnstakeWithdraw({ cmd: 'unstake', pool: row.account_id });
+										        if (row.canWithdraw && row.unstakedBalance > 0)
+											        confirm({
+												        confirmationText: "Continue", confirmationButtonProps: { autoFocus: true },
+												        description: "You have funds available to widthdraw now, if you unstake more, these funds will be locked for 4 epochs"
+											        })
+												        .then(() => {
+													        submitUnstakeWithdraw(true, { cmd: 'unstake', pool: row.account_id }).then();
+												        }).catch(() => {
+											        });
+										        else
+											        submitUnstakeWithdraw(true, { cmd: 'unstake', pool: row.account_id }).then();
+									        } }>unstake max</Button>
+									<Button size="small" variant="contained" fullWidth sx={ { mt: 1, maxWidth: '200px' } }
 									        disabled={ !row.canWithdraw || row.unstakedBalance <= 0 }
 									        onClick={ () => {
 										        setDataUnstakeWithdraw({ cmd: 'withdraw', pool: row.account_id });
 										        handleClickOpen();
 									        } }>withdraw</Button>
-									{ row.leftToWithdraw }
+									{ !row.canWithdraw && row.unstakedBalance > 0 ?
+										<Typography
+											sx={ { fontSize: '14px', color: theme.palette.mode === 'dark' ? '#D2D1DA' : '#002147' } }>
+											{ row.leftToWithdraw }
+										</Typography> : <></> }
 								</TableCell>
 							</TableRow>
 						)) }
@@ -204,4 +206,3 @@ export const YourCurrentValidators = ({ wallet, transactionHashes }) => {
 	)
 
 }
-

@@ -14,13 +14,15 @@ import {
 	Link,
 	Typography
 } from "@mui/material";
-import { useTheme } from '@mui/material/styles';
+import {useTheme} from '@mui/material/styles';
 import {useEffect, useState} from "react";
 import {getKuutamoValidators, getMyPools, stakeToKuutamoPool} from "../helpers/staking";
-import {Balances, YourCurrentValidators} from "../ui/components/Balances";
+import {YourCurrentDelegations} from "../ui/components/YourCurrentDelegations";
+import * as nearAPI from "near-api-js";
+import Decimal from "decimal.js";
 
 
-const StakeToKuutamoPool = ({ wallet, isSignedIn}) => {
+const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 	const theme = useTheme();
 	const [isSubmit, setIsSubmit] = useState(false);
 	const [error, setError] = useState(false);
@@ -31,6 +33,7 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn}) => {
 	const [myPools, setMyPools] = useState({});
 	const [poolName, setPoolName] = useState(null);
 	const [amount, setAmount] = useState(0);
+	const [balance, setBalance] = useState(null);
 
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
@@ -44,6 +47,8 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn}) => {
 			setMyPools(myValidators);
 			const kuutamoValidators = await getKuutamoValidators(wallet);
 			setValidators(kuutamoValidators);
+			const balance = await wallet.getAccountBalance(wallet.accountId);
+			setBalance(balance);
 		})();
 	}, [wallet]);
 
@@ -54,7 +59,9 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn}) => {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		if (!poolName || amount <= 0) {
+		const amountStake = event.target.name === 'stakeMax' ?
+			new Decimal(nearAPI.utils.format.formatNearAmount(balance.available, 5)).minus('0.2').toFixed(5) : amount;
+		if (!poolName || amountStake <= 0) {
 			setHelperText('Please select a pool and enter the amount.');
 			setError(true);
 		} else {
@@ -65,7 +72,7 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn}) => {
 				try {
 					setHelperText('Please confirm transaction on ' + wallet.wallet.id);
 					setAlertSeverity('info');
-					const r = await stakeToKuutamoPool(wallet, poolName, amount);
+					const r = await stakeToKuutamoPool(wallet, poolName, amountStake);
 					if (r.status.hasOwnProperty('SuccessValue')) {
 						setPoolName(null);
 						setAmount(0);
@@ -82,7 +89,7 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn}) => {
 					setError(true);
 				}
 			} else {
-				await stakeToKuutamoPool(wallet, poolName, amount);
+				await stakeToKuutamoPool(wallet, poolName, amountStake);
 			}
 			setIsSubmit(false);
 		}
@@ -95,7 +102,9 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn}) => {
 				<Typography component="h1" variant="h4">
 					Stake to a kuutamo pool
 				</Typography>
-				<Balances wallet={ wallet }/>
+				<Typography component="h1" variant="h6">
+					Balance: { balance ? nearAPI.utils.format.formatNearAmount(balance.available, 5) : '-' } NEAR
+				</Typography>
 				<FormControl error={ error } variant="standard">
 					<Box display="flex" alignItems="stretch" pt={ 1 } pb={ 1 }>
 						<TextField
@@ -105,17 +114,23 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn}) => {
 							label="Amount"
 							autoComplete="off"
 							value={ amount }
-							sx={ {
-								maxWidth: '420px', paddingRight: '10px'
-							} }
+							sx={ { maxWidth: '420px' } }
 							InputProps={ { sx: { height: '48px', borderRadius: '10px' } } }
-							onChange={ (e) => setAmount(e.target.value) }
+							onChange={ (e) => {
+								setAmount(e.target.value);
+								setIsSubmit(false)
+							} }
 						/>
-						<Button variant="outlined" onClick={ handleSubmit } disabled={ isSubmit } sx={ {
-							paddingLeft: '10px',
+						<Button variant="outlined" onClick={ handleSubmit } disabled={ isSubmit } name="stake" sx={ {
+							marginLeft: '10px',
+							marginRight: '10px',
 							width: '140px',
 							height: '48px'
 						} }>Stake</Button>
+						<Button variant="outlined" onClick={ handleSubmit } disabled={ isSubmit } name="stakeMax" sx={ {
+							width: '140px',
+							height: '48px'
+						} }>Stake max</Button>
 					</Box>
 					{ helperText ?
 						<Stack sx={ { width: '100%' } } pb={ 1 }>
@@ -175,7 +190,7 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn}) => {
 				</FormControl>
 			</Grid>
 			<Grid item xs={ 12 }>
-				<YourCurrentValidators wallet={ wallet } transactionHashes={ transactionHashes }/>
+				<YourCurrentDelegations wallet={ wallet } transactionHashes={ transactionHashes }/>
 			</Grid>
 		</Grid>
 	</Container>);
