@@ -18,7 +18,6 @@ import {
 import {Link} from 'react-router-dom';
 import Typography from "@mui/material/Typography";
 import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {useConfirm} from "material-ui-confirm";
@@ -27,6 +26,9 @@ import MainMenu from "./MainMenu";
 import {styled, useTheme} from '@mui/material/styles';
 
 const MyButton = styled(Button)(({ theme }) => ({
+	minWidth: '20px',
+	padding: '5px',
+	fontSize: '20px',
 	color: theme.palette.text.primary,
 	backgroundColor: theme.palette.background.default,
 	textTransform: 'none'
@@ -84,7 +86,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth, changeTheme }) => {
 	const drawer = (
 		<>
 			<Toolbar/>
-			<MainMenu theme={theme}/>
+			<MainMenu theme={ theme }/>
 			<List sx={ { paddingLeft: '12px' } }>
 				<ListItem onClick={ () => setOpenRpcDialog(true) } component={ Link }>
 					<Chip sx={ { width: 264, height: 32 } }
@@ -152,20 +154,21 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth, changeTheme }) => {
 					<Box align="right">
 						{ isSignedIn ?
 							<>
+								<MyButton
+									onClick={ () => signOut() }>
+									<img src={ "/icons/logout-" + theme.palette.mode + ".png" } alt="logout"/>
+								</MyButton>
 								<Tooltip title="Click to Copy to Clipboard">
 									<MyButton
-									        onClick={ () => {
-										        navigator.clipboard.writeText(wallet.accountId)
-									        } }>
+										onClick={ () => {
+											navigator.clipboard.writeText(wallet.accountId)
+										} }>
 										{ wallet.accountId.length > 16 ?
 											wallet.accountId.substring(0, 8) + '...' + wallet.accountId.substring(wallet.accountId.length - 8)
 											: wallet.accountId
 										}
 									</MyButton>
 								</Tooltip>
-								<MyButton
-								        startIcon={ <LogoutIcon/> }
-								        onClick={ () => signOut() }/>
 							</>
 							:
 							<Button sx={ { color: '#002147', textTransform: 'none' } }

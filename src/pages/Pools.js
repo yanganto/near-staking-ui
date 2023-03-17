@@ -12,9 +12,7 @@ import {
 import {useEffect, useState} from "react";
 import {getMyPools, getSignature} from "../helpers/staking";
 import {Link} from 'react-router-dom';
-import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import Box from "@mui/material/Box";
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {nearConfig} from "../helpers/nearConfig";
 import {useTheme} from "@mui/material/styles";
 
@@ -96,27 +94,31 @@ const Pools = ({ wallet, isSignedIn }) => {
 				List of validators
 			</Typography>
 			<Box sx={ { flexGrow: 1 } }/>
-			<Button onClick={ () => setOpenDialog(true) } startIcon={ <AddBoxOutlinedIcon/> } variant="text"
+			<Button onClick={ () => setOpenDialog(true) } variant="text"
 			        sx={ {
 				        padding: '16px 32px',
 				        boxShadow: '0px 0px 8px rgb(0 33 71 / 10%)',
 				        color: theme.palette.mode === 'dark' ? '#FEFEFF' : '#002147',
+				        backgroundColor: theme.palette.mode === 'dark' ? '#151C2B' : '#FEFEFF',
 				        border: 'inherit',
 				        fontSize: '15px',
 				        margin: '16px 4px 16px 8px',
 			        } }>
-				Add existing validator
+				<img src={ "/icons/addsquare-" + theme.palette.mode + ".png" } alt="add"/>
+				&nbsp;Add existing validator
 			</Button>
-			<Button to="/pools/create" component={ Link } startIcon={ <AddBoxOutlinedIcon/> } variant="text"
+			<Button to="/pools/create" component={ Link } variant="text"
 			        sx={ {
 				        padding: '16px 32px',
 				        boxShadow: '0px 0px 8px rgb(0 33 71 / 10%)',
 				        color: theme.palette.mode === 'dark' ? '#FEFEFF' : '#002147',
+				        backgroundColor: theme.palette.mode === 'dark' ? '#151C2B' : '#FEFEFF',
 				        border: 'inherit',
 				        fontSize: '15px',
 				        margin: '16px 4px 16px 8px',
 			        } }>
-				New validator
+				<img src={ "/icons/addsquare-" + theme.palette.mode + ".png" } alt="add"/>
+				&nbsp;New validator
 			</Button>
 		</Box>
 		<Table aria-label="Pools">
@@ -152,8 +154,8 @@ const Pools = ({ wallet, isSignedIn }) => {
 								myPools[key].public_key.substring(0, 12) + '...' + myPools[key].public_key.substring(myPools[key].public_key.length - 12)
 								: myPools[key].public_key
 							} <IconButton color="inherit">
-								<ContentCopyIcon color="action" fontSize="small"/>
-							</IconButton>
+							<img src={ "/icons/copy-" + theme.palette.mode + ".png" } alt="copy"/>
+						</IconButton>
 						</TableCell>
 						<TableCell sx={ { borderRadius: '0 5px 5px 0' } }>{ myPools[key].fee }%</TableCell>
 					</TableRow>
