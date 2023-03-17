@@ -130,7 +130,7 @@ export async function getStakedValidators(wallet) {
 					stakedBalance: utils.format.formatNearAmount(stakedBalance, 2),
 					unstakedBalance: utils.format.formatNearAmount(unstakedBalance, 2),
 					canWithdraw,
-					leftToWithdraw: data?.status,
+					leftToWithdraw: data?.status ? data.status : 'Funds pending release will be made available after ~52-65hrs (4 epochs)',
 					fee: (fee.numerator * 100) / fee.denominator
 				})
 			}
@@ -184,6 +184,7 @@ export function toED25519(key) {
 export const getSignature = async (wallet, message) => {
 	const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 	const keyPair = await keyStore.getKey(wallet.network, wallet.accountId);
+	if (keyPair === null) return { signature: null, public_key: null };
 	const msg = Buffer.from(message);
 	const { signature } = keyPair.sign(msg);
 	return { signature: toED25519(signature), public_key: keyPair.publicKey.toString() };
