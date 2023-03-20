@@ -96,6 +96,7 @@ const Pools = ({ wallet, isSignedIn }) => {
 			<Box sx={ { flexGrow: 1 } }/>
 			<Button onClick={ () => setOpenDialog(true) } variant="text"
 			        sx={ {
+			        	display: 'none',
 				        padding: '16px 32px',
 				        boxShadow: '0px 0px 8px rgb(0 33 71 / 10%)',
 				        color: theme.palette.mode === 'dark' ? '#FEFEFF' : '#002147',
