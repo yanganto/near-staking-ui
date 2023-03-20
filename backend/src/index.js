@@ -31,8 +31,9 @@ process.on('uncaughtException', (error, origin) => {
 	if ((error.code === '40001' && error.file === 'postgres.c')
 		|| (error.message.includes("Connection terminated unexpectedly"))
 		|| (error.code === '08P01')	//server conn crashed
+		|| (error.message.includes("Cannot read properties of null (reading 'name')") && error.stack.includes("/pg/lib/client.js:380:26"))
 	)
-		console.log('uncaughtException')
+		console.log('uncaught Exception')
 	else
 		process.exit(1);
 })
