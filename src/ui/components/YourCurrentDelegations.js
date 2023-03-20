@@ -59,6 +59,7 @@ export const YourCurrentDelegations = ({ wallet, transactionHashes }) => {
 				setAlertSeverity('error');
 			}
 		} else {
+			setHelperText('Approve Transaction. Redirect...');
 			await unstakeWithdraw(wallet, { ...dataJson, all: all });
 		}
 	};
@@ -87,17 +88,18 @@ export const YourCurrentDelegations = ({ wallet, transactionHashes }) => {
 						<DialogContentText id="alert-dialog-description">
 							{ dataUnstakeWithdraw.pool }
 						</DialogContentText>
-						<TextField
-							type="number"
-							margin="normal"
-							required
-							fullWidth
-							id="amount"
-							label="Amount"
-							autoComplete="off"
-							value={ dataUnstakeWithdraw.amount || 0 }
-							onChange={ (e) => setDataUnstakeWithdraw({ ...dataUnstakeWithdraw, amount: e.target.value }) }
-						/>
+						{ !helperText ?
+							<TextField
+								type="number"
+								margin="normal"
+								required
+								fullWidth
+								id="amount"
+								label="Amount"
+								autoComplete="off"
+								value={ dataUnstakeWithdraw.amount || 0 }
+								onChange={ (e) => setDataUnstakeWithdraw({ ...dataUnstakeWithdraw, amount: e.target.value }) }
+							/> : <></> }
 					</DialogContent>
 					{ helperText ?
 						<Stack sx={ { width: '100%' } } pb={ 1 }>
@@ -114,12 +116,16 @@ export const YourCurrentDelegations = ({ wallet, transactionHashes }) => {
 						: null }
 					<DialogActions>
 						<Button onClick={ handleClose } variant="outlined">Close</Button>
-						<Button onClick={ () => {
-							submitUnstakeWithdraw(false).then();
-						} } variant="contained">{ dataUnstakeWithdraw.cmd }</Button>
-						<Button onClick={ () => {
-							submitUnstakeWithdraw(true).then();
-						} } variant="contained">{ dataUnstakeWithdraw.cmd } all</Button>
+						{ !helperText ?
+							<>
+								<Button onClick={ () => {
+									submitUnstakeWithdraw(false).then();
+								} } variant="contained">{ dataUnstakeWithdraw.cmd }</Button>
+								<Button onClick={ () => {
+									submitUnstakeWithdraw(true).then();
+								} } variant="contained">{ dataUnstakeWithdraw.cmd } all</Button>
+							</>
+							: <></> }
 					</DialogActions>
 				</Dialog>
 				<Table aria-label="Your Current Validators">
@@ -168,17 +174,22 @@ export const YourCurrentDelegations = ({ wallet, transactionHashes }) => {
 									        disabled={ row.stakedBalance <= 0 }
 									        onClick={ () => {
 										        setDataUnstakeWithdraw({ cmd: 'unstake', pool: row.account_id });
-										        if (row.canWithdraw && row.unstakedBalance > 0)
+										        if (row.canWithdraw && row.unstakedBalance > 0) {
 											        confirm({
 												        confirmationText: "Continue", confirmationButtonProps: { autoFocus: true },
 												        description: "You have funds available to widthdraw now, if you unstake more, these funds will be locked for 4 epochs"
 											        })
 												        .then(() => {
+													        setDataUnstakeWithdraw({ cmd: 'unstake', pool: row.account_id });
+													        handleClickOpen();
 													        submitUnstakeWithdraw(true, { cmd: 'unstake', pool: row.account_id }).then();
 												        }).catch(() => {
 											        });
-										        else
+										        } else {
+											        setDataUnstakeWithdraw({ cmd: 'unstake', pool: row.account_id });
+											        handleClickOpen();
 											        submitUnstakeWithdraw(true, { cmd: 'unstake', pool: row.account_id }).then();
+										        }
 									        } }>unstake max</Button>
 									<Button size="small" variant="contained" fullWidth sx={ { mt: 1, maxWidth: '200px' } }
 									        disabled={ !row.canWithdraw || row.unstakedBalance <= 0 }
