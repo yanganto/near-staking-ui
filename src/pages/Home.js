@@ -49,23 +49,25 @@ const Home = ({ isSignedIn, wallet }) => {
 						<MenuItem value="mainnet" onClick={ () => changeNetwork('mainnet') }>mainnet</MenuItem>
 					</Menu>
 				</Box>
-				<Container align="center" sx={ { paddingTop: '100px' } }>
-
-					<Stack spacing={ 6 } direction="row" alignItems="center" justifyContent="center" pt={ 5 }>
-						<Box display="flex" alignItems="center" pl={ 2 }>
-							<img src="/kuutamo-logo.png" alt="kuutamo" width="120px"/>
+				<Container align="center" sx={ { '@media (min-width:600px)': { paddingTop: '100px' } } }>
+					<Stack spacing={ 6 } direction="row" alignItems="center" justifyContent="center">
+						<Box alignItems="center" sx={ { display: { sm: 'flex' } } }>
+							<img src="/kuutamo-logo.png" alt="kuutamo"/>
 							<Typography sx={ {
 								padding: '30px',
 								fontWeight: 600,
 								fontSize: '58px'
 							} }>kuutamo</Typography>
-							<Typography sx={ { paddingLeft: '30px',fontWeight: 400, fontSize: '32px', borderLeft: '1px solid #D2D1DA' } }>protocol
+							<Typography sx={ {
+								fontWeight: 400,
+								fontSize: '32px',
+								'@media (min-width:600px)': { borderLeft: '1px solid #D2D1DA', paddingLeft: '30px' }
+							} }>protocol
 								infrastucture</Typography>
 						</Box>
 					</Stack>
-
-
-					<Stack spacing={ 6 } direction="row" alignItems="center" justifyContent="center" pt={ 5 }>
+					<Stack spacing={ 6 } direction={ { xs: 'column', sm: 'row' } } alignItems="center" justifyContent="center"
+					       pt={ 5 }>
 						<Button
 							variant="contained"
 							sx={ {

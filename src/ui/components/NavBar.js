@@ -142,7 +142,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth, changeTheme }) => {
 					</Typography>
 					<Typography component="div" sx={ { flexGrow: 1 } }>
 						<Box display="flex" alignItems="center" pl={ 2 }>
-							<img src="/kuutamo-logo.png" alt="kuutamo"/>
+							<img src="/kuutamo-logo.png" alt="kuutamo" width="50px"/>
 							<Typography pl={ 1 } pr={ 2 } sx={ {
 								fontWeight: 600,
 								fontSize: '32px'
