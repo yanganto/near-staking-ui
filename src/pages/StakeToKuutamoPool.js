@@ -61,8 +61,11 @@ const StakeToKuutamoPool = ({ wallet, isSignedIn }) => {
 		event.preventDefault();
 		const amountStake = event.target.name === 'stakeMax' ?
 			new Decimal(nearAPI.utils.format.formatNearAmount(balance.available, 5)).minus('0.2').toFixed(5) : amount;
-		if (!poolName || amountStake <= 0) {
-			setHelperText('Please select a pool and enter the amount.');
+		if (!poolName) {
+			setHelperText('Please select a pool');
+			setError(true);
+		} else if (event.target.name === 'stake' && amountStake <= 0) {
+			setHelperText('Please enter the amount');
 			setError(true);
 		} else {
 			setHelperText('');
