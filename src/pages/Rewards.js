@@ -66,7 +66,7 @@ const Rewards = ({ wallet, isSignedIn }) => {
 			}).then(data => {
 				const pools = [];
 				for (const v of data) {
-					if (v.is_enabled && !mp.includes(v.account_id)) pools.push(v.account_id);
+					if (v.is_enabled && !mp.includes(v.account_id) && !addedPools.includes(v.account_id)) pools.push(v.account_id);
 				}
 				return (pools);
 			}).catch(err => {
@@ -90,14 +90,14 @@ const Rewards = ({ wallet, isSignedIn }) => {
 			Pool rewards
 		</Typography>
 		{ myPools.map((pool) =>
-			<RewardsLine key={ pool } pool={ pool } accountId={ wallet.accountId }/>
+			<RewardsLine key={ "myPool" + pool } pool={ pool } accountId={ wallet.accountId }/>
 		) }
 		<Divider/>
 		<Typography component="h1" variant="h5" align="center" pt={ 2 }>
 			Delegations rewards
 		</Typography>
 		{ delegationsPools.map((pool) =>
-			<RewardsLine key={ pool } pool={ pool } accountId={ wallet.accountId }/>
+			<RewardsLine key={ "delegation" + pool } pool={ pool } accountId={ wallet.accountId }/>
 		) }
 
 	</Container></>;
@@ -169,7 +169,7 @@ const RewardsLine = ({ pool, accountId }) => {
 							onChange={ (date) => {
 								setDateFrom(date)
 							} }
-							renderInput={ (params) => <TextField { ...params } size="small"/> }
+							componentsProps={ { textField: { size: 'small' } } }
 						/>
 						<DesktopDatePicker
 							label="To"
@@ -178,7 +178,7 @@ const RewardsLine = ({ pool, accountId }) => {
 							onChange={ (date) => {
 								setDateTo(date)
 							} }
-							renderInput={ (params) => <TextField { ...params } size="small" sx={ { ml: 1 } }/> }
+							componentsProps={ { textField: { size: 'small', sx: { ml: 1 } } } }
 						/>
 					</LocalizationProvider>
 					<Button onClick={ () => {
