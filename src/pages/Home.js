@@ -54,7 +54,7 @@ const Home = ({ isSignedIn, wallet }) => {
 						<Box alignItems="center" sx={ { display: { sm: 'flex' } } }>
 							<img src="/kuutamo-logo.png" alt="kuutamo"/>
 							<Typography sx={ {
-								padding: '30px',
+								'@media (min-width:600px)': { padding: '30px' },
 								fontWeight: 600,
 								fontSize: '58px'
 							} }>kuutamo</Typography>

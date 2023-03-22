@@ -17,7 +17,6 @@ import {
 } from "@mui/material";
 import {Link} from 'react-router-dom';
 import Typography from "@mui/material/Typography";
-import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {useConfirm} from "material-ui-confirm";
@@ -25,17 +24,17 @@ import {nearConfig} from "../../helpers/nearConfig.js";
 import MainMenu from "./MainMenu";
 import {styled, useTheme} from '@mui/material/styles';
 
-const MyButton = styled(Button)(({ theme }) => ({
+export const MyButton = styled(Button)(({ theme }) => ({
 	minWidth: '20px',
 	padding: '5px',
 	fontSize: '20px',
 	color: theme.palette.text.primary,
-	backgroundColor: theme.palette.background.default,
+	backgroundColor: 'none',
 	textTransform: 'none'
 }));
 
 
-const NavBar = ({ isSignedIn, wallet, drawerWidth, changeTheme }) => {
+const NavBar = ({ wallet, drawerWidth, changeTheme }) => {
 	const theme = useTheme();
 	const [mobileOpen, setMobileOpen] = React.useState(false);
 	const [openRpcDialog, setOpenRpcDialog] = React.useState(false);
@@ -86,7 +85,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth, changeTheme }) => {
 	const drawer = (
 		<>
 			<Toolbar/>
-			<MainMenu theme={ theme }/>
+			<MainMenu changeTheme={ changeTheme } wallet={ wallet }/>
 			<List sx={ { paddingLeft: '12px' } }>
 				<ListItem onClick={ () => setOpenRpcDialog(true) } component={ Link }>
 					<Chip sx={ { width: 264, height: 32 } }
@@ -128,7 +127,7 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth, changeTheme }) => {
 					<Typography
 						variant="h6"
 						component="div"
-						sx={ { flexGrow: 1 } }
+						sx={ { flexGrow: 1, display: { xs: 'none', sm: 'block' } } }
 					>
 						<Box display="flex" alignItems="center">
 							<IconButton sx={ { ml: 1 } } onClick={ changeTheme } color="inherit">
@@ -147,36 +146,32 @@ const NavBar = ({ isSignedIn, wallet, drawerWidth, changeTheme }) => {
 								fontWeight: 600,
 								fontSize: '32px'
 							} }>kuutamo</Typography>
-							<Typography pl={ 2 } sx={ { fontWeight: 400, fontSize: '16px', borderLeft: '1px solid #D2D1DA' } }>protocol
-								infrastucture</Typography>
+							<Typography pl={ 2 } sx={ {
+								fontWeight: 400,
+								fontSize: '16px',
+								borderLeft: '1px solid #D2D1DA',
+								display: { xs: 'none', sm: 'block' }
+							} }>
+								protocol infrastucture
+							</Typography>
 						</Box>
 					</Typography>
-					<Box align="right">
-						{ isSignedIn ?
-							<>
-								<MyButton
-									onClick={ () => signOut() }>
-									<img src={ "/icons/logout-" + theme.palette.mode + ".png" } alt="logout"/>
-								</MyButton>
-								<Tooltip title="Click to Copy to Clipboard">
-									<MyButton
-										onClick={ () => {
-											navigator.clipboard.writeText(wallet.accountId)
-										} }>
-										{ wallet.accountId.length > 16 ?
-											wallet.accountId.substring(0, 8) + '...' + wallet.accountId.substring(wallet.accountId.length - 8)
-											: wallet.accountId
-										}
-									</MyButton>
-								</Tooltip>
-							</>
-							:
-							<Button sx={ { color: '#002147', textTransform: 'none' } }
-							        variant="text"
-							        startIcon={ <LoginIcon/> } onClick={ () => wallet.signIn() }>
-								Sign in
-							</Button>
-						}
+					<Box align="right" display="flex">
+						<MyButton
+							onClick={ () => signOut() }>
+							<img src={ "/icons/logout-" + theme.palette.mode + ".png" } alt="logout"/>
+						</MyButton>
+						<Tooltip title="Click to Copy to Clipboard" sx={ { display: { xs: 'none', sm: 'block' } } }>
+							<MyButton
+								onClick={ () => {
+									navigator.clipboard.writeText(wallet.accountId)
+								} }>
+								{ wallet.accountId.length > 16 ?
+									wallet.accountId.substring(0, 8) + '...' + wallet.accountId.substring(wallet.accountId.length - 8)
+									: wallet.accountId
+								}
+							</MyButton>
+						</Tooltip>
 					</Box>
 				</Toolbar>
 			</AppBar>

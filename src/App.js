@@ -29,8 +29,7 @@ export default function App({ isSignedIn, wallet }) {
 			<BrowserRouter>
 				<ConfirmProvider>
 					<Box sx={ { display: 'flex', zIndex: (theme) => theme.zIndex.drawer + 1, minHeight: `calc(100vh - 40px)` } }>
-						{ isSignedIn ? <NavBar isSignedIn={ isSignedIn } wallet={ wallet } drawerWidth={ drawerWidth }
-						                       changeTheme={ changeTheme }/> : <></> }
+						{ isSignedIn ? <NavBar wallet={ wallet } drawerWidth={ drawerWidth } changeTheme={ changeTheme }/> : <></> }
 						<Box component="main" sx={ { flexGrow: 1, p: 3, pt: 8, width: { sm: `calc(100% - ${ drawerWidth }px)` } } }>
 							<Toolbar/>
 							<Routes>
