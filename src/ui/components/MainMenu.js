@@ -10,53 +10,54 @@ import {Link} from 'react-router-dom';
 import {MyButton} from "./NavBar";
 
 
+export const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
+	color: theme.palette.text.secondary,
+	[`& .${ treeItemClasses.content }`]: {
+		fontSize: '24px',
+		backgroundColor: theme.palette.mode === 'dark' ? '#151C2B' : '#FEFEFF',
+		border: '1px solid #D2D1DA',
+		height: '72px',
+		width: '264px',
+		color: theme.palette.mode === 'dark' ? '#FEFEFF' : '#002147',
+		borderRadius: '15px',
+		fontWeight: '400',
+		'&.Mui-expanded': {
+			backgroundColor: theme.palette.mode === 'dark' ? '#36DFD3' : '#802FF3',
+			border: theme.palette.mode === 'dark' ? '1px solid #36DFD3' : '1px solid #802FF3',
+			color: theme.palette.mode === 'dark' ? '#002147' : '#FEFEFF',
+			boxShadow: theme.palette.mode === 'dark' ?
+				'0px 38px 80px rgba(54, 223, 211, 0.0393604), 0px 15.8755px 33.4221px rgba(54, 223, 211, 0.056545), ' +
+				'0px 8.4878px 17.869px rgba(54, 223, 211, 0.07), 0px 4.75819px 10.0172px rgba(54, 223, 211, 0.083455), ' +
+				'0px 2.52704px 5.32008px rgba(54, 223, 211, 0.10064), 0px 1.05156px 2.21381px rgba(54, 223, 211, 0.14)' :
+				'0px 38px 80px rgba(128, 47, 243, 0.0393604), 0px 15.8755px 33.4221px rgba(128, 47, 243, 0.056545), ' +
+				'0px 8.4878px 17.869px rgba(128, 47, 243, 0.07), 0px 4.75819px 10.0172px rgba(128, 47, 243, 0.083455), ' +
+				'0px 2.52704px 5.32008px rgba(128, 47, 243, 0.10064), 0px 1.05156px 2.21381px rgba(128, 47, 243, 0.14)',
+		},
+		'&:hover': {
+			backgroundColor: theme.palette.mode === 'dark' ? '#151C2B' : '#FEFEFF',
+			border: theme.palette.mode === 'dark' ? '1px solid #36DFD3' : '1px solid #802FF3',
+			color: theme.palette.mode === 'dark' ? '#FEFEFF' : '#002147',
+		},
+		'&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
+			backgroundColor: theme.palette.mode === 'dark' ? '#151C2B' : '#FEFEFF',
+			border: theme.palette.mode === 'dark' ? '1px solid #36DFD3' : '1px solid #802FF3',
+			color: theme.palette.mode === 'dark' ? '#FEFEFF' : '#002147',
+		},
+		[`& .${ treeItemClasses.label }`]: {
+			fontSize: '24px',
+			fontWeight: 'inherit',
+			color: 'inherit',
+		},
+	},
+	[`& .${ treeItemClasses.group }`]: {
+		[`& .${ treeItemClasses.content }`]: {
+			width: '238px',
+		},
+	},
+}));
+
 const MainMenu = ({ changeTheme, wallet }) => {
 	const theme = useTheme();
-	const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
-		color: theme.palette.text.secondary,
-		[`& .${ treeItemClasses.content }`]: {
-			fontSize: '24px',
-			backgroundColor: theme.palette.mode === 'dark' ? '#151C2B' : '#FEFEFF',
-			border: '1px solid #D2D1DA',
-			height: '72px',
-			width: '264px',
-			color: theme.palette.mode === 'dark' ? '#FEFEFF' : '#002147',
-			borderRadius: '15px',
-			fontWeight: '400',
-			'&.Mui-expanded': {
-				backgroundColor: theme.palette.mode === 'dark' ? '#36DFD3' : '#802FF3',
-				border: theme.palette.mode === 'dark' ? '1px solid #36DFD3' : '1px solid #802FF3',
-				color: theme.palette.mode === 'dark' ? '#002147' : '#FEFEFF',
-				boxShadow: theme.palette.mode === 'dark' ?
-					'0px 38px 80px rgba(54, 223, 211, 0.0393604), 0px 15.8755px 33.4221px rgba(54, 223, 211, 0.056545), ' +
-					'0px 8.4878px 17.869px rgba(54, 223, 211, 0.07), 0px 4.75819px 10.0172px rgba(54, 223, 211, 0.083455), ' +
-					'0px 2.52704px 5.32008px rgba(54, 223, 211, 0.10064), 0px 1.05156px 2.21381px rgba(54, 223, 211, 0.14)' :
-					'0px 38px 80px rgba(128, 47, 243, 0.0393604), 0px 15.8755px 33.4221px rgba(128, 47, 243, 0.056545), ' +
-					'0px 8.4878px 17.869px rgba(128, 47, 243, 0.07), 0px 4.75819px 10.0172px rgba(128, 47, 243, 0.083455), ' +
-					'0px 2.52704px 5.32008px rgba(128, 47, 243, 0.10064), 0px 1.05156px 2.21381px rgba(128, 47, 243, 0.14)',
-			},
-			'&:hover': {
-				backgroundColor: theme.palette.mode === 'dark' ? '#151C2B' : '#FEFEFF',
-				border: theme.palette.mode === 'dark' ? '1px solid #36DFD3' : '1px solid #802FF3',
-				color: theme.palette.mode === 'dark' ? '#FEFEFF' : '#002147',
-			},
-			'&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
-				backgroundColor: theme.palette.mode === 'dark' ? '#151C2B' : '#FEFEFF',
-				border: theme.palette.mode === 'dark' ? '1px solid #36DFD3' : '1px solid #802FF3',
-				color: theme.palette.mode === 'dark' ? '#FEFEFF' : '#002147',
-			},
-			[`& .${ treeItemClasses.label }`]: {
-				fontSize: '24px',
-				fontWeight: 'inherit',
-				color: 'inherit',
-			},
-		},
-		[`& .${ treeItemClasses.group }`]: {
-			[`& .${ treeItemClasses.content }`]: {
-				width: '238px',
-			},
-		},
-	}));
 
 	function StyledTreeItem(props) {
 		const {

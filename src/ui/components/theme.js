@@ -44,6 +44,15 @@ const theme = (isDarkTheme) => {
 			},
 		},
 		components: {
+			MuiDialog: {
+				styleOverrides: {
+					paper: {
+						backgroundColor: isDarkTheme ? '#011124' : '#FCFDFF',
+						backgroundImage: 'none',
+						borderRadius: 8,
+					},
+				},
+			},
 			MuiChip: {
 				styleOverrides: {
 					root: {

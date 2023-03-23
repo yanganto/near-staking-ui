@@ -1,16 +1,20 @@
-import {Box, Button, Container, Stack} from "@mui/material";
+import {Box, Button, Container, DialogTitle, DialogContent, Dialog, Stack} from "@mui/material";
 import * as React from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import {useTheme} from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
+import {StyledTreeItemRoot} from "../ui/components/MainMenu";
+import {Link} from "react-router-dom";
+import {TreeView} from "@mui/lab";
 
 
 const Home = ({ isSignedIn, wallet }) => {
 	const theme = useTheme();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
+	const [openDialog, setOpenDialog] = React.useState(false);
 
 	const handleClickNetwork = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -23,9 +27,46 @@ const Home = ({ isSignedIn, wallet }) => {
 		window.location.replace(window.location.origin);
 	};
 
+	function StyledTreeItem(props) {
+		const {
+			labelIcon: LabelIcon,
+			labelText,
+			to,
+			disabled,
+			...other
+		} = props;
+
+		return (
+			<StyledTreeItemRoot sx={ { margin: 1 } } disabled={ disabled }
+			                    label={
+				                    <Box sx={ { display: 'flex', alignItems: 'center' } } to={ to } component={ Link }
+				                         style={ { textDecoration: 'none', color: 'inherit' } }>
+					                    <Typography variant="body2"
+					                                sx={ { fontWeight: 'inherit', fontSize: 'inherit', flexGrow: 1 } }>
+						                    { labelText }
+					                    </Typography>
+				                    </Box>
+			                    }
+			                    { ...other }
+			/>
+		);
+	}
+
 	return <>
 		{ !isSignedIn ?
 			<>
+				<Dialog open={ openDialog } fullWidth>
+					<DialogTitle id="alert-dialog-title">
+						<Button onClick={ () => setOpenDialog(false) }>back</Button>
+					</DialogTitle>
+					<DialogContent>
+						Select an option
+						<TreeView>
+							<StyledTreeItem nodeId="1" labelText="Just stake" to="/stake"/>
+							<StyledTreeItem nodeId="2" labelText="Setup a node" to="/pools"/>
+						</TreeView>
+					</DialogContent>
+				</Dialog>
 				<Box sx={ { position: 'fixed', top: '0', right: '0' } }>
 					<Button sx={ { color: theme.palette.text.primary, border: '0px', textTransform: 'none' } }
 					        aria-controls={ open ? 'basic-menu' : undefined }
@@ -82,7 +123,7 @@ const Home = ({ isSignedIn, wallet }) => {
 									' 0px 3.34504px 37.5825px rgba(128, 47, 243, 0.12), 0px 2.10567px 23.6578px rgba(128, 47, 243, 0.102985), ' +
 									'0px 1.20984px 13.5929px rgba(128, 47, 243, 0.0836187), 0px 0.53248px 5.98257px rgba(128, 47, 243, 0.0575202)'
 							} }
-							onClick={ () => wallet.signIn() }
+							onClick={ () => setOpenDialog(true) }
 						>Get started</Button>
 						<Button
 							variant="outlined"
