@@ -10,7 +10,7 @@ import React from 'react';
 import ArrowLeftIcon from '../../svg/arrow-left';
 import LinkButton from './LinkButton';
 
-const ChooseDialog = ({ isOpen, onClose }) => {
+const ChooseDialog = ({ title, data, isOpen, onClose }) => {
   const theme = useTheme();
 
   return (
@@ -66,11 +66,11 @@ const ChooseDialog = ({ isOpen, onClose }) => {
             },
           }}
         >
-          Select an option
+          {title}
         </DialogTitle>
-
-        <LinkButton text="Bring your own server" to="/stake" />
-        <LinkButton text="kuutamo infrastructure platform" to="/pools" />
+        {data.map((dataEl) => (
+          <LinkButton key={dataEl.id} {...dataEl} />
+        ))}
       </DialogContent>
     </Dialog>
   );

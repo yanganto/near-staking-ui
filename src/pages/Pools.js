@@ -25,6 +25,8 @@ import Box from '@mui/material/Box';
 import { nearConfig } from '../helpers/nearConfig';
 import { useTheme } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
+import ChooseDialog from '../ui/components/ChooseDialog';
+import FileLinkIcon from '../svg/link';
 
 const Pools = ({ wallet, isSignedIn }) => {
   const theme = useTheme();
@@ -161,23 +163,42 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
     setMountedPools({ ...mountedPools, pool: server });
   };
 
+  const handleDialogClose = () => setOpenMountDialog(false);
+
+  const frameColor = theme.palette.text.primary;
+  const arrowColor = theme.palette.primary.main;
+
+  const poolDialogData = [
+    {
+      id: 1,
+      onClick: downloadKeyFile,
+      title: 'Step 1',
+      text: 'Key file',
+      icon: <FileLinkIcon frameColor={frameColor} arrowColor={arrowColor} />,
+    },
+    {
+      id: 2,
+      onClick: downloadConfigFile,
+      title: 'Step 2',
+      text: 'Config file',
+      icon: <FileLinkIcon frameColor={frameColor} arrowColor={arrowColor} />,
+    },
+    {
+      id: 3,
+      title: 'Step 3',
+      text: 'Follow CLI guide to install',
+      icon: <FileLinkIcon frameColor={frameColor} arrowColor={arrowColor} />,
+    },
+  ];
+
   return (
     <Container>
-      <Dialog open={openMountDialog}>
-        <DialogTitle id="alert-dialog-title">Follow the steps</DialogTitle>
-        <DialogActions>
-          <Button onClick={downloadKeyFile} variant="contained">
-            Key file
-          </Button>
-          <Button onClick={downloadConfigFile} variant="contained">
-            Config file
-          </Button>
-          <Button variant="contained">Follow CLI guide to install</Button>
-          <Button onClick={() => setOpenMountDialog(false)} variant="outlined">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ChooseDialog
+        title="Follow the steps"
+        isOpen={openMountDialog}
+        onClose={handleDialogClose}
+        data={poolDialogData}
+      />
       <Dialog open={openDialog}>
         <DialogTitle id="alert-dialog-title">
           Add existing validator
@@ -209,12 +230,12 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
         </DialogActions>
       </Dialog>
       <Box
-          sx={{
+        sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          }}
-        >
+        }}
+      >
         <Typography
           sx={{ fontSize: '48px' }}
           component="h1"
@@ -223,7 +244,6 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
         >
           List of validators
         </Typography>
-
         <Button
           to="/pools/create"
           component={Link}

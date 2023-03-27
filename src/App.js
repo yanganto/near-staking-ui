@@ -19,6 +19,7 @@ export default function App({ isSignedIn, wallet }) {
   const [isDarkTheme, setIsDarkTheme] = useState(
     localStorage.getItem('isDarkTheme') || ''
   );
+
   const changeTheme = () => {
     setIsDarkTheme(!isDarkTheme);
     localStorage.setItem('isDarkTheme', isDarkTheme ? '' : 'true');

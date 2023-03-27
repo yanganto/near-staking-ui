@@ -3,55 +3,75 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { getCustomThemeStyles } from '../styles/theme';
 
-const LinkButton = ({ to, text }) => {
+const LinkButton = ({ to, onClick, title, text, icon }) => {
   const theme = useTheme();
   const customTheme = getCustomThemeStyles(theme.palette.mode === 'dark');
 
   return (
     <Box
       sx={{
-        display: 'flex',
-        alignItems: 'center',
-        textDecoration: 'none',
-        color: 'inherit',
-        background: 'text.primary',
-        border: 1,
-        borderColor: 'primary.main',
-        padding: '15px 24px',
-        borderRadius: '10px',
         marginInline: '13%',
-        transition: '0.3s',
+        marginBottom: '24px',
 
-        '&:hover, &:active': {
-          boxShadow: customTheme.shadows.main,
-        },
-        '&:first-of-type': {
-          marginBottom: '24px',
-        },
         '&:last-of-type': {
           marginBottom: '104px',
         },
       }}
-      to={to}
-      component={Link}
     >
-      <Typography
-        variant="body2"
+      {title && (
+        <Typography
+          sx={{ fontSize: '16px', color: 'text.primary', marginBottom: '8px' }}
+        >
+          {title}
+        </Typography>
+      )}
+      <Box
         sx={{
-          fontFamily: "'Roboto', sans-serif",
-          fontWeight: '400',
-          fontSize: {
-            xs: '16px',
-            sm: '18px',
-            md: '20px',
-            lg: '24px',
-            xl: '26px',
+          display: 'flex',
+          alignItems: 'center',
+          textDecoration: 'none',
+          color: 'inherit',
+          background: 'text.primary',
+          border: 1,
+          borderColor: 'primary.main',
+          padding: '15px 24px',
+          borderRadius: '10px',
+          cursor: 'pointer',
+          transition: '0.3s',
+
+          '&:hover, &:active': {
+            boxShadow: customTheme.shadows.main,
           },
-          flexGrow: 1,
         }}
+        to={to}
+        component={to ? Link : 'div'}
+        onClick={onClick}
       >
-        {text}
-      </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontFamily: "'Roboto', sans-serif",
+            fontWeight: '400',
+            lineHeight: 1,
+            fontSize: {
+              xs: '16px',
+              sm: '18px',
+              md: '20px',
+              lg: '24px',
+              xl: '26px',
+            },
+            flexGrow: 1,
+          }}
+        >
+          {text}
+          <Box component="span" sx={{ width: '24px', height: 1 }}>
+            {icon}
+          </Box>
+        </Typography>
+      </Box>
     </Box>
   );
 };

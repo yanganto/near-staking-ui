@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { useState } from 'react';
+import { navPageDialogData } from '../constants';
 import ChooseDialog from '../ui/components/ChooseDialog';
 
 const Servers = ({ isSignedIn, wallet }) => {
@@ -28,7 +29,12 @@ const Servers = ({ isSignedIn, wallet }) => {
 
   return (
     <Container sx={{ marginLeft: '120px' }}>
-      <ChooseDialog isOpen={isOpen} onClose={handleClose} />
+      <ChooseDialog
+        title="Select an option"
+        isOpen={isOpen}
+        onClose={handleClose}
+        data={navPageDialogData}
+      />
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Typography component="h1" variant="h4" align="left" fontSize={48}>
           Servers
@@ -54,7 +60,7 @@ const Servers = ({ isSignedIn, wallet }) => {
             src={'/icons/addsquare-' + theme.palette.mode + '.png'}
             alt="add"
           />
-          &nbsp;New validator
+          &nbsp;ADD SERVER
         </Button>
       </Box>
       <Table aria-label="Servers" sx={{ marginTop: '24px' }}>

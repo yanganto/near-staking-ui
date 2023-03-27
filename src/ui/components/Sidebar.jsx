@@ -9,6 +9,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Drawer,
   List,
   ListItem,
   Radio,
@@ -22,6 +23,7 @@ import React, { useState } from 'react';
 import { TreeItem, treeItemClasses } from '@mui/lab';
 import { nearConfig } from '../../helpers/nearConfig';
 import { Link } from 'react-router-dom';
+import { drawerWidth } from '../../constants';
 
 export const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
   color: theme.palette.text.secondary,
@@ -140,7 +142,7 @@ const StyledTreeItem = ({ labelText, to, disabled, ...other }) => {
   );
 };
 
-const Sidebar = ({ wallet }) => {
+const Sidebar = ({ sidebarMobileOpen, handleDrawerToggle, wallet }) => {
   const [openRpcDialog, setOpenRpcDialog] = useState(false);
   const [ownRpcUrl, setOwnRpcUrl] = useState(
     wallet.network === 'mainnet'
@@ -169,10 +171,10 @@ const Sidebar = ({ wallet }) => {
     localStorage.setItem('own_backend_url', BackendUrl);
   };
 
-  return (
-    <Box>
+  const drawer = (
+    <>
       <TreeView
-        sx={{ paddingTop: '50px', paddingLeft: '20px' }}
+        sx={{ paddingTop: { xs: '126px', sm: '146px' }, paddingLeft: '20px' }}
         aria-label="protocol"
         defaultCollapseIcon={<ArrowDropDownIcon sx={{ marginLeft: '450px' }} />}
         defaultExpandIcon={<ArrowLeftIcon sx={{ marginLeft: '450px' }} />}
@@ -221,7 +223,50 @@ const Sidebar = ({ wallet }) => {
           />
         </ListItem>
       </List>
+    </>
+  );
 
+  return (
+    <Box>
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+      >
+        <Drawer
+          variant="temporary"
+          open={sidebarMobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: 'block', sm: 'none' },
+
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'none', sm: 'block' },
+
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+              borderWidth: 0,
+              background: 'none',
+            },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
+      </Box>
       <Dialog open={openRpcDialog} fullWidth>
         <DialogTitle id="alert-dialog-title">RPC</DialogTitle>
         <DialogContent>

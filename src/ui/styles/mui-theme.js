@@ -12,6 +12,7 @@ const theme = (isDarkTheme) => {
             },
             text: {
               primary: '#FEFEFF',
+              secondary: '#4F4B6D',
             },
             primary: {
               main: '#36DFD3',
@@ -19,7 +20,7 @@ const theme = (isDarkTheme) => {
           }
         : {
             background: { default: '#FEFEFF' },
-            text: { primary: '#002147' },
+            text: { primary: '#002147', secondary: '#4F4B6D' },
             primary: { main: '#802FF3' },
           }),
       info: { main: '#D2D1DA' },

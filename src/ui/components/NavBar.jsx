@@ -12,8 +12,9 @@ import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useConfirm } from 'material-ui-confirm';
 import { styled, useTheme } from '@mui/material/styles';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import LogoutIcon from '../../svg/logout';
+import Logo from '../../svg/logo';
 
 export const MyButton = styled(Button)(({ theme }) => ({
   minWidth: '20px',
@@ -24,16 +25,11 @@ export const MyButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
 }));
 
-const NavBar = ({ wallet, changeTheme }) => {
+const NavBar = ({ wallet, changeTheme, handleDrawerToggle }) => {
   let navigate = useNavigate();
   const theme = useTheme();
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   const confirm = useConfirm();
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
 
   const signOut = () => {
     if (wallet.wallet.id === 'wallet-connect') {
@@ -56,6 +52,10 @@ const NavBar = ({ wallet, changeTheme }) => {
     wallet.signOut();
     navigate('/');
   };
+
+  const firstLogoColor = theme.palette.mode === 'dark' ? '#FEFEFF' : '#4D4DFF';
+
+  const secondLogoColor = theme.palette.mode === 'dark' ? '#FEFEFF' : '#9900FF';
 
   return (
     <>
@@ -105,8 +105,13 @@ const NavBar = ({ wallet, changeTheme }) => {
             </Box>
           </Typography>
           <Typography component="div" sx={{ flexGrow: 1 }}>
-            <Box display="flex" alignItems="center" pl={2}>
-              <img src="/kuutamo-logo.png" alt="kuutamo" width="50px" />
+            <Box
+              display="flex"
+              alignItems="center"
+              sx={{ justifyContent: { xs: 'center', sm: 'flex-start' } }}
+              pl={2}
+            >
+              <Logo firstColor={firstLogoColor} secondColor={secondLogoColor} />
               <Typography
                 pl={1}
                 pr={2}
@@ -132,9 +137,9 @@ const NavBar = ({ wallet, changeTheme }) => {
           </Typography>
           <Box align="right" display="flex">
             <MyButton onClick={() => signOut()}>
-              <img
-                src={'/icons/logout-' + theme.palette.mode + '.png'}
-                alt="logout"
+              <LogoutIcon
+                arrowColor={theme.palette.primary.main}
+                doorColor={theme.palette.text.primary}
               />
             </MyButton>
             <Tooltip
