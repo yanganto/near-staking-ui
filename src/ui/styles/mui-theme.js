@@ -22,6 +22,7 @@ const theme = (isDarkTheme) => {
             text: { primary: '#002147' },
             primary: { main: '#802FF3' },
           }),
+      info: { main: '#D2D1DA' },
       secondary: {
         main: '#19857b',
       },

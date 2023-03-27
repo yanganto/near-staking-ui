@@ -92,13 +92,30 @@ export const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
   },
 }));
 
-const StyledTreeItem = ({
-  labelIcon: LabelIcon,
-  labelText,
-  to,
-  disabled,
-  ...other
-}) => {
+const StyledTreeHeader = ({ labelText, disabled, ...other }) => {
+  return (
+    <Box
+      sx={{ display: 'flex', alignItems: 'center' }}
+      style={{ textDecoration: 'none', color: 'inherit' }}
+    >
+      <StyledTreeItemRoot
+        sx={{ margin: '24px 0 0 8px' }}
+        disabled={disabled}
+        label={
+          <Typography
+            variant="body2"
+            sx={{ fontWeight: 'inherit', fontSize: 'inherit', flexGrow: 1 }}
+          >
+            {labelText}
+          </Typography>
+        }
+        {...other}
+      />
+    </Box>
+  );
+};
+
+const StyledTreeItem = ({ labelText, to, disabled, ...other }) => {
   return (
     <Box
       sx={{ display: 'flex', alignItems: 'center' }}
@@ -168,10 +185,10 @@ const Sidebar = ({ wallet }) => {
           />
         </Box>
 
-        <StyledTreeItem nodeId="1" labelText="Staking">
+        <StyledTreeHeader nodeId="1" labelText="Staking">
           <StyledTreeItem nodeId="11" labelText="Delegate" to="/stake" />
           <StyledTreeItem nodeId="12" labelText="Reporting" to="/rewards" />
-        </StyledTreeItem>
+        </StyledTreeHeader>
         <StyledTreeItem nodeId="2" labelText="Validators" to="/pools" />
         <Box pl={1} pr={1} pt={2}>
           <Chip
