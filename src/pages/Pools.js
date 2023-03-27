@@ -356,6 +356,7 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                     <Button
                       variant="contained"
                       onClick={() => mountServer(key)}
+                      disabled={!mountedPools[key]}
                     >
                       Mount
                     </Button>
