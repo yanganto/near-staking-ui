@@ -69,8 +69,8 @@ const ChooseDialog = ({ isOpen, onClose }) => {
           Select an option
         </DialogTitle>
 
-        <LinkButton text="Bring your own server" to="/stake" />
-        <LinkButton text="kuutamo infrastructure platform" to="/pools" />
+        <LinkButton text="Bring your own server" to="/servers/add" />
+        <LinkButton text="kuutamo infrastructure platform" to="#" />
       </DialogContent>
     </Dialog>
   );
