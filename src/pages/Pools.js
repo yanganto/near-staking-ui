@@ -34,6 +34,7 @@ const Pools = ({ wallet, isSignedIn }) => {
   const [openMountDialog, setOpenMountDialog] = useState(false);
   const [existingValidator, setExistingValidator] = useState('');
   const servers = JSON.parse(localStorage.getItem('servers') || '[]');
+  const keys = JSON.parse(localStorage.getItem('keys') || '[]');
   const [selectedPool, setSelectedPool] = useState(false);
   const [mountedPools, setMountedPools] = useState(
     JSON.parse(localStorage.getItem('mountedPools') || '{}')
@@ -117,6 +118,7 @@ const Pools = ({ wallet, isSignedIn }) => {
     const server = servers.filter(
       (element) => element.id === mountedPools[selectedPool]
     )[0];
+    const sshKey = keys.filter((element) => element.name === server.key)[0];
     const devicePaths = [];
     for (let i = 0; i < server.disks; i++) {
       devicePaths.push(`/dev/nvme${i}n1`);
@@ -125,7 +127,7 @@ const Pools = ({ wallet, isSignedIn }) => {
 
     let txt = `[host_defaults]
 public_ssh_keys = [
- '''${server.key}'''
+ '''${sshKey.key}'''
 ]
 install_ssh_user = "${server.Username}"
 nixos_module = "single-node-validator-${nearConfig.networkId}"
@@ -209,12 +211,12 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
         </DialogActions>
       </Dialog>
       <Box
-          sx={{
+        sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          }}
-        >
+        }}
+      >
         <Typography
           sx={{ fontSize: '48px' }}
           component="h1"
