@@ -14,6 +14,9 @@ import {
   DialogActions,
   DialogTitle,
   IconButton,
+  Select,
+  InputLabel,
+  FormControl,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getMyPools, getSignature } from '../helpers/staking';
@@ -21,13 +24,20 @@ import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import { nearConfig } from '../helpers/nearConfig';
 import { useTheme } from '@mui/material/styles';
+import MenuItem from '@mui/material/MenuItem';
 
 const Pools = ({ wallet, isSignedIn }) => {
   const theme = useTheme();
   const [myPools, setMyPools] = useState({});
   const [myPoolsIsReady, setMyPoolsIsReady] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openMountDialog, setOpenMountDialog] = useState(false);
   const [existingValidator, setExistingValidator] = useState('');
+  const servers = JSON.parse(localStorage.getItem('servers') || '[]');
+  const [selectedPool, setSelectedPool] = useState(false);
+  const [mountedPools, setMountedPools] = useState(
+    JSON.parse(localStorage.getItem('mountedPools') || '{}')
+  );
 
   useEffect(() => {
     (async () => {
@@ -77,8 +87,97 @@ const Pools = ({ wallet, isSignedIn }) => {
     setMyPoolsIsReady(true);
   };
 
+  function dataURItoBlob(dataURI) {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const _ia = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      _ia[i] = byteString.charCodeAt(i);
+    }
+    const dataView = new DataView(arrayBuffer);
+    const blob = new Blob([dataView], { type: mimeString });
+    return blob;
+  }
+
+  const downloadKeyFile = () => {
+    const key = localStorage.getItem('key_' + selectedPool);
+    if (!key) return false;
+    const blob = dataURItoBlob(key);
+    const a = document.createElement('a');
+    a.download = selectedPool + '.zip';
+    a.href = URL.createObjectURL(blob);
+    a.addEventListener('click', (e) => {
+      setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000);
+    });
+    a.click();
+  };
+
+  const downloadConfigFile = () => {
+    const server = servers.filter(
+      (element) => element.id === mountedPools[selectedPool]
+    )[0];
+    const devicePaths = [];
+    for (let i = 0; i < server.disks; i++) {
+      devicePaths.push(`/dev/nvme${i}n1`);
+    }
+    const disks = devicePaths.map((path) => `'${path}'`).join(', ');
+
+    let txt = `[host_defaults]
+public_ssh_keys = [
+ '''${server.key}'''
+]
+install_ssh_user = "${server.Username}"
+nixos_module = "single-node-validator-${nearConfig.networkId}"
+[hosts]
+[hosts.validator-00]
+ipv4_address = "${server.IPv4}"
+ipv4_cidr = ${server.CIDR}
+ipv4_gateway = "${server.Gateway}"
+disks = [${disks}]
+encrypted_kuutamo_app_file = "${selectedPool}.zip"
+`;
+    if (server.Provider === 'Latitude') txt += 'interface = "enp1s0f0"\n';
+
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.download = 'kneard.toml';
+    a.href = URL.createObjectURL(blob);
+    a.addEventListener('click', (e) => {
+      setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000);
+    });
+    a.click();
+  };
+
+  const mountServer = (pool) => {
+    setSelectedPool(pool);
+    setOpenMountDialog(true);
+  };
+
+  const handleChangeMountPool = (server, pool) => {
+    const mp = mountedPools;
+    mp[pool] = server;
+    localStorage.setItem('mountedPools', JSON.stringify(mp));
+    setMountedPools({ ...mountedPools, pool: server });
+  };
+
   return (
     <Container>
+      <Dialog open={openMountDialog}>
+        <DialogTitle id="alert-dialog-title">Follow the steps</DialogTitle>
+        <DialogActions>
+          <Button onClick={downloadKeyFile} variant="contained">
+            Key file
+          </Button>
+          <Button onClick={downloadConfigFile} variant="contained">
+            Config file
+          </Button>
+          <Button variant="contained">Follow CLI guide to install</Button>
+          <Button onClick={() => setOpenMountDialog(false)} variant="outlined">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Dialog open={openDialog}>
         <DialogTitle id="alert-dialog-title">
           Add existing validator
@@ -110,12 +209,12 @@ const Pools = ({ wallet, isSignedIn }) => {
         </DialogActions>
       </Dialog>
       <Box
-        sx={{
+          sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-        }}
-      >
+          }}
+        >
         <Typography
           sx={{ fontSize: '48px' }}
           component="h1"
@@ -154,7 +253,8 @@ const Pools = ({ wallet, isSignedIn }) => {
             <TableCell sx={{ borderRadius: '10px 0 0 10px' }}>Pool</TableCell>
             <TableCell>owner_id</TableCell>
             <TableCell>public_key</TableCell>
-            <TableCell sx={{ borderRadius: '0 10px 10px 0' }}>Fee</TableCell>
+            <TableCell>Fee</TableCell>
+            <TableCell sx={{ borderRadius: '0 10px 10px 0' }} />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -204,8 +304,41 @@ const Pools = ({ wallet, isSignedIn }) => {
                   />
                 </IconButton>
               </TableCell>
+              <TableCell>{myPools[key].fee}%</TableCell>
               <TableCell sx={{ borderRadius: '0 5px 5px 0' }}>
-                {myPools[key].fee}%
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                    <InputLabel id="demo-simple-select-label">
+                      Server
+                    </InputLabel>
+                    <Select
+                      labelId="server-select-label"
+                      id={'server-select' + key}
+                      value={
+                        mountedPools[key] === undefined ? '' : mountedPools[key]
+                      }
+                      label="Server"
+                      onChange={(event) =>
+                        handleChangeMountPool(event.target.value, key)
+                      }
+                    >
+                      <MenuItem value="">---</MenuItem>
+                      {servers.map((s) => (
+                        <MenuItem value={s.id} key={s.id}>
+                          {s.id}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl size="small">
+                    <Button
+                      variant="contained"
+                      onClick={() => mountServer(key)}
+                    >
+                      Mount
+                    </Button>
+                  </FormControl>
+                </Box>
               </TableCell>
             </TableRow>
           ))}
