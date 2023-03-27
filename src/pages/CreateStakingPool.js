@@ -5,20 +5,17 @@ import {
   Grid,
   InputAdornment,
   MenuItem,
-  Step,
-  StepButton,
   Box,
-  Stepper,
   Button,
   Link,
   Typography,
   TextField,
 } from '@mui/material';
+import { Link as LinkRouter } from 'react-router-dom';
 import { nearConfig } from '../helpers/nearConfig';
 import { createStakingPool, generateKey } from '../helpers/staking';
 import * as zip from '@zip.js/zip.js';
 import WarningIcon from '@mui/icons-material/Warning';
-import { useNavigate } from 'react-router-dom';
 
 const DataForm = (props) => {
   const [statusData, setStatusData] = useState({ open: false });
@@ -79,11 +76,29 @@ const DataForm = (props) => {
         { password }
       ),
     ]);
-    return zipWriter.close();
+    return await zipWriter.close();
+  };
+
+  const saveKeyPair2Storage = (blob) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      localStorage.setItem(
+        'key_' +
+          poolName +
+          '.' +
+          (contractPool === 2
+            ? nearConfig.contractPool
+            : nearConfig.contractPoolV1),
+        event.target.result
+      );
+    };
+    reader.readAsDataURL(blob);
+    return blob;
   };
 
   const downloadFile = (blob) => {
     if (!blob) return false;
+    saveKeyPair2Storage(blob);
     const a = document.createElement('a');
     a.download =
       poolName +
@@ -184,7 +199,6 @@ const DataForm = (props) => {
         props.wallet.wallet.id === 'ledger' ||
         props.wallet.wallet.id === 'wallet-connect'
       ) {
-        props.setActiveStep(2);
         try {
           setStatusData({
             open: true,
@@ -237,7 +251,7 @@ const DataForm = (props) => {
         <Typography component="h1" variant="h5" align={'center'}>
           Create a new pool
         </Typography>
-        {props.activeStep < 2 ? (
+        {!statusData.open ? (
           <>
             <Grid container>
               <Grid item xs={8}>
@@ -288,110 +302,94 @@ const DataForm = (props) => {
               value={publicKey}
               onChange={handlePublicKeyChange}
             />
-            {props.activeStep === 0 ? (
+            <Grid container justifyContent="flex-end">
+              <Button onClick={handleGenerateKey} variant="outlined">
+                Generate Key pair
+              </Button>
+            </Grid>
+            {keyPair ? (
               <>
+                <TextField
+                  type="password"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="password"
+                  label="Password"
+                  autoComplete="off"
+                  error={!!confirmPasswordErrorText}
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
+                <TextField
+                  type="password"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="confirmPassword"
+                  label="Confirm password"
+                  autoComplete="off"
+                  helperText={confirmPasswordErrorText}
+                  error={!!confirmPasswordErrorText}
+                  value={confirmPassword}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                  }}
+                />
                 <Grid container justifyContent="flex-end">
-                  <Button onClick={handleGenerateKey} variant="outlined">
-                    Generate Key pair
+                  <Box sx={{ color: 'error.main' }} p={1}>
+                    {keyPairErrorText}
+                  </Box>
+                  <Button
+                    onClick={() => getZipFileBlob(keyPair).then(downloadFile)}
+                    variant="outlined"
+                  >
+                    Download Key pair
                   </Button>
                 </Grid>
-                {keyPair ? (
-                  <>
-                    <TextField
-                      type="password"
-                      margin="normal"
-                      required
-                      fullWidth
-                      id="password"
-                      label="Password"
-                      autoComplete="off"
-                      error={!!confirmPasswordErrorText}
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
-                    />
-                    <TextField
-                      type="password"
-                      margin="normal"
-                      required
-                      fullWidth
-                      id="confirmPassword"
-                      label="Confirm password"
-                      autoComplete="off"
-                      helperText={confirmPasswordErrorText}
-                      error={!!confirmPasswordErrorText}
-                      value={confirmPassword}
-                      onChange={(e) => {
-                        setConfirmPassword(e.target.value);
-                      }}
-                    />
-                    <Grid container justifyContent="flex-end">
-                      <Box sx={{ color: 'error.main' }} p={1}>
-                        {keyPairErrorText}
-                      </Box>
-                      <Button
-                        onClick={() =>
-                          getZipFileBlob(keyPair).then(downloadFile)
-                        }
-                        variant="outlined"
-                      >
-                        Download Key pair
-                      </Button>
-                    </Grid>
-                  </>
-                ) : null}
               </>
             ) : null}
-            {props.activeStep === 1 ? (
-              <>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="ownerAccount"
-                  label="Owner account"
-                  autoComplete="off"
-                  helperText={ownerAccountErrorText}
-                  error={!!ownerAccountErrorText}
-                  value={ownerAccount}
-                  onChange={(e) => {
-                    setOwnerAccount(e.target.value);
-                    setOwnerAccountErrorText('');
-                  }}
-                />
-                <TextField
-                  type="number"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="percentageFee"
-                  label="Percentage fee"
-                  autoComplete="off"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">%</InputAdornment>
-                    ),
-                  }}
-                  helperText={percentageFeeErrorText}
-                  error={!!percentageFeeErrorText}
-                  value={percentageFee}
-                  onChange={(e) => {
-                    setPercentageFee(e.target.value);
-                    setPercentageFeeErrorText('');
-                  }}
-                />
-                <div>
-                  <Button
-                    onClick={submitCreateStakingPool}
-                    variant="contained"
-                    fullWidth
-                  >
-                    LAUNCH POOL
-                  </Button>
-                </div>
-              </>
-            ) : null}
+
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="ownerAccount"
+              label="Owner account"
+              autoComplete="off"
+              helperText={ownerAccountErrorText}
+              error={!!ownerAccountErrorText}
+              value={ownerAccount}
+              onChange={(e) => {
+                setOwnerAccount(e.target.value);
+                setOwnerAccountErrorText('');
+              }}
+            />
+            <TextField
+              type="number"
+              margin="normal"
+              required
+              id="percentageFee"
+              label="Percentage fee"
+              autoComplete="off"
+              InputProps={{
+                endAdornment: <InputAdornment position="end">%</InputAdornment>,
+              }}
+              helperText={percentageFeeErrorText}
+              error={!!percentageFeeErrorText}
+              value={percentageFee}
+              onChange={(e) => {
+                setPercentageFee(e.target.value);
+                setPercentageFeeErrorText('');
+              }}
+            />
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button onClick={submitCreateStakingPool} variant="contained">
+                LAUNCH POOL
+              </Button>
+            </Box>
           </>
         ) : (
           <Card variant="outlined">
@@ -420,6 +418,15 @@ const DataForm = (props) => {
                     >
                       View on Explorer
                     </Link>
+                    <Box p={2}>
+                      <Button
+                        to="/pools"
+                        component={LinkRouter}
+                        variant="contained"
+                      >
+                        Finish
+                      </Button>
+                    </Box>
                   </Grid>
                 ) : null}
               </Grid>
@@ -432,29 +439,6 @@ const DataForm = (props) => {
 };
 
 export default function CreateStakingPool({ wallet, isSignedIn }) {
-  const [activeStep, setActiveStep] = useState(0);
-  const steps = ['Generate Key pair', 'Pool settings', 'Launch pool'];
-  let navigate = useNavigate();
-
-  const handleNext = () => {
-    if (activeStep === 2) navigate('/pools');
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    if (activeStep === 0) navigate('/pools');
-    else setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleStep = (step) => () => {
-    if (step <= 1) setActiveStep(step);
-  };
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('transactionHashes')) setActiveStep(2);
-  }, [isSignedIn]);
-
   if (!isSignedIn) {
     wallet.signIn();
     return false;
@@ -462,37 +446,7 @@ export default function CreateStakingPool({ wallet, isSignedIn }) {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Stepper nonLinear activeStep={activeStep}>
-        {steps.map((label, index) => (
-          <Step key={label}>
-            <StepButton color="inherit" onClick={handleStep(index)}>
-              {label}
-            </StepButton>
-          </Step>
-        ))}
-      </Stepper>
-      <DataForm
-        activeStep={activeStep}
-        setActiveStep={setActiveStep}
-        wallet={wallet}
-      />
-      <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-        <Button
-          color="inherit"
-          //disabled={ activeStep === 0 }
-          onClick={handleBack}
-          sx={{ mr: 1 }}
-        >
-          Back
-        </Button>
-        <Box sx={{ flex: '1 1 auto' }} />
-        {activeStep < 1 ? <Button onClick={handleNext}>Next</Button> : <></>}
-        {activeStep === 2 ? (
-          <Button onClick={handleNext}>Finish</Button>
-        ) : (
-          <></>
-        )}
-      </Box>
+      <DataForm wallet={wallet} />
     </Box>
   );
 }
