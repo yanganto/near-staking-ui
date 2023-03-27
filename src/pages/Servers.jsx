@@ -41,7 +41,6 @@ const Servers = ({ isSignedIn, wallet }) => {
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
         <Button
-          to="/servers/create"
           onClick={handleOpen}
           variant="text"
           sx={{
@@ -60,7 +59,7 @@ const Servers = ({ isSignedIn, wallet }) => {
             src={'/icons/addsquare-' + theme.palette.mode + '.png'}
             alt="add"
           />
-          &nbsp;ADD SERVER
+          Add server
         </Button>
       </Box>
       <Table aria-label="Servers" sx={{ marginTop: '24px' }}>
