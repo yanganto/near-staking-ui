@@ -199,7 +199,7 @@ const Sidebar = ({ sidebarMobileOpen, handleDrawerToggle, wallet }) => {
           />
         </Box>
         <StyledTreeItem nodeId="3" labelText="Servers" to="/servers" />
-        <StyledTreeItem nodeId="4" labelText="Keys" disabled />
+        <StyledTreeItem nodeId="4" labelText="Keys" to="/keys" />
       </TreeView>
       <List sx={{ paddingLeft: '12px' }}>
         <ListItem onClick={() => setOpenRpcDialog(true)} component={Link}>
