@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Box from '@mui/material/Box';
 import { ConfirmProvider } from 'material-ui-confirm';
 import theme from './ui/styles/mui-theme';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
-import NavBar from './ui/components/NavBar';
 import CreateStakingPool from './pages/CreateStakingPool';
 import StakeToKuutamoPool from './pages/StakeToKuutamoPool';
 import Home from './pages/Home';
@@ -14,7 +12,8 @@ import Rewards from './pages/Rewards';
 import News from './pages/News';
 import Servers from './pages/Servers';
 import NavPage from './pages/NavPage';
-import Sidebar from './ui/components/Sidebar';
+import Layout from './ui/components/Layout';
+import NavPageLayout from './ui/components/NavPageLayout';
 
 export default function App({ isSignedIn, wallet }) {
   const [isDarkTheme, setIsDarkTheme] = useState(
@@ -29,72 +28,63 @@ export default function App({ isSignedIn, wallet }) {
     <ThemeProvider theme={theme(isDarkTheme)}>
       <BrowserRouter>
         <ConfirmProvider>
-          {isSignedIn && <NavBar wallet={wallet} changeTheme={changeTheme} />}
-
-          <Box
-            sx={{
-              width: 1,
-              minHeight: `calc(100vh - 40px)`,
-              display: 'flex',
-              alignItems: 'stretch',
-            }}
-          >
-            {isSignedIn && <Sidebar wallet={wallet} />}
-            <Box
-              component="main"
-              sx={{
-                display: 'flex',
-                alignItems: 'stretch',
-                width: 1,
-                paddingTop: '53px',
-              }}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Layout
+                  isSignedIn={isSignedIn}
+                  wallet={wallet}
+                  changeTheme={changeTheme}
+                />
+              }
             >
-              <Routes>
-                <Route
-                  index
-                  element={<Home isSignedIn={isSignedIn} wallet={wallet} />}
+              <Route
+                index
+                element={<Home isSignedIn={isSignedIn} wallet={wallet} />}
+              />
+              <Route
+                path="/pools"
+                element={<Pools isSignedIn={isSignedIn} wallet={wallet} />}
+              />
+              <Route
+                path="/pools/create"
+                element={
+                  <CreateStakingPool isSignedIn={isSignedIn} wallet={wallet} />
+                }
+              />
+              <Route
+                path="/stake"
+                element={
+                  <StakeToKuutamoPool isSignedIn={isSignedIn} wallet={wallet} />
+                }
+              />
+              <Route path="/news" element={<News />} />
+              <Route
+                path="/rewards"
+                element={<Rewards isSignedIn={isSignedIn} wallet={wallet} />}
+              />
+              <Route
+                path="/servers"
+                element={<Servers isSignedIn={isSignedIn} wallet={wallet} />}
+              />
+            </Route>
+            <Route
+              path="/navpage"
+              element={
+                <NavPageLayout
+                  isSignedIn={isSignedIn}
+                  wallet={wallet}
+                  changeTheme={changeTheme}
                 />
-                <Route
-                  path="/pools"
-                  element={<Pools isSignedIn={isSignedIn} wallet={wallet} />}
-                />
-                <Route
-                  path="/pools/create"
-                  element={
-                    <CreateStakingPool
-                      isSignedIn={isSignedIn}
-                      wallet={wallet}
-                    />
-                  }
-                />
-                <Route
-                  path="/stake"
-                  element={
-                    <StakeToKuutamoPool
-                      isSignedIn={isSignedIn}
-                      wallet={wallet}
-                    />
-                  }
-                />
-                <Route path="/news" element={<News />} />
-                <Route
-                  path="/rewards"
-                  element={<Rewards isSignedIn={isSignedIn} wallet={wallet} />}
-                />
-                <Route
-                  path="/servers"
-                  element={<Servers isSignedIn={isSignedIn} wallet={wallet} />}
-                />
-                <Route
-                  path="/navpage"
-                  element={<NavPage isSignedIn={isSignedIn} wallet={wallet} />}
-                />
-              </Routes>
-            </Box>
-          </Box>
-          <Box sx={{ textAlign: 'center', width: '100%', height: '40px' }}>
-            © 2023 kuutamo. All rights reserved
-          </Box>
+              }
+            >
+              <Route
+                index
+                element={<NavPage isSignedIn={isSignedIn} wallet={wallet} />}
+              />
+            </Route>
+          </Routes>
         </ConfirmProvider>
       </BrowserRouter>
       <CssBaseline />

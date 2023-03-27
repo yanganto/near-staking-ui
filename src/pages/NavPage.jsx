@@ -1,18 +1,18 @@
 import React, { useEffect } from 'react';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ChooseDialog from '../ui/components/ChooseDialog';
 
 const NavPage = ({ isSignedIn, wallet }) => {
+  const navigate = useNavigate();
   useEffect(() => {
-    console.log('here');
     if (!isSignedIn) {
-      console.log('here');
       wallet.signIn();
     }
   }, [wallet, isSignedIn]);
 
   const handleClose = () => {
-    redirect('/');
+    console.log('here');
+    navigate('/');
   };
 
   return (

@@ -13,6 +13,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useConfirm } from 'material-ui-confirm';
 import { styled, useTheme } from '@mui/material/styles';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const MyButton = styled(Button)(({ theme }) => ({
   minWidth: '20px',
@@ -24,6 +25,7 @@ export const MyButton = styled(Button)(({ theme }) => ({
 }));
 
 const NavBar = ({ wallet, changeTheme }) => {
+  let navigate = useNavigate();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -52,6 +54,7 @@ const NavBar = ({ wallet, changeTheme }) => {
         .catch(() => {});
     }
     wallet.signOut();
+    navigate('/');
   };
 
   return (
@@ -64,10 +67,8 @@ const NavBar = ({ wallet, changeTheme }) => {
           justifyContent: 'center',
           color: 'inherit',
           bgcolor: theme.palette.mode === 'dark' ? '#091429' : '#FEFEFF',
-          borderBottom:
-            theme.palette.mode === 'dark'
-              ? '1px solid #4F4B6D'
-              : '1px solid #D2D1DA',
+          borderBottom: '1px solid ',
+          borderColor: 'info.main',
           backgroundImage: 'none',
           boxShadow: 'none',
         }}

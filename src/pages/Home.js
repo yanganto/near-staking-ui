@@ -104,7 +104,7 @@ const Home = ({ isSignedIn, wallet }) => {
                 Select an option
               </DialogTitle>
               <LinkButton text="Just stake" to="/stake" />
-              <LinkButton text="Setup a node" to="/pools" />
+              <LinkButton text="Setup a node" to="/navpage" />
             </DialogContent>
           </Dialog>
           <Box sx={{ position: 'fixed', top: '0', right: '0' }}>
