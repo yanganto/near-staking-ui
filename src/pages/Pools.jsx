@@ -27,6 +27,7 @@ import { useTheme } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
 import ChooseDialog from '../ui/components/ChooseDialog';
 import FileLinkIcon from '../svg/link';
+import SnackbarAlert from '../ui/components/SnackbarAlert';
 
 const Pools = ({ wallet, isSignedIn }) => {
   const theme = useTheme();
@@ -34,6 +35,7 @@ const Pools = ({ wallet, isSignedIn }) => {
   const [myPoolsIsReady, setMyPoolsIsReady] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [openMountDialog, setOpenMountDialog] = useState(false);
+  const [warningMount, setWarningMount] = useState('');
   const [existingValidator, setExistingValidator] = useState('');
   const servers = JSON.parse(localStorage.getItem('servers') || '[]');
   const keys = JSON.parse(localStorage.getItem('keys') || '[]');
@@ -105,7 +107,10 @@ const Pools = ({ wallet, isSignedIn }) => {
 
   const downloadKeyFile = () => {
     const key = localStorage.getItem('key_' + selectedPool);
-    if (!key) return false;
+    if (!key) {
+      setWarningMount('Key file not found');
+      return false;
+    }
     const blob = dataURItoBlob(key);
     const a = document.createElement('a');
     a.download = selectedPool + '.zip';
@@ -121,6 +126,10 @@ const Pools = ({ wallet, isSignedIn }) => {
       (element) => element.id === mountedPools[selectedPool]
     )[0];
     const sshKey = keys.filter((element) => element.name === server.key)[0];
+    if (!sshKey) {
+      setWarningMount('SSH Public Key not found');
+      return false;
+    }
     const devicePaths = [];
     for (let i = 0; i < server.disks; i++) {
       devicePaths.push(`/dev/nvme${i}n1`);
@@ -155,6 +164,7 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
 
   const mountServer = (pool) => {
     setSelectedPool(pool);
+    setWarningMount('');
     setOpenMountDialog(true);
   };
 
@@ -197,6 +207,11 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
 
   return (
     <Container>
+      <SnackbarAlert
+        msg={warningMount}
+        setMsg={setWarningMount}
+        severity="error"
+      />
       <ChooseDialog
         title="Follow the steps"
         isOpen={openMountDialog}

@@ -18,6 +18,7 @@ import ChooseDialog from '../ui/components/ChooseDialog';
 const Servers = ({ isSignedIn, wallet }) => {
   const [isOpen, setIsOpen] = useState(false);
   const theme = useTheme();
+  const servers = JSON.parse(localStorage.getItem('servers') || '[]');
 
   const handleClose = () => {
     setIsOpen(false);
@@ -28,7 +29,7 @@ const Servers = ({ isSignedIn, wallet }) => {
   };
 
   return (
-    <Container sx={{ marginLeft: '120px' }}>
+    <Container>
       <ChooseDialog
         title="Select an option"
         isOpen={isOpen}
@@ -65,27 +66,29 @@ const Servers = ({ isSignedIn, wallet }) => {
       <Table aria-label="Servers" sx={{ marginTop: '24px' }}>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ borderTopLeftRadius: '10px' }} align="center">
+            <TableCell sx={{ borderTopLeftRadius: '10px' }}>
               ID
             </TableCell>
-            <TableCell align="center">Type</TableCell>
-            <TableCell align="center">IPv4</TableCell>
-            <TableCell align="center">Gateway</TableCell>
-            <TableCell align="center">Username</TableCell>
-            <TableCell align="center" sx={{ borderTopRightRadius: '10px' }}>
+            <TableCell>Type</TableCell>
+            <TableCell>IPv4</TableCell>
+            <TableCell>Gateway</TableCell>
+            <TableCell>Username</TableCell>
+            <TableCell sx={{ borderTopRightRadius: '10px' }}>
               SSH Key
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-          </TableRow>
+          {servers.map((s) => (
+            <TableRow key={s.id}>
+              <TableCell>{s.id}</TableCell>
+              <TableCell>{s.Type}</TableCell>
+              <TableCell>{s.IPv4}</TableCell>
+              <TableCell>{s.Gateway}</TableCell>
+              <TableCell>{s.Username}</TableCell>
+              <TableCell>{s.key}</TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </Container>
