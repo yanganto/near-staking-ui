@@ -17,11 +17,17 @@ const theme = (isDarkTheme) => {
             primary: {
               main: '#36DFD3',
             },
+            success: {
+              main: '#0D1E3D',
+            },
           }
         : {
             background: { default: '#FEFEFF' },
             text: { primary: '#002147', secondary: '#4F4B6D' },
             primary: { main: '#802FF3' },
+            success: {
+              main: '#D6DBF0',
+            },
           }),
       info: { main: '#D2D1DA' },
       secondary: {
@@ -73,7 +79,7 @@ const theme = (isDarkTheme) => {
           root: {
             borderRadius: 8,
             color: isDarkTheme ? '#D2D1DA' : '#002147',
-            backgroundColor: isDarkTheme ? '#151C2B' : '#D6DBF0',
+            backgroundColor: isDarkTheme ? '#0D1E3D' : '#D6DBF0',
           },
         },
       },
@@ -87,7 +93,7 @@ const theme = (isDarkTheme) => {
       MuiTableHead: {
         styleOverrides: {
           root: {
-            backgroundColor: isDarkTheme ? '#151C2B' : '#D6DBF0',
+            backgroundColor: isDarkTheme ? '#0D1E3D' : '#D6DBF0',
           },
         },
       },

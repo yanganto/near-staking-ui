@@ -169,7 +169,8 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
 
   const frameColor = theme.palette.text.primary;
   const arrowColor = theme.palette.primary.main;
-
+  const isServersExists = !!localStorage.getItem('servers');
+  const isKeysExists = !!localStorage.getItem('keys');
   const poolDialogData = [
     {
       id: 1,
@@ -183,6 +184,7 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
       onClick: downloadConfigFile,
       title: 'Step 2',
       text: 'Config file',
+      disabled: !(isServersExists && isKeysExists),
       icon: <FileLinkIcon frameColor={frameColor} arrowColor={arrowColor} />,
     },
     {

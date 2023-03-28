@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { getCustomThemeStyles } from '../styles/theme';
 
-const LinkButton = ({ to, onClick, title, text, icon }) => {
+const LinkButton = ({ to, onClick, title, text, icon, disabled }) => {
   const theme = useTheme();
   const customTheme = getCustomThemeStyles(theme.palette.mode === 'dark');
 
@@ -36,8 +36,9 @@ const LinkButton = ({ to, onClick, title, text, icon }) => {
           borderColor: 'primary.main',
           padding: '15px 24px',
           borderRadius: '10px',
-          cursor: 'pointer',
+          cursor: `${disabled ? 'not-allowed' : 'pointer'}`,
           transition: '0.3s',
+          opacity: `${disabled ? '0.3' : '1'}`,
 
           '&:hover, &:active': {
             boxShadow: customTheme.shadows.main,
@@ -45,7 +46,7 @@ const LinkButton = ({ to, onClick, title, text, icon }) => {
         }}
         to={to}
         component={to ? Link : 'div'}
-        onClick={onClick}
+        onClick={disabled ? undefined : onClick}
       >
         <Typography
           variant="body2"
