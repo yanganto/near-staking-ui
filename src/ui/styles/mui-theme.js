@@ -118,7 +118,7 @@ const theme = (isDarkTheme) => {
             fontWeight: '500',
             fontSize: '18px',
             backgroundColor: isDarkTheme ? '#151C2B' : 'inherit',
-            borderColor: '#D2D1DA',
+            borderColor: isDarkTheme ? '#011124' : '#D2D1DA',
             height: '43px',
             color: isDarkTheme ? '#9492A7' : '#4F4B6D',
           },

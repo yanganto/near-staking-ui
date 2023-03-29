@@ -149,10 +149,10 @@ const AddServer = ({ isSignedIn, wallet }) => {
             </Box>
             &nbsp;- use code <br /> “kuutamo” at checkout for 20% off
           </DialogCopyLinkEl>
-          <DialogCopyLinkEl to="https://miro.com/app/board/uXjVMeQRhrk=/?moveToWidget=3458764549184340446&cot=14">
+          <DialogCopyLinkEl to="https://www.ovhcloud.com/en-gb/bare-metal/advance/adv-1/">
             <Box
               component={Link}
-              to="https://miro.com/app/board/uXjVMeQRhrk=/?moveToWidget=3458764549184340446&cot=14"
+              to="https://www.ovhcloud.com/en-gb/bare-metal/advance/adv-1/"
               target="_blank"
               sx={{ color: 'info.secondary', textUnderlineOffset: '3px' }}
             >
