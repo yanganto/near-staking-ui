@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogTitle,
   Drawer,
+  IconButton,
   List,
   ListItem,
   Radio,
@@ -24,6 +25,7 @@ import { TreeItem, treeItemClasses } from '@mui/lab';
 import { nearConfig } from '../../helpers/nearConfig';
 import { Link } from 'react-router-dom';
 import { drawerWidth } from '../../constants';
+import { useTheme } from '@emotion/react';
 
 export const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
   color: theme.palette.text.secondary,
@@ -142,7 +144,13 @@ const StyledTreeItem = ({ labelText, to, disabled, ...other }) => {
   );
 };
 
-const Sidebar = ({ sidebarMobileOpen, handleDrawerToggle, wallet }) => {
+const Sidebar = ({
+  sidebarMobileOpen,
+  handleDrawerToggle,
+  wallet,
+  changeTheme,
+}) => {
+  const theme = useTheme();
   const [openRpcDialog, setOpenRpcDialog] = useState(false);
   const [ownRpcUrl, setOwnRpcUrl] = useState(
     wallet.network === 'mainnet'
@@ -180,6 +188,21 @@ const Sidebar = ({ sidebarMobileOpen, handleDrawerToggle, wallet }) => {
         defaultExpandIcon={<ArrowLeftIcon sx={{ marginLeft: '450px' }} />}
         defaultEndIcon={<div style={{ width: 24 }} />}
       >
+        <Box display={{ xs: 'flex', sm: 'none' }} sx={{ marginBottom: '10px' }}>
+          <IconButton sx={{ ml: 1 }} onClick={changeTheme} color="inherit">
+            {theme.palette.mode === 'dark' ? (
+              <img src="/icons/ic-sun.png" alt="dark mode" />
+            ) : (
+              <img src="/icons/ic-circular.png" alt="light mode" />
+            )}
+          </IconButton>
+          <IconButton sx={{ ml: 1 }} color="inherit">
+            <img
+              src={'/icons/ic-notifications-' + theme.palette.mode + '.png'}
+              alt="notifications"
+            />
+          </IconButton>
+        </Box>
         <Box pl={1} pr={1}>
           <Chip
             sx={{ width: 264, height: 32, fontSize: '16px' }}

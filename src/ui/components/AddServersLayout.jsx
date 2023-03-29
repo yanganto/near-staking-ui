@@ -1,16 +1,9 @@
 import { Box } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 import NavBar from './NavBar';
-import Sidebar from './Sidebar';
 
-const Layout = ({ isSignedIn, wallet, changeTheme }) => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const handleDrawerToggle = () => {
-    setMobileOpen((old) => !old);
-  };
-
+const AddServersLayout = ({ isSignedIn, wallet, changeTheme }) => {
   const vh = window.innerHeight;
 
   return (
@@ -23,13 +16,7 @@ const Layout = ({ isSignedIn, wallet, changeTheme }) => {
         },
       }}
     >
-      {isSignedIn && (
-        <NavBar
-          wallet={wallet}
-          changeTheme={changeTheme}
-          handleDrawerToggle={handleDrawerToggle}
-        />
-      )}
+      {isSignedIn && <NavBar wallet={wallet} changeTheme={changeTheme} />}
 
       <Box
         sx={{
@@ -39,14 +26,6 @@ const Layout = ({ isSignedIn, wallet, changeTheme }) => {
           alignItems: 'stretch',
         }}
       >
-        {isSignedIn && (
-          <Sidebar
-            wallet={wallet}
-            sidebarMobileOpen={mobileOpen}
-            changeTheme={changeTheme}
-            handleDrawerToggle={handleDrawerToggle}
-          />
-        )}
         <Box
           component="main"
           sx={{
@@ -66,4 +45,4 @@ const Layout = ({ isSignedIn, wallet, changeTheme }) => {
   );
 };
 
-export default Layout;
+export default AddServersLayout;

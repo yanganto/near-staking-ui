@@ -29,7 +29,7 @@ const theme = (isDarkTheme) => {
               main: '#D6DBF0',
             },
           }),
-      info: { main: '#D2D1DA' },
+      info: { main: '#D2D1DA', secondary: '#324AB2' },
       secondary: {
         main: '#19857b',
       },
@@ -93,17 +93,34 @@ const theme = (isDarkTheme) => {
       MuiTableHead: {
         styleOverrides: {
           root: {
+            height: '63px',
             backgroundColor: isDarkTheme ? '#0D1E3D' : '#D6DBF0',
+            fontFamily: "'Roboto', sans-serif",
+
+            '& .MuiTableCell-root': {
+              backgroundColor: isDarkTheme ? '#0D1E3D' : '#D6DBF0',
+              border: 0,
+            },
+
+            '& .MuiTableCell-root:first-of-type': {
+              borderTopLeftRadius: '10px',
+            },
+            '& .MuiTableCell-root:last-of-type': {
+              borderTopRightRadius: '10px',
+            },
           },
         },
       },
+
       MuiTableCell: {
         styleOverrides: {
           root: {
+            fontFamily: "'Roboto', sans-serif",
             fontWeight: '500',
             fontSize: '18px',
             backgroundColor: isDarkTheme ? '#151C2B' : 'inherit',
-            borderColor: isDarkTheme ? '#091429' : '#D2D1DA',
+            borderColor: '#D2D1DA',
+            height: '43px',
           },
           body: {
             fontWeight: '400',
@@ -115,6 +132,13 @@ const theme = (isDarkTheme) => {
         styleOverrides: {
           root: {
             borderCollapse: 'inherit',
+          },
+        },
+      },
+      MuiDrawer: {
+        styleOverrides: {
+          paper: {
+            position: 'absolute',
           },
         },
       },

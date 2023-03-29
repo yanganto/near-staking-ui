@@ -72,7 +72,7 @@ const Keys = ({ isSignedIn, wallet }) => {
   }
 
   return (
-    <Container>
+    <Container sx={{ marginLeft: { lg: '7.6%', md: '7%', xs: 'auto' } }}>
       <Dialog open={isOpen} fullWidth maxWidth="sm">
         <Button
           sx={{
@@ -177,7 +177,14 @@ const Keys = ({ isSignedIn, wallet }) => {
         </DialogContent>
       </Dialog>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Typography component="h1" variant="h4" align="left" fontSize={48}>
+        <Typography
+          component="h1"
+          variant="h4"
+          align="left"
+          fontSize={48}
+          lineHeight={1}
+          sx={{ marginBottom: '8px' }}
+        >
           Keys
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
@@ -203,22 +210,32 @@ const Keys = ({ isSignedIn, wallet }) => {
           Add Key
         </Button>
       </Box>
-      <Table aria-label="Keys" sx={{ marginTop: '24px' }}>
+      <Table aria-label="Keys">
         <TableHead>
           <TableRow>
-            <TableCell sx={{ borderTopLeftRadius: '10px' }}>Name</TableCell>
-            <TableCell sx={{ borderTopRightRadius: '10px' }}>
-              Public Key
+            <TableCell
+              align="center"
+              sx={{ width: '200px', padding: '21px 29px 24px' }}
+            >
+              Name
             </TableCell>
+            <TableCell>Public Key</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {keys.map((k) => (
             <TableRow key={k.name} onClick={() => setSelectedKey(k.name)}>
-              <TableCell>{k.name}</TableCell>
+              <TableCell
+                align="center"
+                sx={{
+                  padding: 0,
+                  height: '43px',
+                  width: '200px',
+                }}>{k.name}</TableCell>
               <TableCell>
                 {selectedKey === k.name ? (
                   <TextField
+                    sx={{ height: '43px', paddingBlock: 0 }}
                     type="text"
                     margin="normal"
                     fullWidth
