@@ -27,6 +27,7 @@ const Keys = ({ isSignedIn, wallet }) => {
   const [keys, setKeys] = useState(
     JSON.parse(localStorage.getItem('keys') || '[]')
   );
+  const [selectedKey, setSelectedKey] = useState(false);
 
   const theme = useTheme();
 
@@ -38,7 +39,7 @@ const Keys = ({ isSignedIn, wallet }) => {
     setIsOpen(true);
   };
 
-  const addkey = () => {
+  const addKey = () => {
     if (!newNameKey) {
       setHelperTextName('This field is required');
     } else if (!newKey) {
@@ -55,8 +56,23 @@ const Keys = ({ isSignedIn, wallet }) => {
     }
   };
 
+  const updateKey = (name, key) => {
+    const updatedArray = keys.map((item) => {
+      if (item.name === name) {
+        return { ...item, key: key };
+      }
+      return item;
+    });
+    setKeys(updatedArray);
+    localStorage.setItem('keys', JSON.stringify(updatedArray));
+  };
+
+  function handleKeyDown(event) {
+    if (event.key === 'Enter' || event.keyCode === 27) setSelectedKey(false);
+  }
+
   return (
-    <Container sx={{ marginLeft: '120px' }}>
+    <Container>
       <Dialog open={isOpen} fullWidth maxWidth="sm">
         <Button
           sx={{
@@ -137,7 +153,7 @@ const Keys = ({ isSignedIn, wallet }) => {
           />
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Button
-              onClick={addkey}
+              onClick={addKey}
               variant="text"
               sx={{
                 padding: '16px 32px',
@@ -190,19 +206,33 @@ const Keys = ({ isSignedIn, wallet }) => {
       <Table aria-label="Keys" sx={{ marginTop: '24px' }}>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ borderTopLeftRadius: '10px' }} align="center">
-              Name
-            </TableCell>
-            <TableCell align="center" sx={{ borderTopRightRadius: '10px' }}>
+            <TableCell sx={{ borderTopLeftRadius: '10px' }}>Name</TableCell>
+            <TableCell sx={{ borderTopRightRadius: '10px' }}>
               Public Key
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {keys.map((k) => (
-            <TableRow key={k.name}>
+            <TableRow key={k.name} onClick={() => setSelectedKey(k.name)}>
               <TableCell>{k.name}</TableCell>
-              <TableCell>{k.key}</TableCell>
+              <TableCell>
+                {selectedKey === k.name ? (
+                  <TextField
+                    type="text"
+                    margin="normal"
+                    fullWidth
+                    variant="standard"
+                    autoComplete="off"
+                    value={k.key}
+                    onBlur={() => setSelectedKey(false)}
+                    onKeyDown={handleKeyDown}
+                    onChange={(e) => updateKey(k.name, e.target.value)}
+                  />
+                ) : (
+                  k.key
+                )}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
