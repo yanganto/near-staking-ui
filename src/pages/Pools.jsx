@@ -28,6 +28,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ChooseDialog from '../ui/components/ChooseDialog';
 import FileLinkIcon from '../svg/link';
 import SnackbarAlert from '../ui/components/SnackbarAlert';
+import CopyIcon from '../svg/сopy';
 
 const Pools = ({ wallet, isSignedIn }) => {
   const theme = useTheme();
@@ -206,7 +207,7 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
   ];
 
   return (
-    <Container>
+    <Container sx={{ marginLeft: { lg: '7.6%', md: '7%', xs: 'auto' } }}>
       <SnackbarAlert
         msg={warningMount}
         setMsg={setWarningMount}
@@ -256,7 +257,8 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
         }}
       >
         <Typography
-          sx={{ fontSize: '48px' }}
+          sx={{ fontSize: '48px', marginBottom: '8px' }}
+          lineHeight={1}
           component="h1"
           variant="h4"
           align="left"
@@ -289,26 +291,23 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
       <Table aria-label="Pools">
         <TableHead>
           <TableRow>
-            <TableCell sx={{ borderRadius: '10px 0 0 10px' }}>Pool</TableCell>
+            <TableCell>Pool</TableCell>
             <TableCell>owner_id</TableCell>
             <TableCell>public_key</TableCell>
             <TableCell>Fee</TableCell>
-            <TableCell sx={{ borderRadius: '0 10px 10px 0' }} />
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
           {Object.keys(myPools).map((key, index) => (
             <TableRow
               key={index}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              sx={{
+                height: '63px',
+                '&:last-child td, &:last-child th': { border: 0 },
+              }}
             >
-              <TableCell
-                component="th"
-                scope="row"
-                sx={{ borderRadius: '10px 0 0 10px' }}
-              >
-                {key}
-              </TableCell>
+              <TableCell scope="row">{key}</TableCell>
               <TableCell
                 title={'Click to Copy to Clipboard\n' + myPools[key].owner_id}
                 onClick={() => {
@@ -336,17 +335,23 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                       myPools[key].public_key.length - 12
                     )
                   : myPools[key].public_key}{' '}
-                <IconButton color="inherit">
-                  <img
-                    src={'/icons/copy-' + theme.palette.mode + '.png'}
-                    alt="copy"
-                  />
+                <IconButton
+                  color="inherit"
+                  sx={{ width: '32px', height: '32px', color: 'primary.main' }}
+                >
+                  <CopyIcon />
                 </IconButton>
               </TableCell>
               <TableCell>{myPools[key].fee}%</TableCell>
-              <TableCell sx={{ borderRadius: '0 5px 5px 0' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+              <TableCell>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    columnGap: '24px',
+                  }}
+                >
+                  <FormControl sx={{ minWidth: 120 }} size="small">
                     <InputLabel id="demo-simple-select-label">
                       Server
                     </InputLabel>

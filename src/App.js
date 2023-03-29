@@ -16,6 +16,7 @@ import Layout from './ui/components/Layout';
 import NavPageLayout from './ui/components/NavPageLayout';
 import AddServer from './pages/AddServer';
 import Keys from './pages/Keys';
+import AddServersLayout from './ui/components/AddServersLayout';
 
 export default function App({ isSignedIn, wallet }) {
   const [isDarkTheme, setIsDarkTheme] = useState(
@@ -71,17 +72,14 @@ export default function App({ isSignedIn, wallet }) {
                 path="/servers"
                 element={<Servers isSignedIn={isSignedIn} wallet={wallet} />}
               />
-              <Route
-                path="/servers/add"
-                element={<AddServer isSignedIn={isSignedIn} wallet={wallet} />}
-              />
+
               <Route
                 path="/keys"
                 element={<Keys isSignedIn={isSignedIn} wallet={wallet} />}
               />
             </Route>
             <Route
-              path="/navpage"
+              path="/"
               element={
                 <NavPageLayout
                   isSignedIn={isSignedIn}
@@ -91,8 +89,24 @@ export default function App({ isSignedIn, wallet }) {
               }
             >
               <Route
-                index
+                path="/navpage"
                 element={<NavPage isSignedIn={isSignedIn} wallet={wallet} />}
+              />
+            </Route>
+
+            <Route
+              path="/"
+              element={
+                <AddServersLayout
+                  isSignedIn={isSignedIn}
+                  wallet={wallet}
+                  changeTheme={changeTheme}
+                />
+              }
+            >
+              <Route
+                path="/servers/add"
+                element={<AddServer isSignedIn={isSignedIn} wallet={wallet} />}
               />
             </Route>
           </Routes>

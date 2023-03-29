@@ -29,7 +29,7 @@ const Servers = ({ isSignedIn, wallet }) => {
   };
 
   return (
-    <Container>
+    <Container sx={{ marginLeft: { lg: '7.6%', md: '7%', xs: 'auto' } }}>
       <ChooseDialog
         title="Select an option"
         isOpen={isOpen}
@@ -37,7 +37,14 @@ const Servers = ({ isSignedIn, wallet }) => {
         data={navPageDialogData}
       />
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Typography component="h1" variant="h4" align="left" fontSize={48}>
+        <Typography
+          component="h1"
+          variant="h4"
+          align="left"
+          fontSize={48}
+          lineHeight={1}
+          sx={{ marginBottom: '8px' }}
+        >
           Servers
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
@@ -63,19 +70,15 @@ const Servers = ({ isSignedIn, wallet }) => {
           Add server
         </Button>
       </Box>
-      <Table aria-label="Servers" sx={{ marginTop: '24px' }}>
+      <Table aria-label="Servers">
         <TableHead>
           <TableRow>
-            <TableCell sx={{ borderTopLeftRadius: '10px' }}>
-              ID
-            </TableCell>
+            <TableCell>ID</TableCell>
             <TableCell>Type</TableCell>
             <TableCell>IPv4</TableCell>
             <TableCell>Gateway</TableCell>
             <TableCell>Username</TableCell>
-            <TableCell sx={{ borderTopRightRadius: '10px' }}>
-              SSH Key
-            </TableCell>
+            <TableCell>SSH Key</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
