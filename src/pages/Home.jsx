@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography';
 import ArrowLeftIcon from '../svg/arrow-left';
 import { getCustomThemeStyles } from '../ui/styles/theme';
 import LinkButton from '../ui/components/LinkButton';
+import Logo from '../svg/logo';
 
 const Home = ({ isSignedIn, wallet }) => {
   const theme = useTheme();
@@ -44,6 +45,10 @@ const Home = ({ isSignedIn, wallet }) => {
     localStorage.setItem('networkId', networkId);
     window.location.replace(window.location.origin);
   };
+
+  const firstLogoColor = theme.palette.mode === 'dark' ? '#FEFEFF' : '#4D4DFF';
+
+  const secondLogoColor = theme.palette.mode === 'dark' ? '#FEFEFF' : '#9900FF';
 
   return (
     <>
@@ -170,7 +175,12 @@ const Home = ({ isSignedIn, wallet }) => {
                   },
                 }}
               >
-                <img src="/kuutamo-logo.png" alt="kuutamo" />
+                <Box width={124} height={124}>
+                  <Logo
+                    firstColor={firstLogoColor}
+                    secondColor={secondLogoColor}
+                  />
+                </Box>
                 <Typography
                   sx={{
                     '@media (min-width:600px)': { padding: '30px' },

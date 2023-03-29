@@ -1,19 +1,9 @@
 import { Box, Tooltip, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import CopyIcon from '../../svg/сopy';
 
 const DialogCopyLinkEl = ({ children, to }) => {
-  const [tooltipText, setTooltipText] = useState('Copy link');
-
-  const onIconClick = () => {
-    navigator.clipboard.writeText(to);
-    setTooltipText('Copied!');
-  };
-
-  const handleTooltipClose = () => {
-    setTimeout(() => setTooltipText('Copy link'), 100);
-  };
-
   return (
     <Box
       sx={{
@@ -22,20 +12,17 @@ const DialogCopyLinkEl = ({ children, to }) => {
         columnGap: '8px',
       }}
     >
-      <Tooltip
-        arrow
-        title={tooltipText}
-        leaveDelay={300}
-        onClose={handleTooltipClose}
-      >
+      <Tooltip arrow title="Follow the link" leaveDelay={100}>
         <Box
-          onClick={onIconClick}
           sx={{
-            color: 'text.main',
+            color: 'text.primary',
             width: '32px',
             height: '32px',
             cursor: 'pointer',
           }}
+          component={Link}
+          to={to}
+          target="_blank"
         >
           <CopyIcon />
         </Box>

@@ -12,7 +12,7 @@ const theme = (isDarkTheme) => {
             },
             text: {
               primary: '#FEFEFF',
-              secondary: '#4F4B6D',
+              secondary: '#9492A7',
             },
             primary: {
               main: '#36DFD3',
@@ -78,7 +78,6 @@ const theme = (isDarkTheme) => {
         styleOverrides: {
           root: {
             borderRadius: 8,
-            color: isDarkTheme ? '#D2D1DA' : '#002147',
             backgroundColor: isDarkTheme ? '#0D1E3D' : '#D6DBF0',
           },
         },
@@ -121,6 +120,7 @@ const theme = (isDarkTheme) => {
             backgroundColor: isDarkTheme ? '#151C2B' : 'inherit',
             borderColor: '#D2D1DA',
             height: '43px',
+            color: isDarkTheme ? '#9492A7' : '#4F4B6D',
           },
           body: {
             fontWeight: '400',

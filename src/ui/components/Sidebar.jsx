@@ -28,7 +28,7 @@ import { drawerWidth } from '../../constants';
 import { useTheme } from '@emotion/react';
 
 export const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
-  color: theme.palette.text.secondary,
+  color: theme.palette.text.primary,
   [`& .${treeItemClasses.content}`]: {
     fontSize: '24px',
     backgroundColor: theme.palette.mode === 'dark' ? '#151C2B' : '#FEFEFF',
@@ -205,7 +205,11 @@ const Sidebar = ({
         </Box>
         <Box pl={1} pr={1}>
           <Chip
-            sx={{ width: 264, height: 32, fontSize: '16px' }}
+            sx={{
+              width: 264,
+              height: 32,
+              fontSize: '16px',
+            }}
             label="PROTOCOL"
           />
         </Box>
@@ -217,7 +221,11 @@ const Sidebar = ({
         <StyledTreeItem nodeId="2" labelText="Validators" to="/pools" />
         <Box pl={1} pr={1} pt={2}>
           <Chip
-            sx={{ width: 264, height: 32, fontSize: '16px' }}
+            sx={{
+              width: 264,
+              height: 32,
+              fontSize: '16px',
+            }}
             label="INFRASTRUCTURE"
           />
         </Box>

@@ -5,9 +5,6 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  MenuItem,
-  Select,
-  selectClasses,
   Table,
   TableBody,
   TableCell,
@@ -18,48 +15,16 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import ArrowLeftIcon from '../svg/arrow-left';
 import InfoCircle from '../svg/infoCircle';
 import SelectArrow from '../svg/selectArrow';
 import DialogCopyLinkEl from '../ui/components/DialogCopyLinkEl';
 import SnackbarAlert from '../ui/components/SnackbarAlert';
+import { StyledMenuItem, StyledSelect } from '../ui/components/StyledSelect';
 import { getCustomThemeStyles } from '../ui/styles/theme';
-
-const StyledSelect = styled(Select)(({ theme }) => ({
-  fontFamily: "'Roboto', sans-serif",
-  color: theme.palette.text.primary,
-
-  '&:focus-visible': {
-    outline: 'none',
-  },
-
-  '& .MuiSelect-select': {
-    '&:focus': {
-      backgroundColor: 'transparent',
-    },
-  },
-
-  [`& .${selectClasses.icon}`]: {
-    top: 0,
-    bottom: 0,
-    right: '5px',
-    marginBlock: 'auto',
-    color: theme.palette.text.primary,
-  },
-
-  [`& .${selectClasses.iconOpen}`]: {
-    transform: 'rotate(90deg)',
-  },
-}));
-
-const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
-  fontFamily: "'Roboto', sans-serif",
-  fontWeight: 700,
-  fontSize: '16px',
-}));
 
 const AddServer = ({ isSignedIn, wallet }) => {
   const theme = useTheme();
@@ -178,15 +143,17 @@ const AddServer = ({ isSignedIn, wallet }) => {
               component={Link}
               to="https://www.latitude.sh/dashboard"
               sx={{ color: 'info.secondary', textUnderlineOffset: '3px' }}
+              target="_blank"
             >
               Latitude -c3.medium.x86 with Ubuntu
             </Box>
-            - use code <br /> “kuutamo” at checkout for 20% off
+            &nbsp;- use code <br /> “kuutamo” at checkout for 20% off
           </DialogCopyLinkEl>
           <DialogCopyLinkEl to="https://miro.com/app/board/uXjVMeQRhrk=/?moveToWidget=3458764549184340446&cot=14">
             <Box
               component={Link}
               to="https://miro.com/app/board/uXjVMeQRhrk=/?moveToWidget=3458764549184340446&cot=14"
+              target="_blank"
               sx={{ color: 'info.secondary', textUnderlineOffset: '3px' }}
             >
               OVH - Advance 1 Gen, 64GB RAM, 2 x 960GB NVMe,
@@ -479,7 +446,32 @@ const AddServer = ({ isSignedIn, wallet }) => {
           </TableRow>
         </TableBody>
       </Table>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Button
+          variant="text"
+          component={Link}
+          to="/servers"
+          sx={{
+            padding: '16px 32px',
+            boxShadow: '0px 0px 8px rgb(0 33 71 / 10%)',
+            color: theme.palette.mode === 'dark' ? '#FEFEFF' : '#002147',
+            backgroundColor:
+              theme.palette.mode === 'dark' ? '#151C2B' : '#FEFEFF',
+            border: 'inherit',
+            fontSize: '15px',
+            margin: '16px 4px 16px 8px',
+          }}
+        >
+          <Box
+            width={24}
+            height={24}
+            color="primary.main"
+            sx={{ marginRight: '16px' }}
+          >
+            <ArrowLeftIcon />
+          </Box>
+          Back
+        </Button>
         <Button
           variant="text"
           sx={{

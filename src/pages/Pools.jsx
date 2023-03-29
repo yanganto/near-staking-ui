@@ -14,8 +14,6 @@ import {
   DialogActions,
   DialogTitle,
   IconButton,
-  Select,
-  InputLabel,
   FormControl,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -24,11 +22,12 @@ import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import { nearConfig } from '../helpers/nearConfig';
 import { useTheme } from '@mui/material/styles';
-import MenuItem from '@mui/material/MenuItem';
 import ChooseDialog from '../ui/components/ChooseDialog';
 import FileLinkIcon from '../svg/link';
 import SnackbarAlert from '../ui/components/SnackbarAlert';
 import CopyIcon from '../svg/сopy';
+import { StyledMenuItem, StyledSelect } from '../ui/components/StyledSelect';
+import SelectArrow from '../svg/selectArrow';
 
 const Pools = ({ wallet, isSignedIn }) => {
   const theme = useTheme();
@@ -206,6 +205,8 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
     },
   ];
 
+  console.log(mountedPools);
+
   return (
     <Container sx={{ marginLeft: { lg: '7.6%', md: '7%', xs: 'auto' } }}>
       <SnackbarAlert
@@ -292,8 +293,8 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
         <TableHead>
           <TableRow>
             <TableCell>Pool</TableCell>
-            <TableCell>owner_id</TableCell>
-            <TableCell>public_key</TableCell>
+            <TableCell>Owner_id</TableCell>
+            <TableCell>Public_key</TableCell>
             <TableCell>Fee</TableCell>
             <TableCell />
           </TableRow>
@@ -352,27 +353,26 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                   }}
                 >
                   <FormControl sx={{ minWidth: 120 }} size="small">
-                    <InputLabel id="demo-simple-select-label">
-                      Server
-                    </InputLabel>
-                    <Select
+                    <StyledSelect
+                      variant="standard"
+                      disableUnderline
+                      IconComponent={(props) => <SelectArrow {...props} />}
                       labelId="server-select-label"
                       id={'server-select' + key}
-                      value={
-                        mountedPools[key] === undefined ? '' : mountedPools[key]
-                      }
-                      label="Server"
+                      value={mountedPools[key] ? mountedPools[key] : ''}
+                      placeholder="server"
+                      displayEmpty
                       onChange={(event) =>
                         handleChangeMountPool(event.target.value, key)
                       }
                     >
-                      <MenuItem value="">---</MenuItem>
+                      <StyledMenuItem value="">Server</StyledMenuItem>
                       {servers.map((s) => (
-                        <MenuItem value={s.id} key={s.id}>
+                        <StyledMenuItem value={s.id} key={s.id}>
                           {s.id}
-                        </MenuItem>
+                        </StyledMenuItem>
                       ))}
-                    </Select>
+                    </StyledSelect>
                   </FormControl>
                   <FormControl size="small">
                     <Button

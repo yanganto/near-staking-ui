@@ -113,7 +113,12 @@ const NavBar = ({ wallet, changeTheme, handleDrawerToggle }) => {
               sx={{ justifyContent: { xs: 'center', sm: 'flex-start' } }}
               pl={2}
             >
-              <Logo firstColor={firstLogoColor} secondColor={secondLogoColor} />
+              <Box width={49} height={49}>
+                <Logo
+                  firstColor={firstLogoColor}
+                  secondColor={secondLogoColor}
+                />
+              </Box>
               <Typography
                 pl={1}
                 pr={2}
