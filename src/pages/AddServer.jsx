@@ -19,7 +19,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import InfoCircle from '../svg/infoCircle';
@@ -112,6 +112,12 @@ const AddServer = ({ isSignedIn, wallet }) => {
     }
   };
 
+  useEffect(() => {
+    if (!isSignedIn) {
+      wallet.signIn();
+    }
+  });
+
   const customThemes = getCustomThemeStyles(theme.palette.mode === 'dark');
 
   const handleInfoClick = () => {
@@ -120,7 +126,7 @@ const AddServer = ({ isSignedIn, wallet }) => {
 
   const handleCloseDialog = () => setDialogOpen(false);
 
-  return (
+  return isSignedIn ? (
     <Container
       sx={{
         '@media (min-width: 1200px)': { maxWidth: '1512px' },
@@ -497,7 +503,7 @@ const AddServer = ({ isSignedIn, wallet }) => {
         </Button>
       </Box>
     </Container>
-  );
+  ) : null;
 };
 
 export default AddServer;
