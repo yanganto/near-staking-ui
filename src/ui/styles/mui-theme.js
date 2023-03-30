@@ -1,7 +1,9 @@
 import { createTheme } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
 
-const theme = (isDarkTheme) => {
+const theme = (mode) => {
+  const isDarkTheme = mode === 'dark';
+
   return createTheme({
     palette: {
       mode: isDarkTheme ? 'dark' : 'light',
@@ -33,6 +35,7 @@ const theme = (isDarkTheme) => {
           }),
       info: { main: '#D2D1DA', secondary: '#324AB2' },
       secondary: {
+        dark: '#011124',
         main: '#19857b',
       },
       error: {
@@ -157,6 +160,14 @@ const theme = (isDarkTheme) => {
             '& .MuiPaper-root': {
               borderRadius: '10px',
             },
+          },
+        },
+      },
+      MuiFormLabel: {
+        styleOverrides: {
+          asterisk: {
+            fontSize: '16px',
+            color: isDarkTheme ? '#36DFD3' : '#802FF3',
           },
         },
       },
