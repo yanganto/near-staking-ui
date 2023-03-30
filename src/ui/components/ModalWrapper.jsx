@@ -50,14 +50,14 @@ const ModalWrapper = ({ isOpen, onClose, title, children }) => {
               textAlign: 'center',
               fontWeight: 500,
               lineHeight: {
-                xl: '52px',
+                xl: '48px',
                 lg: '48px',
                 md: '44px',
                 sm: '38px',
                 xs: '32px',
               },
               fontSize: {
-                xl: '52px',
+                xl: '48px',
                 lg: '48px',
                 md: '44px',
                 sm: '38px',
