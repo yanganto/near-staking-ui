@@ -17,19 +17,22 @@ import NavPageLayout from './ui/components/NavPageLayout';
 import AddServer from './pages/AddServer';
 import Keys from './pages/Keys';
 import AddServersLayout from './ui/components/AddServersLayout';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 
 export default function App({ isSignedIn, wallet }) {
-  const [isDarkTheme, setIsDarkTheme] = useState(
-    localStorage.getItem('isDarkTheme') || 'dark'
-  );
+  const [mode, setMode] = useState(localStorage.getItem('siteMode') || 'dark');
 
   const changeTheme = () => {
-    setIsDarkTheme(!isDarkTheme);
-    localStorage.setItem('isDarkTheme', isDarkTheme ? '' : 'true');
+    setMode((mode) => {
+      const val = mode === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('siteMode', val);
+      return val;
+    });
   };
 
   return (
-    <ThemeProvider theme={theme(isDarkTheme)}>
+    <ThemeProvider theme={theme(mode)}>
       <BrowserRouter>
         <ConfirmProvider>
           <Routes>
@@ -91,6 +94,11 @@ export default function App({ isSignedIn, wallet }) {
               <Route
                 path="/navpage"
                 element={<NavPage isSignedIn={isSignedIn} wallet={wallet} />}
+              />
+              <Route path="/login" element={<LoginPage />} />
+              <Route
+                path="/signup"
+                element={<SignupPage isSignedIn={isSignedIn} wallet={wallet} />}
               />
             </Route>
 
