@@ -353,7 +353,6 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                 >
                   <FormControl sx={{ minWidth: 173 }} size="small">
                     <StyledSelect
-                      disableUnderline
                       IconComponent={(props) => <SelectArrow {...props} />}
                       labelId="server-select-label"
                       id={'server-select' + key}
