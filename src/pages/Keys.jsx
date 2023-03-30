@@ -231,7 +231,10 @@ const Keys = ({ isSignedIn, wallet }) => {
                   padding: 0,
                   height: '43px',
                   width: '200px',
-                }}>{k.name}</TableCell>
+                }}
+              >
+                {k.name}
+              </TableCell>
               <TableCell>
                 {selectedKey === k.name ? (
                   <TextField

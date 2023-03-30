@@ -214,7 +214,7 @@ const Home = ({ isSignedIn, wallet }) => {
               <Button
                 variant="contained"
                 sx={{
-                  background: 'primary',
+                  background: 'primary.main',
                   width: '280px',
                   height: '77px',
                   borderRadius: '15px',

@@ -20,7 +20,7 @@ import AddServersLayout from './ui/components/AddServersLayout';
 
 export default function App({ isSignedIn, wallet }) {
   const [isDarkTheme, setIsDarkTheme] = useState(
-    localStorage.getItem('isDarkTheme') || ''
+    localStorage.getItem('isDarkTheme') || 'dark'
   );
 
   const changeTheme = () => {

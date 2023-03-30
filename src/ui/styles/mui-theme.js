@@ -16,6 +16,8 @@ const theme = (isDarkTheme) => {
             },
             primary: {
               main: '#36DFD3',
+              light: '#151C2B',
+              dark: '#FEFEFF',
             },
             success: {
               main: '#0D1E3D',
@@ -24,7 +26,7 @@ const theme = (isDarkTheme) => {
         : {
             background: { default: '#FEFEFF' },
             text: { primary: '#002147', secondary: '#4F4B6D' },
-            primary: { main: '#802FF3' },
+            primary: { main: '#802FF3', light: '#FEFEFF', dark: '#D2D1DA' },
             success: {
               main: '#D6DBF0',
             },
@@ -139,6 +141,22 @@ const theme = (isDarkTheme) => {
         styleOverrides: {
           paper: {
             position: 'absolute',
+          },
+        },
+      },
+
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            fontFamily: "'Roboto', sans-serif",
+
+            '& .MuiInputBase-root': {
+              borderRadius: '10px',
+            },
+
+            '& .MuiPaper-root': {
+              borderRadius: '10px',
+            },
           },
         },
       },

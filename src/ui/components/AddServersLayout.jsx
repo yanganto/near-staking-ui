@@ -38,7 +38,15 @@ const AddServersLayout = ({ isSignedIn, wallet, changeTheme }) => {
           <Outlet />
         </Box>
       </Box>
-      <Box sx={{ textAlign: 'center', width: '100%', height: '40px' }}>
+      <Box
+        sx={{
+          textAlign: 'center',
+          width: '100%',
+          height: '40px',
+          fontFamily: "'Roboto', sans-serif",
+          lineHeight: 1,
+        }}
+      >
         © 2023 kuutamo. All rights reserved
       </Box>
     </Box>

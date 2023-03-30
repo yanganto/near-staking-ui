@@ -336,6 +336,22 @@ const AddServer = ({ isSignedIn, wallet }) => {
                 }
                 disableUnderline
                 IconComponent={(props) => <SelectArrow {...props} />}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      padding: '0',
+                      borderRadius: '10px',
+                      boxShadow:
+                        theme.palette.mode === 'dark'
+                          ? '0px 0px 8px rgba(7, 9, 14, 0.1);'
+                          : '0px 0px 8px rgb(0 33 71 / 10%)',
+                      backgroundColor: 'primary.light',
+                      backgroundImage: 'none',
+                      border: 1,
+                      borderColor: 'primary.dark',
+                    },
+                  },
+                }}
               >
                 <StyledMenuItem value="OVH">OVH</StyledMenuItem>
                 <StyledMenuItem value="Latitude">Latitude</StyledMenuItem>
@@ -349,11 +365,26 @@ const AddServer = ({ isSignedIn, wallet }) => {
                 id="type-select"
                 value={newServer.Type}
                 onChange={(e) => {
-                  console.log(e.target.value);
                   setNewServer({ ...newServer, Type: e.target.value });
                 }}
                 disableUnderline
                 IconComponent={(props) => <SelectArrow {...props} />}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      padding: '0',
+                      borderRadius: '10px',
+                      boxShadow:
+                        theme.palette.mode === 'dark'
+                          ? '0px 0px 8px rgba(7, 9, 14, 0.1);'
+                          : '0px 0px 8px rgb(0 33 71 / 10%)',
+                      backgroundColor: 'primary.light',
+                      backgroundImage: 'none',
+                      border: 1,
+                      borderColor: 'primary.dark',
+                    },
+                  },
+                }}
               >
                 <StyledMenuItem value="NEAR">NEAR</StyledMenuItem>
               </StyledSelect>
@@ -437,6 +468,22 @@ const AddServer = ({ isSignedIn, wallet }) => {
                 }
                 disableUnderline
                 IconComponent={(props) => <SelectArrow {...props} />}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      padding: '0',
+                      borderRadius: '10px',
+                      boxShadow:
+                        theme.palette.mode === 'dark'
+                          ? '0px 0px 8px rgba(7, 9, 14, 0.1);'
+                          : '0px 0px 8px rgb(0 33 71 / 10%)',
+                      backgroundColor: 'primary.light',
+                      backgroundImage: 'none',
+                      border: 1,
+                      borderColor: 'primary.dark',
+                    },
+                  },
+                }}
               >
                 <StyledMenuItem value="1">1</StyledMenuItem>
                 <StyledMenuItem value="2">2</StyledMenuItem>

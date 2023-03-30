@@ -155,6 +155,22 @@ const Servers = ({ isSignedIn, wallet }) => {
                       updateServer(s.id, e.target.value, 'key');
                       setSelectedServer(false);
                     }}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          padding: '0',
+                          borderRadius: '10px',
+                          boxShadow:
+                            theme.palette.mode === 'dark'
+                              ? '0px 0px 8px rgba(7, 9, 14, 0.1);'
+                              : '0px 0px 8px rgb(0 33 71 / 10%)',
+                          backgroundColor: 'primary.light',
+                          backgroundImage: 'none',
+                          border: 1,
+                          borderColor: 'primary.dark',
+                        },
+                      },
+                    }}
                   >
                     <MenuItem value="">---</MenuItem>
                     {keys.map((k) => (

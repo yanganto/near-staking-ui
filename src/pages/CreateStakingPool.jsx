@@ -3,19 +3,25 @@ import {
   Card,
   CardContent,
   Grid,
-  InputAdornment,
   MenuItem,
   Box,
   Button,
   Link,
   Typography,
   TextField,
+  useTheme,
+  selectClasses,
 } from '@mui/material';
 import { Link as LinkRouter } from 'react-router-dom';
 import { nearConfig } from '../helpers/nearConfig';
 import { createStakingPool, generateKey } from '../helpers/staking';
 import * as zip from '@zip.js/zip.js';
 import WarningIcon from '@mui/icons-material/Warning';
+import RefreshIcon from '../svg/refresh';
+import { getCustomThemeStyles } from '../ui/styles/theme';
+import PercentageIcon from '../svg/percentage';
+import InputNumberArrowIcon from '../svg/inputNumberArrow';
+import SelectArrow from '../svg/selectArrow';
 
 const DataForm = (props) => {
   const [statusData, setStatusData] = useState({ open: false });
@@ -25,7 +31,7 @@ const DataForm = (props) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [keyPair, setKeyPair] = useState(null);
-  const [percentageFee, setPercentageFee] = useState('');
+  const [percentageFee, setPercentageFee] = useState(0);
   const [poolNameErrorText, setPoolNameErrorText] = useState('');
   const [ownerAccountErrorText, setOwnerAccountErrorText] = useState('');
   const [publicKeyErrorText, setPublicKeyErrorText] = useState('');
@@ -34,6 +40,20 @@ const DataForm = (props) => {
   const [confirmPasswordErrorText, setConfirmPasswordErrorText] = useState('');
   const [isKeyPairDownloaded, setIsKeyPairDownloaded] = useState(true);
   const [contractPool, setContractPool] = useState(2);
+  const theme = useTheme();
+
+  const handleClickArropUp = () => {
+    setPercentageFee((old) => old + 1);
+  };
+
+  const handleClickArropDown = () => {
+    setPercentageFee((old) => {
+      if (old - 1 >= 0) {
+        return old - 1;
+      }
+      return old;
+    });
+  };
 
   const handlePublicKeyChange = (e) => {
     setPublicKey(e.target.value);
@@ -245,6 +265,8 @@ const DataForm = (props) => {
     setOwnerAccount(props.wallet.accountId);
   }, [props.wallet.accountId]);
 
+  const customTheme = getCustomThemeStyles(theme.palette.mode === 'dark');
+
   return (
     <Grid container justifyContent="center">
       <Grid item xs={8} p={2}>
@@ -253,8 +275,8 @@ const DataForm = (props) => {
         </Typography>
         {!statusData.open ? (
           <>
-            <Grid container>
-              <Grid item xs={8}>
+            <Grid container spacing={{ xs: '12px', sm: '24px', md: '48px' }}>
+              <Grid item xs={6}>
                 <TextField
                   type="text"
                   margin="normal"
@@ -273,7 +295,7 @@ const DataForm = (props) => {
                   }}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <TextField
                   margin="normal"
                   fullWidth
@@ -283,9 +305,53 @@ const DataForm = (props) => {
                   onChange={(e) => {
                     setContractPool(e.target.value);
                   }}
+                  SelectProps={{
+                    IconComponent: (props) => <SelectArrow {...props} />,
+                    MenuProps: {
+                      PaperProps: {
+                        sx: {
+                          padding: '0',
+                          borderRadius: '10px',
+                          boxShadow: customTheme.shadows.light,
+                          backgroundColor: 'primary.light',
+                          backgroundImage: 'none',
+                          border: 1,
+                          borderColor: 'primary.dark',
+                        },
+                      },
+                    },
+                  }}
+                  sx={{
+                    [`& .${selectClasses.icon}`]: {
+                      top: 0,
+                      bottom: 0,
+                      right: '20px',
+                      marginBlock: 'auto',
+                      color: theme.palette.text.primary,
+                      transition: '0.15s',
+                    },
+                  }}
                 >
-                  <MenuItem value={2}>{nearConfig.contractPool}</MenuItem>
-                  <MenuItem value={1}>{nearConfig.contractPoolV1}</MenuItem>
+                  <MenuItem
+                    sx={{
+                      fontSize: '16px',
+                      lineHeight: 1,
+                      padding: '8px 16px',
+                    }}
+                    value={2}
+                  >
+                    {nearConfig.contractPool}
+                  </MenuItem>
+                  <MenuItem
+                    sx={{
+                      fontSize: '16px',
+                      lineHeight: 1,
+                      padding: '8px 16px',
+                    }}
+                    value={1}
+                  >
+                    {nearConfig.contractPoolV1}
+                  </MenuItem>
                 </TextField>
               </Grid>
             </Grid>
@@ -302,8 +368,28 @@ const DataForm = (props) => {
               value={publicKey}
               onChange={handlePublicKeyChange}
             />
-            <Grid container justifyContent="flex-end">
-              <Button onClick={handleGenerateKey} variant="outlined">
+            <Grid container justifyContent="flex-end" sx={{ marginTop: '8px' }}>
+              <Button
+                onClick={handleGenerateKey}
+                variant="text"
+                sx={{
+                  padding: '16px 32px',
+                  boxShadow: customTheme.shadows.light,
+                  fontSize: '15px',
+                  color: 'text.primary',
+                  border: 0,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: '24px',
+                    height: '24px',
+                    marginRight: '16px',
+                    color: 'primary.main',
+                  }}
+                >
+                  <RefreshIcon />
+                </Box>
                 Generate Key pair
               </Button>
             </Grid>
@@ -367,26 +453,113 @@ const DataForm = (props) => {
                 setOwnerAccountErrorText('');
               }}
             />
-            <TextField
-              type="number"
-              margin="normal"
-              required
-              id="percentageFee"
-              label="Percentage fee"
-              autoComplete="off"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">%</InputAdornment>,
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                columnGap: '16px',
+                marginTop: '16px',
               }}
-              helperText={percentageFeeErrorText}
-              error={!!percentageFeeErrorText}
-              value={percentageFee}
-              onChange={(e) => {
-                setPercentageFee(e.target.value);
-                setPercentageFeeErrorText('');
+            >
+              <TextField
+                type="number"
+                required
+                id="percentageFee"
+                label="Percentage fee"
+                autoComplete="off"
+                InputProps={{
+                  inputProps: { min: 0 },
+                }}
+                helperText={percentageFeeErrorText}
+                error={!!percentageFeeErrorText}
+                value={percentageFee}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '10px',
+                  },
+                  '& input[type="number"]::-webkit-inner-spin-button': {
+                    display: 'none',
+                  },
+                }}
+                onChange={(e) => {
+                  setPercentageFee(e.target.value);
+                  setPercentageFeeErrorText('');
+                }}
+              />
+              <Box
+                sx={{
+                  width: '64px',
+                  height: '56px',
+                  border: 1,
+                  borderColor: 'info.main',
+                  borderRadius: '10px',
+                  display: 'flex',
+                  columnGap: '2px',
+                  alignItems: 'center',
+                  padding: '4px 8px 4px 4px',
+                }}
+              >
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <Box
+                    sx={{
+                      width: '24px',
+                      height: '24px',
+                      padding: '4px',
+                      color: 'text.primary',
+                      borderRadius: '4px',
+                      display: 'grid',
+                      placeItems: 'center',
+                      cursor: 'pointer',
+
+                      '&:hover': {
+                        backgroundColor: 'success.main',
+                      },
+                    }}
+                    onClick={handleClickArropUp}
+                  >
+                    <InputNumberArrowIcon />
+                  </Box>
+                  <Box
+                    sx={{
+                      color: 'text.primary',
+                      width: '24px',
+                      height: '24px',
+                      padding: '4px',
+                      borderRadius: '4px',
+                      transform: 'rotate(-180deg)',
+                      display: 'grid',
+                      placeItems: 'center',
+                      cursor: 'pointer',
+
+                      '&:hover': {
+                        backgroundColor: 'success.main',
+                      },
+                    }}
+                    onClick={handleClickArropDown}
+                  >
+                    <InputNumberArrowIcon />
+                  </Box>
+                </Box>
+                <Box sx={{ width: '24px', height: '24px' }}>
+                  <PercentageIcon
+                    frameColor={theme.palette.text.primary}
+                    percentageColor={theme.palette.primary.main}
+                  />
+                </Box>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginTop: '24px',
               }}
-            />
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button onClick={submitCreateStakingPool} variant="contained">
+            >
+              <Button
+                onClick={submitCreateStakingPool}
+                variant="contained"
+                sx={{ padding: '16px 32px', lineHeight: 1 }}
+              >
                 LAUNCH POOL
               </Button>
             </Box>
@@ -398,7 +571,7 @@ const DataForm = (props) => {
                 <Grid item xs={12}>
                   <Box>
                     <WarningIcon
-                      color={statusData.hasError ? 'error' : 'primary'}
+                      color={statusData.hasError ? 'error' : 'primary.main'}
                       fontSize="large"
                     />
                   </Box>

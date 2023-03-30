@@ -11,6 +11,9 @@ export const getCustomThemeStyles = (isDarkTheme) => {
       btn: isDarkTheme
         ? `0px 26px 30px rgba(54, 223, 211, 0.24), 0px 13px 150px rgba(54, 223, 211, 0.18), 0px 8px 90px rgba(54, 223, 211, 0.15), 0px 5px 58px rgba(54, 223, 211, 0.14), 0px 3px 38px rgba(54, 223, 211, 0.12), 0px 2px 24px rgba(54, 223, 211, 0.1), 0px 1px 13px rgba(54, 223, 211, 0.08), 0px 1px 6px rgba(54, 223, 211, 0.06);`
         : '0px 26px 30px rgba(128, 47, 243, 0.24), 0px 13px 150px rgba(128, 47, 243, 0.18), 0px 8px 90px rgba(128, 47, 243, 0.15), 0px 5px 58px rgba(128, 47, 243, 0.14), 0px 3px 38px rgba(128, 47, 243, 0.12), 0px 2px 24px rgba(128, 47, 243, 0.1), 0px 1px 13px rgba(128, 47, 243, 0.08), 0px 1px 6px rgba(128, 47, 243, 0.06);',
+      light: isDarkTheme
+        ? '0px 0px 8px rgba(7, 9, 14, 0.1);'
+        : '0px 0px 8px rgb(0 33 71 / 10%)',
     },
   };
 };
