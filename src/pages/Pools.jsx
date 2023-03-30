@@ -205,8 +205,6 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
     },
   ];
 
-  console.log(mountedPools);
-
   return (
     <Container sx={{ marginLeft: { lg: '7.6%', md: '7%', xs: 'auto' } }}>
       <SnackbarAlert
@@ -330,15 +328,16 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                 }}
               >
                 {myPools[key].public_key && myPools[key].public_key.length > 24
-                  ? myPools[key].public_key.substring(0, 12) +
-                    '...' +
-                    myPools[key].public_key.substring(
-                      myPools[key].public_key.length - 12
-                    )
+                  ? myPools[key].public_key.substring(0, 12) + '...'
                   : myPools[key].public_key}{' '}
                 <IconButton
                   color="inherit"
-                  sx={{ width: '32px', height: '32px', color: 'primary.main' }}
+                  sx={{
+                    paddingLeft: '8px',
+                    width: '32px',
+                    height: '32px',
+                    color: 'primary.main',
+                  }}
                 >
                   <CopyIcon />
                 </IconButton>
@@ -352,9 +351,8 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                     columnGap: '24px',
                   }}
                 >
-                  <FormControl sx={{ minWidth: 120 }} size="small">
+                  <FormControl sx={{ minWidth: 173 }} size="small">
                     <StyledSelect
-                      variant="standard"
                       disableUnderline
                       IconComponent={(props) => <SelectArrow {...props} />}
                       labelId="server-select-label"
@@ -365,8 +363,24 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                       onChange={(event) =>
                         handleChangeMountPool(event.target.value, key)
                       }
+                      sx={{
+                        borderRadius: '5px',
+                        '& .MuiInputBase-input': {
+                          height: '16px',
+                          padding: '4px 30px 4px 8px',
+                          fontSize: '16px',
+                          lineHeight: 1,
+                          display: 'flex',
+                          alignItems: 'center',
+                        },
+
+                        '& .MuiSelect-icon': {
+                          right: '8px',
+                        },
+                      }}
                     >
                       <StyledMenuItem value="">Server</StyledMenuItem>
+                      {/* TODO: filter choosen values */}
                       {servers.map((s) => (
                         <StyledMenuItem value={s.id} key={s.id}>
                           {s.id}
