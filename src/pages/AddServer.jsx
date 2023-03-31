@@ -45,14 +45,15 @@ const AddServer = ({ isSignedIn, wallet }) => {
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const handleSubmit = (values) => {
-    console.log(values);
     const newServer = values.server;
     const newKey = values.key;
-    setServers((prev) => [...prev, newServer]);
-    localStorage.setItem('servers', JSON.stringify(servers));
-    setServers(servers);
-    setKeys((prev) => [...prev, newKey]);
-    localStorage.setItem('keys', JSON.stringify(keys));
+    newServer.key = newKey.name;
+    const newServers = [...servers, newServer];
+    const newKeys = [...keys, newKey];
+    setServers(newServers);
+    setKeys(newKeys);
+    localStorage.setItem('servers', JSON.stringify(newServers));
+    localStorage.setItem('keys', JSON.stringify(newKeys));
     navigate('/servers');
   };
 
@@ -372,7 +373,6 @@ const AddServer = ({ isSignedIn, wallet }) => {
                             (!errors || !errors.server || !errors.server.IPv4)
                           ) {
                             const arr = values.server.IPv4.split('.');
-                            console.log(arr);
                             arr.pop();
                             if (e.target.value === 'OVH') {
                               setFieldValue(
