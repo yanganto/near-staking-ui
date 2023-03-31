@@ -84,6 +84,12 @@ export class Wallet {
       this.accountId =
         this.walletSelector.store.getState().accounts[0].accountId;
 
+      if (
+        this.walletSelector.store.getState().contract.contractId !==
+        nearConfig.contractId
+      )
+        this.signOut();
+
       await (async () => {
         const { signature, public_key } = await getSignature(
           this,
