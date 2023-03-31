@@ -354,7 +354,6 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                 >
                   <FormControl sx={{ minWidth: 173 }} size="small">
                     <Select
-                      select
                       id={'server-select' + key}
                       value={mountedPools[key] ? mountedPools[key] : ''}
                       placeholder="server"
@@ -363,7 +362,6 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                       }
                       displayEmpty
                       IconComponent={(props) => <SelectArrow {...props} />}
-                      SelectProps={{}}
                       sx={{
                         borderRadius: '5px !important',
 
