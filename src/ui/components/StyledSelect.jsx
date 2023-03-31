@@ -1,7 +1,7 @@
-import { MenuItem, Select, selectClasses } from '@mui/material';
+import { MenuItem, selectClasses, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-export const StyledSelect = styled(Select)(({ theme }) => ({
+export const StyledSelect = styled(TextField)(({ theme }) => ({
   fontFamily: "'Roboto', sans-serif",
   color: theme.palette.text.primary,
 
@@ -22,10 +22,11 @@ export const StyledSelect = styled(Select)(({ theme }) => ({
     marginBlock: 'auto',
     color: theme.palette.text.primary,
     transition: '0.15s',
+    transform: 'rotate(90deg)',
   },
 
   [`& .${selectClasses.iconOpen}`]: {
-    transform: 'rotate(90deg)',
+    transform: 'rotate(0deg)',
   },
 }));
 
@@ -34,3 +35,7 @@ export const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   fontWeight: 700,
   fontSize: '16px',
 }));
+
+export const MuiStyledSelect = ({ field, form, ...props }) => {
+  return <StyledSelect inputProps={{ ...field }} {...props} />;
+};

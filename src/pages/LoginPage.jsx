@@ -33,7 +33,7 @@ const LoginPage = () => {
   const customTheme = getCustomThemeStyles(theme.palette.mode === 'dark');
 
   return (
-    <ModalWrapper isOpen={true} title="Welcome back">
+    <ModalWrapper isOpen={true} title="Sign in">
       <Formik initialValues={authInitialValues} onSubmit={handleSubmit}>
         <Box sx={{ marginInline: '9%' }} component={Form}>
           <Field

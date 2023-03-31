@@ -15,6 +15,7 @@ import {
   DialogTitle,
   IconButton,
   FormControl,
+  Select,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getMyPools, getSignature } from '../helpers/staking';
@@ -26,7 +27,7 @@ import ChooseDialog from '../ui/components/ChooseDialog';
 import FileLinkIcon from '../svg/link';
 import SnackbarAlert from '../ui/components/SnackbarAlert';
 import CopyIcon from '../svg/сopy';
-import { StyledMenuItem, StyledSelect } from '../ui/components/StyledSelect';
+import { StyledMenuItem } from '../ui/components/StyledSelect';
 import SelectArrow from '../svg/selectArrow';
 
 const Pools = ({ wallet, isSignedIn }) => {
@@ -348,22 +349,24 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    columnGap: '24px',
+                    columnGap: '8px',
                   }}
                 >
                   <FormControl sx={{ minWidth: 173 }} size="small">
-                    <StyledSelect
-                      IconComponent={(props) => <SelectArrow {...props} />}
-                      labelId="server-select-label"
+                    <Select
+                      select
                       id={'server-select' + key}
                       value={mountedPools[key] ? mountedPools[key] : ''}
                       placeholder="server"
-                      displayEmpty
                       onChange={(event) =>
                         handleChangeMountPool(event.target.value, key)
                       }
+                      displayEmpty
+                      IconComponent={(props) => <SelectArrow {...props} />}
+                      SelectProps={{}}
                       sx={{
-                        borderRadius: '5px',
+                        borderRadius: '5px !important',
+
                         '& .MuiInputBase-input': {
                           height: '16px',
                           padding: '4px 30px 4px 8px',
@@ -374,7 +377,15 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                         },
 
                         '& .MuiSelect-icon': {
-                          right: '8px',
+                          top: 0,
+                          bottom: 0,
+                          right: '10px',
+                          marginBlock: 'auto',
+                          transform: 'rotate(90deg)',
+                          transition: '0.15s',
+                        },
+                        '& .MuiSelect-iconOpen': {
+                          transform: 'rotate(0deg)',
                         },
                       }}
                     >
@@ -385,7 +396,7 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                           {s.id}
                         </StyledMenuItem>
                       ))}
-                    </StyledSelect>
+                    </Select>
                   </FormControl>
                   <FormControl size="small">
                     <Button
@@ -393,7 +404,7 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                       onClick={() => mountServer(key)}
                       disabled={!mountedPools[key]}
                     >
-                      Mount
+                      Manage
                     </Button>
                   </FormControl>
                 </Box>

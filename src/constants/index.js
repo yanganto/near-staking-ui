@@ -17,3 +17,17 @@ export const authInitialValues = {
   email: '',
   password: '',
 };
+
+export const addServerInitialValues = {
+  server: {
+    id: '',
+    Provider: '',
+    Type: 'NEAR',
+    IPv4: '',
+    CIDR: '',
+    Gateway: '',
+    Username: '',
+    disks: '',
+  },
+  key: { value: '', name: '' },
+};
