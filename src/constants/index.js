@@ -12,3 +12,8 @@ export const navPageDialogData = [
     to: '#',
   },
 ];
+
+export const authInitialValues = {
+  email: '',
+  password: '',
+};
