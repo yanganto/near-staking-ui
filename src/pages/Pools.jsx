@@ -362,7 +362,6 @@ encrypted_kuutamo_app_file = "${selectedPool}.zip"
                       }
                       displayEmpty
                       IconComponent={(props) => <SelectArrow {...props} />}
-                      SelectProps={{}}
                       sx={{
                         borderRadius: '5px !important',
 
