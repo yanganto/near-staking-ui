@@ -11,6 +11,8 @@ const SimpleNavBar = () => {
         backgroundColor: 'background.default',
         borderBottom: 1,
         borderColor: 'info.main',
+        position: 'relative',
+        zIndex: '1301',
       }}
     >
       <Typography component="div" sx={{ flexGrow: 1 }}>

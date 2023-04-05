@@ -27,7 +27,7 @@ export async function createStakingPool(
           owner_id: ownerAccount,
           stake_public_key: publicKey,
           reward_fee_fraction: {
-            numerator: percentageFee,
+            numerator: parseInt(percentageFee),
             denominator: 100,
           },
         }
@@ -36,7 +36,7 @@ export async function createStakingPool(
           owner_id: ownerAccount,
           stake_public_key: publicKey,
           reward_fee_fraction: {
-            numerator: percentageFee,
+            numerator: parseInt(percentageFee),
             denominator: 100,
           },
         };
